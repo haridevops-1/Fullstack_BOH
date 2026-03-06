@@ -1,0 +1,362 @@
+﻿@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+/* --- BRIDGE OF HOPE: INDEX STYLES --- */
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  font-family: "Poppins", sans-serif !important;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  background-color: #f4f6f8;
+  color: #333333;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- HEADER --- */
+header {
+  background: #0f3966;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 50px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo h1 {
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.nav-links {
+  display: flex;
+  gap: 40px;
+}
+
+.nav-links a {
+  font-size: 16px;
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: 600;
+  position: relative;
+  transition: all 0.3s ease;
+  padding: 5px 0;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 3px;
+  background-color: #ffcc00;
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* --- HERO SECTION --- */
+.top {
+  position: relative;
+  height: 600px;
+  margin: 30px;
+  border-radius: 30px;
+  background: url("./assets/front-view-box-being-prepared-with-food-donation.jpg")
+    center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  padding-left: 100px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.1)
+  );
+  border-radius: 30px;
+}
+
+.hero-text {
+  position: relative;
+  color: #ffffff;
+  max-width: 650px;
+}
+
+.hero-text h1 {
+  font-size: 32px;
+  line-height: 1.2;
+}
+
+.hero-text span {
+  color: #ffcc00;
+}
+
+.hero-text p {
+  font-size: 16px;
+  margin-top: 20px;
+  opacity: 0.9;
+}
+
+/* --- ABOUT & COLLAPSIBLES --- */
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
+  padding: 60px 40px;
+  max-width: 1350px;
+  margin: auto;
+}
+
+.why-block,
+.how-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.why-image img,
+.how-image img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 50px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.line {
+  width: 80px;
+  height: 5px;
+  background: #ffcc00;
+  margin-bottom: 25px;
+  border-radius: 3px;
+}
+
+h2 {
+  font-size: 26px;
+  margin-bottom: 30px;
+  color: #134b85;
+  font-weight: 700;
+}
+
+.accordion {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eef2f6;
+  overflow: hidden;
+}
+
+details {
+  border-bottom: 1px solid #f1f5f9;
+  padding: 20px 25px;
+  transition: background 0.3s;
+}
+
+details:hover {
+  background: #fcfdfe;
+}
+
+summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 18px;
+  color: #0f3966;
+  list-style: none;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+summary::after {
+  content: "+";
+  font-size: 28px;
+  font-weight: 300;
+  color: #0f3966;
+  transition: transform 0.3s ease;
+}
+
+details[open] summary::after {
+  content: "−";
+}
+
+details p {
+  margin-top: 15px;
+  color: #555555;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* --- BUTTONS & JOIN --- */
+.join-us {
+  text-align: center;
+  padding: 80px 20px;
+  background: #ffffff;
+  margin-top: 60px;
+}
+
+.join-description {
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 18.5px;
+  color: #64748b;
+}
+
+.single-action {
+  margin-top: 50px;
+}
+
+.join-btn {
+  display: inline-block;
+  padding: 18px 45px;
+  background: #0f3966;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 20.5px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.join-btn:hover {
+  background: #0f3966;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+}
+
+/* --- TESTIMONIALS --- */
+.testimonials {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.review-card {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  max-width: 900px;
+  margin: 40px auto;
+  border-left: 6px solid #ffcc00;
+  font-size: 18.5px;
+  text-align: justify;
+  line-height: 1.8;
+}
+
+/* --- FOOTER --- */
+footer {
+  background: #0f3966;
+  color: #ffffff;
+  padding: 100px 0 40px 0;
+  margin-top: 80px;
+}
+
+.footer-container {
+  max-width: 1350px;
+  margin: 0 auto;
+  padding: 0 50px;
+}
+
+.footer-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 50px;
+}
+
+.footer-col {
+  flex: 1;
+  min-width: 280px;
+}
+
+.footer-col h3 {
+  font-size: 20px;
+  margin-bottom: 25px;
+  color: #ffcc00;
+}
+
+.footer-col h4 {
+  font-size: 20px;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.footer-col h4::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  background: #ffcc00;
+  height: 3px;
+  width: 60px;
+}
+
+.footer-col p,
+.footer-col ul li a {
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.footer-col ul {
+  list-style: none;
+}
+
+.footer-col ul li {
+  margin-bottom: 15px;
+}
+
+.footer-col ul li a {
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.footer-col ul li a:hover {
+  color: #ffcc00;
+  padding-left: 10px;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 60px;
+  padding-top: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
