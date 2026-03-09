@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from dependencies import get_db
-import models, schemas
+import models, schemas, auth_utils
 
 # Router for Donor Login and Signup
 router = APIRouter(prefix="/api/donor", tags=["Donor Auth"])
@@ -27,8 +27,8 @@ def signup(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
             email=user_data.email,
             mobile_number=user_data.mobile_number,
             city=user_data.city,
-            Pincode=user_data.Pincode,
-            password=user_data.password,
+            pincode=user_data.Pincode,
+            password=auth_utils.hash_password(user_data.password),
             photo=user_data.photo
         )
 
@@ -56,13 +56,18 @@ def login(login_data: schemas.UserLogin, db: Session = Depends(get_db)):
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
 
-        # Check if the password matches
-        if user.password != login_data.password:
+        # Check if the password matches using helper function
+        if not auth_utils.verify_password(login_data.password, user.password):
             raise HTTPException(status_code=401, detail="Wrong password")
 
-        # If everything is correct, send back the user details
+        # Create a JWT token
+        access_token = auth_utils.create_access_token(data={"id": user.id, "role": "donor"})
+
+        # If everything is correct, send back the details and token
         return {
             "message": "Login successful",
+            "access_token": access_token,
+            "token_type": "bearer",
             "id": user.id,
             "role": "donor",
             "name": user.Firstname,

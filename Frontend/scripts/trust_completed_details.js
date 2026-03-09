@@ -1,5 +1,5 @@
 // Backend API URL
-var BACKEND_URL = "http://127.0.0.1:8000";
+var BACKEND_URL = "https://bridge-of-hope-backend-r53q.vercel.app";
 
 // Run when page loads
 document.addEventListener("DOMContentLoaded", function () {

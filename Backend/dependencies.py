@@ -35,3 +35,24 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# 4. Dependency to verify JWT Tokens
+from fastapi import HTTPException, Header
+import auth_utils
+
+def get_current_user(authorization: str = Header(None)):
+    """A helper to check if a valid JWT token is provided in the headers."""
+    if authorization is None:
+        raise HTTPException(status_code=401, detail="No authorization header found")
+    
+    # Header usually comes as "Bearer <token>"
+    try:
+        token = authorization.split(" ")[1]
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid token format")
+
+    user_data = auth_utils.decode_access_token(token)
+    if user_data is None:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    
+    return user_data

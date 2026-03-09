@@ -1,5 +1,5 @@
-﻿// Backend API URL
-var BACKEND_URL = "http://127.0.0.1:8000";
+// Backend API URL
+var BACKEND_URL = "https://bridge-of-hope-backend-r53q.vercel.app";
 
 
 // Run when page loads
@@ -153,7 +153,7 @@ async function loadRecentDonations(init = false) {
                 // Only toast for NEW pending donations
                 if (status === "pending" && !seenDonationIds.has(item.id)) {
                     if (!init && !isFirstLoad) {
-                        showToast("🔔 New Incoming Donation: " + (item.food_name || "Food Request"));
+                        showToast("?? New Incoming Donation: " + (item.food_name || "Food Request"));
                     }
                     seenDonationIds.add(item.id);
                 } else if (!seenDonationIds.has(item.id)) {
@@ -269,7 +269,7 @@ function showToast(message) {
     toast.className = "toast incoming";
 
     toast.innerHTML =
-        '<span class="toast-icon">🎁</span>' +
+        '<span class="toast-icon">??</span>' +
         '<span class="toast-message">' + message + '</span>';
 
     container.appendChild(toast);

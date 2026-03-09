@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from dependencies import get_db
-import models, schemas
+import models, schemas, auth_utils
 
 router = APIRouter(prefix="/api/trust", tags=["Trust Auth"])
 
@@ -24,7 +24,7 @@ def signup(trust_data: schemas.TrustCreate, db: Session = Depends(get_db)):
             trust_address=trust_data.trust_address,
             mobile_number=trust_data.mobile_number,
             email_id=trust_data.email_id,
-            password=trust_data.password,
+            password=auth_utils.hash_password(trust_data.password),
             username=trust_data.username,
             city=trust_data.city,
             pincode=trust_data.pincode,
@@ -57,7 +57,7 @@ def login(login_data: schemas.TrustLogin, db: Session = Depends(get_db)):
             print(f"LOG: Trust login FAILED - {login_data.email_id} not found.")
             raise HTTPException(status_code=404, detail="Trust not found")
 
-        if trust.password != login_data.password:
+        if not auth_utils.verify_password(login_data.password, trust.password):
             print(f"LOG: Trust login FAILED - Wrong password for {login_data.email_id}")
             raise HTTPException(status_code=401, detail="Wrong password")
 
@@ -65,9 +65,14 @@ def login(login_data: schemas.TrustLogin, db: Session = Depends(get_db)):
             print(f"LOG: Trust login FAILED - {login_data.email_id} IS NOT VERIFIED.")
             raise HTTPException(status_code=403, detail="Your trust account is pending admin approval and cannot login yet.")
 
+        # Create a JWT token
+        access_token = auth_utils.create_access_token(data={"id": trust.id, "role": "trust"})
+
         print(f"LOG: Trust login SUCCESS for {login_data.email_id}")
         return {
             "message": "Login successful",
+            "access_token": access_token,
+            "token_type": "bearer",
             "id": trust.id,
             "role": "trust",
             "name": trust.trust_name

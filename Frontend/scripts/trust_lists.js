@@ -1,5 +1,5 @@
-﻿// Backend API URL
-var BACKEND_URL = "http://127.0.0.1:8000";
+// Backend API URL
+var BACKEND_URL = "https://bridge-of-hope-backend-r53q.vercel.app";
 
 // Run when page loads
 document.addEventListener("DOMContentLoaded", function () {
@@ -77,7 +77,7 @@ async function loadTrustList() {
           (item.trust_photo ||
             "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600&auto=format&fit=crop") +
           '">' +
-          '<div class="verified-badge">✔ Verified</div>' +
+          '<div class="verified-badge">? Verified</div>' +
           "</div>" +
           '<div class="details">' +
           '<div class="trust-name">' +

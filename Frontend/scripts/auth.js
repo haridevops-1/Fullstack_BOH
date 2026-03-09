@@ -28,7 +28,7 @@ setInterval(function () {
     }, 10000); // 10 seconds limit
 
     // Try to ping the backend
-    fetch("http://127.0.0.1:8000", { signal: controller.signal })
+    fetch("https://bridge-of-hope-backend-r53q.vercel.app", { signal: controller.signal })
         .then(function (response) {
             // If we got a response, clear the timer (Server is UP)
             clearTimeout(timeoutId);

@@ -23,3 +23,11 @@ class UserRead(UserBase):
 class UserLogin(BaseModel):
     email: str
     password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    id: int
+    role: str
+    name: str
+    city: Optional[str] = None
