@@ -1,219 +1,82 @@
-// Backend API URL
-var BACKEND_URL = "https://bridge-of-hope-backend-r53q.vercel.app";
+import { BACKEND_URL } from './api.js';
 
-// Current login role
-var currentRole = "donor";
+let currentRole = "donor";
 
-
-/* -------------------------
-   Switch login role
-------------------------- */
-
-function switchRole(role) {
-
+// Expose functions to window because they are used in HTML attributes
+window.switchRole = (role) => {
     currentRole = role;
+    document.querySelectorAll(".toggle-btn").forEach(btn => btn.classList.remove("active"));
+    document.getElementById(`${role}Btn`).classList.add("active");
 
-    var donorBtn = document.getElementById("donorBtn");
-    var trustBtn = document.getElementById("trustBtn");
-    var adminBtn = document.getElementById("adminBtn");
-
-    // Remove active class from all
-    if (donorBtn) donorBtn.classList.remove("active");
-    if (trustBtn) trustBtn.classList.remove("active");
-    if (adminBtn) adminBtn.classList.remove("active");
-
-    // Activate selected role
-    if (role === "donor" && donorBtn) donorBtn.classList.add("active");
-    if (role === "trust" && trustBtn) trustBtn.classList.add("active");
-    if (role === "admin" && adminBtn) adminBtn.classList.add("active");
-
-    // Change email label
-    var label = document.querySelector(".label-1");
-
+    const label = document.querySelector(".label-1");
     if (label) {
-        if (role === "admin") {
-            label.innerText = "Admin Email";
-        } else {
-            label.innerText = "Email";
-        }
+        label.innerText = role === "admin" ? "Admin Email" : "Email";
     }
-}
+};
 
-
-
-/* -------------------------
-   Show message on page
-------------------------- */
-
-function showMessage(text, type) {
-
-    var box = document.getElementById("messageBox");
-
-    if (!box) return;
-
-    box.innerText = text;
-
-    box.className = "form-message " + type;
-
-    box.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-    });
-}
-
-
-
-/* -------------------------
-   Show / Hide password
-------------------------- */
-
-function togglePassword(inputId) {
-
-    var passwordInput = document.getElementById(inputId);
-
-    var icon = event.currentTarget;
-
-    if (passwordInput.type === "password") {
-
-        passwordInput.type = "text";
+window.togglePassword = (inputId) => {
+    const input = document.getElementById(inputId);
+    const icon = event.currentTarget;
+    if (input.type === "password") {
+        input.type = "text";
         icon.src = "../assets/eye-on.png";
-
     } else {
-
-        passwordInput.type = "password";
+        input.type = "password";
         icon.src = "../assets/eye-off.png";
     }
-}
+};
 
-
-
-/* -------------------------
-   Login handler
-------------------------- */
-
-async function handleLogin(event) {
-
+window.handleLogin = async (event) => {
     event.preventDefault();
+    const messageBox = document.getElementById("messageBox");
+    const loginBtn = event.target.querySelector("button[type='submit']");
 
-    var messageBox = document.getElementById("messageBox");
-
-    if (messageBox) messageBox.className = "form-message";
-
-    var loginBtn = event.target.querySelector("button[type='submit']");
-
-    if (!loginBtn) return;
-
-    loginBtn.classList.add("btn-loading");
     loginBtn.disabled = true;
+    messageBox.innerText = "Logging in...";
+    messageBox.className = "form-message";
 
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-    // Get form values
-    var email = document.getElementById("email").value.trim();
-    var password = document.getElementById("password").value;
+    let endpoint = `${BACKEND_URL}/api/${currentRole}/login`;
+    let payload = { email, password };
 
-
-    /* -------------------------
-       Choose API endpoint
-    ------------------------- */
-
-    var endpoint = "";
-    var payload = {};
-
-    if (currentRole === "donor") {
-
-        endpoint = BACKEND_URL + "/api/donor/login";
-        payload = { email: email, password: password };
-
-    } else if (currentRole === "trust") {
-
-        endpoint = BACKEND_URL + "/api/trust/login";
-        payload = { email_id: email, password: password };
-
-    } else if (currentRole === "admin") {
-
-        endpoint = BACKEND_URL + "/api/admin/login";
-        payload = { email: email, password: password };
+    // Trust login uses email_id instead of email
+    if (currentRole === "trust") {
+        payload = { email_id: email, password };
     }
-
-
-    if (!endpoint) {
-
-        showMessage("Please select a login type.", "error");
-
-        loginBtn.classList.remove("btn-loading");
-        loginBtn.disabled = false;
-
-        return;
-    }
-
-
-    console.log("Trying login for role:", currentRole);
-
 
     try {
-
-        var response = await fetch(endpoint, {
+        const response = await fetch(endpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
 
-        var data = await response.json();
-
+        const data = await response.json();
 
         if (response.ok) {
+            messageBox.innerText = "Login successful!";
+            messageBox.className = "form-message success";
 
-            showMessage("Login successful! Welcome.", "success");
-
-
-            // Save user info
             localStorage.setItem("userId", data.id);
             localStorage.setItem("userRole", currentRole);
             localStorage.setItem("userName", data.name || "User");
+            localStorage.setItem("authToken", data.access_token);
+            if (data.city) localStorage.setItem("userCity", data.city);
 
-            if (data.city) {
-                localStorage.setItem("userCity", data.city);
-            }
-
-
-            // Redirect based on role
-            setTimeout(function () {
-
-                if (currentRole === "donor") {
-                    window.location.href = "Donor_dashboard.html";
-                }
-
-                else if (currentRole === "trust") {
-                    window.location.href = "Trust_dashboard.html";
-                }
-
-                else if (currentRole === "admin") {
-                    window.location.href = "admin_dashboard.html";
-                }
-
+            setTimeout(() => {
+                const pages = { donor: "Donor_dashboard.html", trust: "Trust_dashboard.html", admin: "admin_dashboard.html" };
+                window.location.href = pages[currentRole];
             }, 1000);
-
         } else {
-
-            showMessage(
-                "Login failed: " + (data.detail || "Invalid credentials"),
-                "error"
-            );
-
-            loginBtn.classList.remove("btn-loading");
+            messageBox.innerText = data.detail || "Invalid credentials";
+            messageBox.className = "form-message error";
             loginBtn.disabled = false;
         }
-
     } catch (error) {
-
-        console.log("Server error:", error);
-
-        showMessage(
-            "Server error. Check if backend is running.",
-            "error"
-        );
-
-        loginBtn.classList.remove("btn-loading");
+        messageBox.innerText = "Connection error. Is the server running?";
+        messageBox.className = "form-message error";
         loginBtn.disabled = false;
     }
-}
+};

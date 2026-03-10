@@ -4,6 +4,7 @@ from dependencies import get_db
 import models, schemas
 from cloudinary_utils import upload_image
 from security_utils import hash_password, verify_password
+from auth_jwt import create_access_token
 
 # Router for Donor Login and Signup
 router = APIRouter(prefix="/api/donor", tags=["Donor Auth"])
@@ -59,12 +60,17 @@ def login(login_data: schemas.UserLogin, db: Session = Depends(get_db)):
             raise HTTPException(status_code=404, detail="User not found")
 
         # Verify encrypted password
+        # Verify encrypted password
         if not verify_password(login_data.password, user.password):
             raise HTTPException(status_code=401, detail="Wrong password")
 
-        # If everything is correct, send back the user details
+        # If everything is correct, send back the user details and a token
+        access_token = create_access_token(data={"sub": str(user.id), "role": "donor"})
+        
         return {
             "message": "Login successful",
+            "access_token": access_token,
+            "token_type": "bearer",
             "id": user.id,
             "role": "donor",
             "name": user.Firstname,

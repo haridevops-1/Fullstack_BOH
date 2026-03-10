@@ -1,104 +1,46 @@
-// Backend API URL
-var BACKEND_URL = "https://bridge-of-hope-backend-r53q.vercel.app";
+import { BACKEND_URL, getAuthHeaders, checkAuth } from './api.js';
 
-// Run when page loads
-document.addEventListener("DOMContentLoaded", function () {
-  var params = new URLSearchParams(window.location.search);
-
-  var donationId = params.get("id");
-
-  if (donationId) {
-    getDonationInfo(donationId);
-  } else {
-    alert("Donation ID not found!");
-    window.location.href = "Trust_dashboard.html";
-  }
+document.addEventListener("DOMContentLoaded", () => {
+  if (!checkAuth("trust")) return;
+  const id = new URLSearchParams(window.location.search).get("id");
+  if (id) getDonationInfo(id);
+  else window.location.href = "Trust_dashboard.html";
 });
-
-/* -----------------------------
-   Get donation details
------------------------------ */
 
 async function getDonationInfo(id) {
   try {
-    var response = await fetch(BACKEND_URL + "/api/donor/donations/" + id);
+    const res = await fetch(`${BACKEND_URL}/api/donor/donations/${id}`, { headers: getAuthHeaders() });
+    if (res.ok) {
+      const item = await res.json();
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
+      set("detDonor", item.name || "Anonymous");
+      set("detFood", item.food_name);
+      set("detQty", item.approx_quantity);
+      set("detPhone", item.mobile_number);
+      set("detAddress", item.address);
+      set("detCity", item.city);
+      set("detPincode", item.pincode || "N/A");
 
-    if (response.ok) {
-      var item = await response.json();
+      const cat = (item.category || "veg").toLowerCase();
+      const catEl = document.getElementById("detCategory");
+      if (catEl) catEl.innerHTML = `<span class="category-badge ${cat}">${cat}</span>`;
 
-      // Show donation details
-      var donor = document.getElementById("detDonor");
-      var food = document.getElementById("detFood");
-      var category = document.getElementById("detCategory");
-      var qty = document.getElementById("detQty");
-      var phone = document.getElementById("detPhone");
-      var address = document.getElementById("detAddress");
-      var city = document.getElementById("detCity");
-      var pincode = document.getElementById("detPincode");
-
-      if (donor) donor.innerText = item.name || "Anonymous";
-      if (food) food.innerText = item.food_name;
-      if (category) {
-        var cat = (item.category || "veg").toLowerCase();
-        category.innerHTML = '<span class="category-badge ' + cat + '">' + cat + '</span>';
-      }
-      if (qty) qty.innerText = item.approx_quantity;
-      if (phone) phone.innerText = item.mobile_number;
-      if (address) address.innerText = item.address;
-      if (city) city.innerText = item.city;
-      if (pincode) pincode.innerText = item.pincode || "N/A";
-
-      // Setup buttons
-      var acceptBtn = document.getElementById("acceptBtn");
-      var rejectBtn = document.getElementById("rejectBtn");
-
-      if (acceptBtn) {
-        acceptBtn.onclick = function () {
-          updateMyDecision(id, "accepted");
-        };
-      }
-
-      if (rejectBtn) {
-        rejectBtn.onclick = function () {
-          updateMyDecision(id, "rejected");
-        };
-      }
-    } else {
-      alert("No donation found!");
-      window.location.href = "Trust_dashboard.html";
+      document.getElementById("acceptBtn").onclick = () => updateDecision(id, "accepted");
+      document.getElementById("rejectBtn").onclick = () => updateDecision(id, "rejected");
     }
-  } catch (error) {
-    console.log("Error:", error);
-
-    alert("Connection error. Is the server running?");
-  }
+  } catch (e) { alert("Error."); }
 }
 
-/* -----------------------------
-   Update donation decision
------------------------------ */
-
-async function updateMyDecision(id, status) {
+async function updateDecision(id, status) {
   try {
-    var response = await fetch(
-      BACKEND_URL + "/api/trust/donations/" + id + "/status",
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: status }),
-      },
-    );
-
-    if (response.ok) {
-      alert("Decision saved successfully!");
-
+    const res = await fetch(`${BACKEND_URL}/api/trust/donations/${id}/status`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ status })
+    });
+    if (res.ok) {
+      alert("Decision saved!");
       window.location.href = "Trust_dashboard.html";
-    } else {
-      alert("Could not save your decision.");
     }
-  } catch (error) {
-    console.log("Error:", error);
-
-    alert("Server error. Please try again.");
-  }
+  } catch (e) { alert("Error."); }
 }

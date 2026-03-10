@@ -4,6 +4,7 @@ from dependencies import get_db
 import models, schemas
 from cloudinary_utils import upload_image
 from security_utils import hash_password, verify_password
+from auth_jwt import create_access_token
 
 router = APIRouter(prefix="/api/trust", tags=["Trust Auth"])
 
@@ -67,8 +68,12 @@ def login(login_data: schemas.TrustLogin, db: Session = Depends(get_db)):
             raise HTTPException(status_code=403, detail="Your trust account is pending admin approval and cannot login yet.")
 
         print(f"LOG: Trust login SUCCESS for {login_data.email_id}")
+        access_token = create_access_token(data={"sub": str(trust.id), "role": "trust"})
+        
         return {
             "message": "Login successful",
+            "access_token": access_token,
+            "token_type": "bearer",
             "id": trust.id,
             "role": "trust",
             "name": trust.trust_name

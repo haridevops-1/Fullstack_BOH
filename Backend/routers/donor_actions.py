@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from dependencies import get_db
+from dependencies import get_db, get_current_user
 import models, schemas
 from typing import List
 
 router = APIRouter(prefix="/api/donor", tags=["Donor Actions"])
 
 @router.get("/dashboard")
-def dashboard(donor_id: int, db: Session = Depends(get_db)):
+def dashboard(donor_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     total = db.query(models.Donation).filter(models.Donation.donor_id == donor_id).count()
     pending = db.query(models.Donation).filter(models.Donation.donor_id == donor_id, models.Donation.status == "pending").count()
     rejected = db.query(models.Donation).filter(models.Donation.donor_id == donor_id, models.Donation.status == "rejected").count()
@@ -21,14 +21,14 @@ def dashboard(donor_id: int, db: Session = Depends(get_db)):
     }
 
 @router.get("/all_trusts")
-def all_trusts(db: Session = Depends(get_db)):
+def all_trusts(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     print("LOG: Someone is searching for all [Verified Trusts]...")
     trusts = db.query(models.Trust).filter(models.Trust.is_verified == True).all()
     print(f"LOG: Found {len(trusts)} verified trusts in the database.")
     return trusts
 
 @router.post("/new_donation")
-def create_donation(trust_id: int, donor_id: int, donation_data: schemas.DonationCreate, db: Session = Depends(get_db)):
+def create_donation(trust_id: int, donor_id: int, donation_data: schemas.DonationCreate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     new_donation = models.Donation(
         donor_id=donor_id,
         trust_id=trust_id,
@@ -50,7 +50,7 @@ def create_donation(trust_id: int, donor_id: int, donation_data: schemas.Donatio
     return new_donation
 
 @router.get("/donations")
-def get_donations(donor_id: int, db: Session = Depends(get_db)):
+def get_donations(donor_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     results = db.query(models.Donation, models.Trust.trust_name).join(
         models.Trust, models.Donation.trust_id == models.Trust.id
     ).filter(models.Donation.donor_id == donor_id).order_by(models.Donation.created_at.desc()).all()
@@ -64,7 +64,7 @@ def get_donations(donor_id: int, db: Session = Depends(get_db)):
     return donations_list
 
 @router.get("/donations/{id}")
-def get_donation_detail(id: int, db: Session = Depends(get_db)):
+def get_donation_detail(id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     result = db.query(models.Donation, models.Trust.trust_name).join(
         models.Trust, models.Donation.trust_id == models.Trust.id
     ).filter(models.Donation.id == id).first()

@@ -21,7 +21,7 @@
         <nav class="nav-links">
             <a href="../pages/Trust_dashboard.html">Home</a>
             <a href="../pages/Trust_profile.html">Edit profile</a>
-            <a href="#" onclick="logout()">Log out</a>
+            <a href="#" onclick="window.logout()">Log out</a>
         </nav>
     </header>
     <!-- Main -->
@@ -40,6 +40,7 @@
                             <th>Food Item</th>
                             <th>Quantity</th>
                             <th>Status</th>
+                            <th>Date</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -77,8 +78,8 @@
             </div>
         </div>
     </footer>
-    <script src="../scripts/auth.js"></script>
-    <script src="../scripts/trust_accepted_details.js"></script>
+    <script type="module" src="../scripts/auth.js"></script>
+    <script type="module" src="../scripts/trust_accepted_details.js"></script>
 </body>
 
 </html>

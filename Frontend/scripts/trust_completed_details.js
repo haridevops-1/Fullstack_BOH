@@ -1,72 +1,37 @@
-// Backend API URL
-var BACKEND_URL = "https://bridge-of-hope-backend-r53q.vercel.app";
+import { BACKEND_URL, getAuthHeaders, checkAuth } from './api.js';
 
-// Run when page loads
-document.addEventListener("DOMContentLoaded", function () {
-  fetchCompletedArchive();
+document.addEventListener("DOMContentLoaded", () => {
+  if (checkAuth("trust")) fetchCompleted();
 });
 
-/* -----------------------------
-   Load completed donation history
------------------------------ */
-
-async function fetchCompletedArchive() {
-  var trustId = localStorage.getItem("userId");
-
-  var tableBody = document.getElementById("completedTableBody");
-
+async function fetchCompleted() {
+  const trustId = localStorage.getItem("userId");
+  const tableBody = document.getElementById("completedTableBody");
   if (!tableBody) return;
 
-  // Show loading message
-  tableBody.innerHTML =
-    '<tr><td colspan="7" style="text-align:center;padding:40px;">Finding your completed works...</td></tr>';
+  tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Looking for completed works...</td></tr>';
 
   try {
-    var response = await fetch(
-      BACKEND_URL + "/api/trust/donations_details?trust_id=" + trustId,
-    );
+    const res = await fetch(`${BACKEND_URL}/api/trust/donations_details?trust_id=${trustId}`, { headers: getAuthHeaders() });
+    if (res.ok) {
+      const list = await res.json();
+      const completed = list.filter(d => d.status.toLowerCase() === "completed");
 
-    var donations = await response.json();
+      tableBody.innerHTML = completed.length ? "" : '<tr><td colspan="7" style="text-align:center;">No completed donations yet.</td></tr>';
 
-    tableBody.innerHTML = "";
-
-    var completedCount = 0;
-
-    if (response.ok) {
-      for (var i = 0; i < donations.length; i++) {
-        var item = donations[i];
-
-        if (item.status.toLowerCase() === "completed") {
-          var row = document.createElement("tr");
-
-          var cat = (item.category || "veg").toLowerCase();
-          var categoryBadge = '<span class="category-badge ' + cat + '">' + cat + '</span>';
-
-          row.innerHTML =
-            "<td>" + (item.name || "Anonymous donor") + "</td>" +
-            "<td>" + item.food_name + "</td>" +
-            "<td>" + categoryBadge + "</td>" +
-            "<td>" + item.approx_quantity + "</td>" +
-            "<td>" + (item.address || "N/A") + "</td>" +
-            "<td>" + item.city + "</td>" +
-            "<td>" + '<span class="status completed">' + item.status + "</span>" + "</td>";
-
-          tableBody.appendChild(row);
-
-          completedCount++;
-        }
-      }
+      completed.forEach(item => {
+        const row = document.createElement("tr");
+        const cat = (item.category || "veg").toLowerCase();
+        row.innerHTML = `
+                    <td>${item.name || "Anonymous"}</td>
+                    <td>${item.food_name}</td>
+                    <td><span class="category-badge ${cat}">${cat}</span></td>
+                    <td>${item.approx_quantity}</td>
+                    <td>${item.address || "N/A"}</td>
+                    <td>${item.city}</td>
+                    <td><span class="status completed">${item.status}</span></td>`;
+        tableBody.appendChild(row);
+      });
     }
-
-    // Show message if no completed donations
-    if (completedCount === 0) {
-      tableBody.innerHTML =
-        '<tr><td colspan="7" style="text-align:center;padding:60px;color:#94a3b8;font-style:italic;">No completed donations found yet.</td></tr>';
-    }
-  } catch (error) {
-    console.log("Error:", error);
-
-    tableBody.innerHTML =
-      '<tr><td colspan="7" style="text-align:center;color:red;">Error: Could not load the archive.</td></tr>';
-  }
+  } catch (e) { tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:red;">Error.</td></tr>'; }
 }

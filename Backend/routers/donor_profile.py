@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from dependencies import get_db
+from dependencies import get_db, get_current_user
 import models, schemas
 from cloudinary_utils import upload_image
 
@@ -9,7 +9,7 @@ router = APIRouter(prefix="/api/donor/profile", tags=["Donor Profile"])
 
 # This link GETS the donor's information using their ID
 @router.get("/update")
-def get_profile(donor_id: int, db: Session = Depends(get_db)):
+def get_profile(donor_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     # Look for the user in the database
     user = db.query(models.User).filter(models.User.id == donor_id).first()
     
@@ -22,7 +22,7 @@ def get_profile(donor_id: int, db: Session = Depends(get_db)):
 
 # This link UPDATES the donor's information
 @router.put("/update")
-def update_profile(donor_id: int, profile_data: schemas.DonorProfileUpdate, db: Session = Depends(get_db)):
+def update_profile(donor_id: int, profile_data: schemas.DonorProfileUpdate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     # Find the user first
     user = db.query(models.User).filter(models.User.id == donor_id).first()
     if not user:

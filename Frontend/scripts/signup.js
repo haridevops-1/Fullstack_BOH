@@ -1,262 +1,115 @@
-// Backend API URL
-var BACKEND_URL = "https://bridge-of-hope-backend-r53q.vercel.app";
+import { BACKEND_URL } from './api.js';
 
-// Current signup role
-var currentRole = "donor";
+let currentRole = "donor";
 
-/* -------------------------
-   Switch Signup Role
-------------------------- */
-
-function switchRole(role) {
+window.switchRole = (role) => {
   currentRole = role;
-
-  var donorFields = document.getElementById("donorFields");
-  var trustFields = document.getElementById("trustFields");
-
-  var donorBtn = document.getElementById("donorBtn");
-  var trustBtn = document.getElementById("trustBtn");
+  const donorFields = document.getElementById("donorFields");
+  const trustFields = document.getElementById("trustFields");
+  const donorBtn = document.getElementById("donorBtn");
+  const trustBtn = document.getElementById("trustBtn");
 
   if (role === "donor") {
-    if (donorFields) donorFields.style.display = "grid";
-    if (trustFields) trustFields.style.display = "none";
-
-    if (donorBtn) donorBtn.classList.add("active");
-    if (trustBtn) trustBtn.classList.remove("active");
+    donorFields.style.display = "grid";
+    trustFields.style.display = "none";
+    donorBtn.classList.add("active");
+    trustBtn.classList.remove("active");
   } else {
-    if (donorFields) donorFields.style.display = "none";
-    if (trustFields) trustFields.style.display = "grid";
-
-    if (trustBtn) trustBtn.classList.add("active");
-    if (donorBtn) donorBtn.classList.remove("active");
+    donorFields.style.display = "none";
+    trustFields.style.display = "grid";
+    trustBtn.classList.add("active");
+    donorBtn.classList.remove("active");
   }
-}
+};
 
-/* -------------------------
-   Show message on page
-------------------------- */
+window.togglePassword = (inputId) => {
+  const input = document.getElementById(inputId);
+  const icon = event.currentTarget;
+  input.type = input.type === "password" ? "text" : "password";
+  icon.src = input.type === "text" ? "../assets/eye-on.png" : "../assets/eye-off.png";
+};
 
-function showMessage(text, type) {
-  var box = document.getElementById("messageBox");
-
-  if (!box) return;
-
-  box.innerText = text;
-
-  box.className = "form-message " + type;
-
-  box.scrollIntoView({
-    behavior: "smooth",
-    block: "center",
-  });
-}
-
-/* -------------------------
-   Toggle password visibility
-------------------------- */
-
-function togglePassword(inputId) {
-  var input = document.getElementById(inputId);
-
-  var icon = event.currentTarget;
-
-  if (input.type === "password") {
-    input.type = "text";
-    icon.src = "../assets/eye-on.png";
-  } else {
-    input.type = "password";
-    icon.src = "../assets/eye-off.png";
-  }
-}
-
-/* -------------------------
-   Convert image to Base64
-------------------------- */
-
-function getBase64(file) {
-  return new Promise(function (resolve, reject) {
-    var status = document.getElementById("uploadStatus");
-
-    if (status) status.style.display = "block";
-
-    var reader = new FileReader();
-
+const getBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
     reader.readAsDataURL(file);
-
-    reader.onload = function () {
-      if (status) status.style.display = "none";
-
-      resolve(reader.result);
-    };
-
-    reader.onerror = function (error) {
-      if (status) status.style.display = "none";
-
-      reject(error);
-    };
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
   });
-}
+};
 
-/* -------------------------
-   Signup Handler
-------------------------- */
-
-async function handleSignup(event) {
+window.handleSignup = async (event) => {
   event.preventDefault();
+  const messageBox = document.getElementById("messageBox");
+  const signupBtn = event.target.querySelector("button[type='submit']");
 
-  var messageBox = document.getElementById("messageBox");
+  signupBtn.disabled = true;
+  messageBox.innerText = "Processing...";
+  messageBox.className = "form-message";
 
-  if (messageBox) messageBox.className = "form-message";
-
-  var signupBtn = event.target.querySelector("button[type='submit']");
-
-  if (!signupBtn) return;
-
-  // Get input values
-  var email = document.getElementById("email").value.trim();
-  var password = document.getElementById("password").value;
-  var confirmPassword = document.getElementById("confirmPassword").value;
-
-  var mobile = document.getElementById("mobile").value.trim();
-  var city = document.getElementById("city").value.trim();
-  var pincode = document.getElementById("pincode").value.trim();
-
-  /* -------------------------
-       Validation
-    ------------------------- */
-
-  var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  if (!emailPattern.test(email)) {
-    showMessage("Please enter a valid email!", "error");
-    return;
-  }
-
-  if (password.length < 6) {
-    showMessage("Password must be at least 6 characters!", "error");
-    return;
-  }
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+  const mobile = document.getElementById("mobile").value.trim();
+  const city = document.getElementById("city").value.trim();
+  const pincode = document.getElementById("pincode").value.trim();
 
   if (password !== confirmPassword) {
-    showMessage("Passwords do not match!", "error");
+    messageBox.innerText = "Passwords do not match!";
+    messageBox.className = "form-message error";
+    signupBtn.disabled = false;
     return;
   }
 
-  if (mobile.length !== 10 || isNaN(mobile)) {
-    showMessage("Mobile must be exactly 10 digits!", "error");
-    return;
-  }
-
-  /* -------------------------
-       Prepare API data
-    ------------------------- */
-
-  var apiUrl = "";
-  var signupData = {};
-
-  var donorPhoto = document.getElementById("donorPhoto");
-  var trustPhoto = document.getElementById("trustPhoto");
-
-  var photoString = null;
-
-  signupBtn.classList.add("btn-loading");
-  signupBtn.disabled = true;
+  let signupData = {};
+  let apiUrl = `${BACKEND_URL}/api/${currentRole}/signup`;
 
   try {
     if (currentRole === "donor") {
-      apiUrl = BACKEND_URL + "/api/donor/signup";
-
+      const donorPhoto = document.getElementById("donorPhoto");
+      let photoString = null;
       if (donorPhoto && donorPhoto.files[0]) {
-        if (donorPhoto.files[0].size > 2 * 1024 * 1024) {
-          showMessage("Image must be smaller than 2MB", "error");
-
-          signupBtn.classList.remove("btn-loading");
-          signupBtn.disabled = false;
-
-          return;
-        }
-
         photoString = await getBase64(donorPhoto.files[0]);
       }
-
       signupData = {
         Firstname: document.getElementById("firstName").value,
         Lastname: document.getElementById("lastName").value,
-        email: email,
-        password: password,
-        mobile_number: mobile,
-        city: city,
-        Pincode: pincode,
-        photo: photoString,
+        email, password, mobile_number: mobile, city, Pincode: pincode, photo: photoString
       };
     } else {
-      apiUrl = BACKEND_URL + "/api/trust/signup";
-
+      const trustPhoto = document.getElementById("trustPhoto");
       if (!trustPhoto || !trustPhoto.files[0]) {
-        showMessage("Trust verification image required!", "error");
-
-        signupBtn.classList.remove("btn-loading");
-        signupBtn.disabled = false;
-
-        return;
+        throw new Error("Trust verification image required!");
       }
-
-      if (trustPhoto.files[0].size > 2 * 1024 * 1024) {
-        showMessage("Image must be smaller than 2MB", "error");
-
-        signupBtn.classList.remove("btn-loading");
-        signupBtn.disabled = false;
-
-        return;
-      }
-
-      photoString = await getBase64(trustPhoto.files[0]);
-
+      const photoString = await getBase64(trustPhoto.files[0]);
       signupData = {
         trust_name: document.getElementById("trustName").value,
         trust_address: document.getElementById("trustAddress").value,
         username: document.getElementById("username").value,
         license_number: document.getElementById("licenseNumber").value,
-        email_id: email,
-        password: password,
-        mobile_number: mobile,
-        city: city,
-        pincode: pincode,
-        trust_photo: photoString,
+        email_id: email, password, mobile_number: mobile, city, pincode, trust_photo: photoString
       };
     }
 
-    /* -------------------------
-           Send request
-        ------------------------- */
-
-    var response = await fetch(apiUrl, {
+    const response = await fetch(apiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(signupData),
+      body: JSON.stringify(signupData)
     });
 
-    var result = await response.json();
-
+    const result = await response.json();
     if (response.ok) {
-      showMessage("Registration successful! Redirecting...", "success");
-
-      setTimeout(function () {
-        window.location.href = "login.html";
-      }, 2000);
+      messageBox.innerText = "Registration successful!";
+      messageBox.className = "form-message success";
+      setTimeout(() => window.location.href = "login.html", 2000);
     } else {
-      showMessage(
-        "Signup failed: " + (result.detail || "Something went wrong"),
-        "error",
-      );
-
-      signupBtn.classList.remove("btn-loading");
+      messageBox.innerText = result.detail || "Signup failed";
+      messageBox.className = "form-message error";
       signupBtn.disabled = false;
     }
   } catch (error) {
-    showMessage("Server error. Check if backend is running.", "error");
-
-    signupBtn.classList.remove("btn-loading");
+    messageBox.innerText = error.message || "Server error.";
+    messageBox.className = "form-message error";
     signupBtn.disabled = false;
   }
-}
+};

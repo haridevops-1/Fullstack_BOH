@@ -1,15 +1,12 @@
-/**
- * This is a simple function to log out of the application.
- * It clears all saved user data and takes the user back to the home page.
- */
-function logout() {
-    // Clear everything we saved in browser memory (userId, userRole, etc.)
+export function logout() {
     localStorage.clear();
-
-    // Redirect the user to the starting page
-    // We use ../ to go back one folder from the 'pages' directory
     window.location.href = "../index.html";
 }
 
-
-
+export function getAuthHeaders() {
+    const token = localStorage.getItem("authToken");
+    return {
+        "Content-Type": "application/json",
+        "Authorization": token ? `Bearer ${token}` : ""
+    };
+}

@@ -1,162 +1,111 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Trust Signup - Bridge of Hope</title>
-    <link rel="stylesheet" href="../styles/trust_signup.css" />
-  </head>
-  <body>
-    <div class="form-container">
-      <div class="top-headings">
-        <h3>Trust Registration</h3>
-        <p>Join Bridge of Hope and start accepting donations</p>
-      </div>
 
-      <div id="messageBox" class="form-message"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trust Signup - Bridge of Hope</title>
+  <link rel="stylesheet" href="../styles/trust_signup.css" />
+</head>
 
-      <!-- Dedicated Page: No role toggle needed, but we force currentRole = 'trust' -->
-      <form
-        class="auth-form"
-        id="signupForm"
-        onsubmit="handleSignup(event)"
-        autocomplete="off"
-      >
-        <div class="form-grid">
-          <!-- TRUST SPECIFIC FIELDS -->
-          <div>
-            <label>Trust Name</label>
-            <input
-              type="text"
-              id="trustName"
-              placeholder="Enter trust name"
-              required
-            />
-          </div>
-
-          <div>
-            <label>Trust Address</label>
-            <input
-              type="text"
-              id="trustAddress"
-              placeholder="Enter trust address"
-              required
-            />
-          </div>
-
-          <div>
-            <label>Username</label>
-            <input
-              type="text"
-              id="username"
-              placeholder="Enter username"
-              required
-            />
-          </div>
-
-          <div>
-            <label>License Number</label>
-            <input
-              type="text"
-              id="licenseNumber"
-              placeholder="Enter license number"
-              required
-            />
-          </div>
-
-          <div>
-            <label>Trust Image</label>
-            <input type="file" id="trustPhoto" accept="image/*" required />
-            <p id="uploadStatus" class="upload-status">
-              Processing photo... please wait
-            </p>
-          </div>
-
-          <!-- COMMON FIELDS -->
-          <div>
-            <label>Email</label>
-            <input type="email" id="email" placeholder="Enter email" required />
-          </div>
-
-          <div>
-            <label>Create Password</label>
-            <div class="password-box">
-              <input
-                type="password"
-                id="password"
-                placeholder="Enter password"
-                required
-                autocomplete="one-time-code"
-              />
-              <img
-                src="../assets/eye-off.png"
-                class="eye-icon"
-                onclick="togglePassword('password')"
-                alt="toggle password"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label>Confirm Password</label>
-            <div class="password-box">
-              <input
-                type="password"
-                id="confirmPassword"
-                placeholder="Confirm password"
-                required
-                autocomplete="one-time-code"
-              />
-              <img
-                src="../assets/eye-off.png"
-                class="eye-icon"
-                onclick="togglePassword('confirmPassword')"
-                alt="toggle password"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label>Mobile Number</label>
-            <input
-              type="tel"
-              id="mobile"
-              placeholder="Enter Mobile Number"
-              required
-            />
-          </div>
-
-          <div>
-            <label>City</label>
-            <input type="text" id="city" placeholder="Enter city" required />
-          </div>
-
-          <div>
-            <label>Pincode</label>
-            <input
-              type="text"
-              id="pincode"
-              placeholder="Enter Pincode"
-              required
-            />
-          </div>
-        </div>
-
-        <div class="buttons">
-          <button type="submit">Complete Registration</button>
-        </div>
-
-        <p class="auth-links">
-          Already have an account?
-          <a href="../pages/login.html">Login</a>
-        </p>
-      </form>
+<body>
+  <div class="form-container">
+    <div class="top-headings">
+      <h3>Trust Registration</h3>
+      <p>Join Bridge of Hope and start accepting donations</p>
     </div>
 
-    <script>
-      // Overriding role since this is a dedicated trust signup page
-      window.currentRole = "trust";
-    </script>
-    <script src="../scripts/signup.js"></script>
-  </body>
+    <div id="messageBox" class="form-message"></div>
+
+    <!-- Dedicated Page: No role toggle needed, but we force currentRole = 'trust' -->
+    <form class="auth-form" id="signupForm" onsubmit="handleSignup(event)" autocomplete="off">
+      <div class="form-grid">
+        <!-- TRUST SPECIFIC FIELDS -->
+        <div>
+          <label>Trust Name</label>
+          <input type="text" id="trustName" placeholder="Enter trust name" required />
+        </div>
+
+        <div>
+          <label>Trust Address</label>
+          <input type="text" id="trustAddress" placeholder="Enter trust address" required />
+        </div>
+
+        <div>
+          <label>Username</label>
+          <input type="text" id="username" placeholder="Enter username" required />
+        </div>
+
+        <div>
+          <label>License Number</label>
+          <input type="text" id="licenseNumber" placeholder="Enter license number" required />
+        </div>
+
+        <div>
+          <label>Trust Image</label>
+          <input type="file" id="trustPhoto" accept="image/*" required />
+          <p id="uploadStatus" class="upload-status">
+            Processing photo... please wait
+          </p>
+        </div>
+
+        <!-- COMMON FIELDS -->
+        <div>
+          <label>Email</label>
+          <input type="email" id="email" placeholder="Enter email" required />
+        </div>
+
+        <div>
+          <label>Create Password</label>
+          <div class="password-box">
+            <input type="password" id="password" placeholder="Enter password" required autocomplete="one-time-code" />
+            <img src="../assets/eye-off.png" class="eye-icon" onclick="togglePassword('password')"
+              alt="toggle password" />
+          </div>
+        </div>
+
+        <div>
+          <label>Confirm Password</label>
+          <div class="password-box">
+            <input type="password" id="confirmPassword" placeholder="Confirm password" required
+              autocomplete="one-time-code" />
+            <img src="../assets/eye-off.png" class="eye-icon" onclick="togglePassword('confirmPassword')"
+              alt="toggle password" />
+          </div>
+        </div>
+
+        <div>
+          <label>Mobile Number</label>
+          <input type="tel" id="mobile" placeholder="Enter Mobile Number" required />
+        </div>
+
+        <div>
+          <label>City</label>
+          <input type="text" id="city" placeholder="Enter city" required />
+        </div>
+
+        <div>
+          <label>Pincode</label>
+          <input type="text" id="pincode" placeholder="Enter Pincode" required />
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button type="submit">Complete Registration</button>
+      </div>
+
+      <p class="auth-links">
+        Already have an account?
+        <a href="../pages/login.html">Login</a>
+      </p>
+    </form>
+  </div>
+
+  <script>
+    // Overriding role since this is a dedicated trust signup page
+    window.currentRole = "trust";
+  </script>
+  <script type="module" src="../scripts/signup.js"></script>
+</body>
+
 </html>

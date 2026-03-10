@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from dependencies import get_db
+from dependencies import get_db, get_current_user
 import models, schemas
 from cloudinary_utils import upload_image
 
@@ -9,7 +9,7 @@ router = APIRouter(prefix="/api/trust/profile", tags=["Trust Profile"])
 
 # Get profile details for a specific Trust
 @router.get("/")
-def get_profile(trust_id: int, db: Session = Depends(get_db)):
+def get_profile(trust_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     # Look for the trust in our database
     trust = db.query(models.Trust).filter(models.Trust.id == trust_id).first()
     
@@ -21,7 +21,7 @@ def get_profile(trust_id: int, db: Session = Depends(get_db)):
 
 # Update profile details for a specific Trust
 @router.put("/update")
-def update_profile(trust_id: int, profile_data: schemas.TrustProfileUpdate, db: Session = Depends(get_db)):
+def update_profile(trust_id: int, profile_data: schemas.TrustProfileUpdate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     # Find the trust first
     trust = db.query(models.Trust).filter(models.Trust.id == trust_id).first()
     if not trust:
