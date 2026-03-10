@@ -39,7 +39,7 @@ async function fetchDonation(id) {
       const sel = document.getElementById("statusSelect");
       if (sel) sel.value = item.status.toLowerCase();
     }
-  } catch (e) { alert("Error."); }
+  } catch (e) { alert("Unable to load donation details. Please refresh the page."); }
 }
 
 async function sendUpdate(id) {
@@ -62,8 +62,8 @@ async function sendUpdate(id) {
       body: JSON.stringify(update)
     });
     if (res.ok) {
-      alert(`Updated!`);
+      alert("Success! The donation status has been updated.");
       window.location.href = status === "completed" ? "Trust_dashboard.html" : location.href;
     }
-  } catch (e) { alert("Error."); }
+  } catch (e) { alert("Failed to update status. Please check your connection and try again."); }
 }

@@ -32,7 +32,8 @@ window.handleLogin = async (event) => {
     const loginBtn = event.target.querySelector("button[type='submit']");
 
     loginBtn.disabled = true;
-    messageBox.innerText = "Logging in...";
+    loginBtn.classList.add("btn-loading");
+    messageBox.innerText = "Verifying your credentials, please wait...";
     messageBox.className = "form-message";
 
     const email = document.getElementById("email").value.trim();
@@ -56,7 +57,7 @@ window.handleLogin = async (event) => {
         const data = await response.json();
 
         if (response.ok) {
-            messageBox.innerText = "Login successful!";
+            messageBox.innerText = "Success! Welcome back to Bridge of Hope.";
             messageBox.className = "form-message success";
 
             localStorage.setItem("userId", data.id);
@@ -70,13 +71,15 @@ window.handleLogin = async (event) => {
                 window.location.href = pages[currentRole];
             }, 1000);
         } else {
-            messageBox.innerText = data.detail || "Invalid credentials";
+            messageBox.innerText = data.detail || "Oops! The email or password you entered is incorrect. Please try again.";
             messageBox.className = "form-message error";
             loginBtn.disabled = false;
+            loginBtn.classList.remove("btn-loading");
         }
     } catch (error) {
-        messageBox.innerText = "Connection error. Is the server running?";
+        messageBox.innerText = "Unable to connect to the server. Please check your internet connection or try again later.";
         messageBox.className = "form-message error";
         loginBtn.disabled = false;
+        loginBtn.classList.remove("btn-loading");
     }
 };

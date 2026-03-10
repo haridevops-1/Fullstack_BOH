@@ -115,7 +115,7 @@ async function loadRecentDonations(init = false) {
       }
     }
   } catch (error) {
-    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;">Connection error.</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Failed to load requests. Please check your internet connection.</td></tr>';
   }
 }
 

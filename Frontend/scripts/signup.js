@@ -44,7 +44,8 @@ window.handleSignup = async (event) => {
   const signupBtn = event.target.querySelector("button[type='submit']");
 
   signupBtn.disabled = true;
-  messageBox.innerText = "Processing...";
+  signupBtn.classList.add("btn-loading");
+  messageBox.innerText = "Creating your account, please wait...";
   messageBox.className = "form-message";
 
   const email = document.getElementById("email").value.trim();
@@ -55,9 +56,10 @@ window.handleSignup = async (event) => {
   const pincode = document.getElementById("pincode").value.trim();
 
   if (password !== confirmPassword) {
-    messageBox.innerText = "Passwords do not match!";
+    messageBox.innerText = "Oops! The passwords you entered do not match. Please re-check and try again.";
     messageBox.className = "form-message error";
     signupBtn.disabled = false;
+    signupBtn.classList.remove("btn-loading");
     return;
   }
 
@@ -79,7 +81,7 @@ window.handleSignup = async (event) => {
     } else {
       const trustPhoto = document.getElementById("trustPhoto");
       if (!trustPhoto || !trustPhoto.files[0]) {
-        throw new Error("Trust verification image required!");
+        throw new Error("Alert: Please upload a verification image for your trust to proceed.");
       }
       const photoString = await getBase64(trustPhoto.files[0]);
       signupData = {
@@ -99,17 +101,19 @@ window.handleSignup = async (event) => {
 
     const result = await response.json();
     if (response.ok) {
-      messageBox.innerText = "Registration successful!";
+      messageBox.innerText = "Registration successful! Redirecting you to the login page...";
       messageBox.className = "form-message success";
       setTimeout(() => window.location.href = "login.html", 2000);
     } else {
-      messageBox.innerText = result.detail || "Signup failed";
+      messageBox.innerText = result.detail || "Something went wrong during signup. Please try again later.";
       messageBox.className = "form-message error";
       signupBtn.disabled = false;
+      signupBtn.classList.remove("btn-loading");
     }
   } catch (error) {
-    messageBox.innerText = error.message || "Server error.";
+    messageBox.innerText = error.message || "A server error occurred. Please check your connection.";
     messageBox.className = "form-message error";
     signupBtn.disabled = false;
+    signupBtn.classList.remove("btn-loading");
   }
 };

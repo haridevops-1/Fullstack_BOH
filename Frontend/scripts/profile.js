@@ -15,7 +15,7 @@ async function loadUserProfile() {
       const data = await response.json();
       showProfile(data, role);
     }
-  } catch (e) { alert("Error loading profile."); }
+  } catch (e) { alert("Could not load profile details. Please refresh the page."); }
 }
 
 function showProfile(data, role) {
@@ -66,6 +66,6 @@ async function saveChanges(role) {
 
   try {
     const res = await fetch(url, { method: "PUT", headers: getAuthHeaders(), body: JSON.stringify(info) });
-    if (res.ok) { alert("Updated!"); location.reload(); }
-  } catch (e) { alert("Error."); }
+    if (res.ok) { alert("Profile updated successfully!"); location.reload(); }
+  } catch (e) { alert("Failed to update profile. Please try again."); }
 }
