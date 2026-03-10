@@ -92,7 +92,7 @@ async function fetchDonorRecentActivity(isInitial = false) {
         }
     } catch (error) {
         if (isInitial) {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Failed to load dashboard. Please check your internet connection.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Connection error. Please try again.</td></tr>';
         }
     }
 }

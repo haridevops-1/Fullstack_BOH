@@ -33,7 +33,7 @@ window.handleLogin = async (event) => {
 
     loginBtn.disabled = true;
     loginBtn.classList.add("btn-loading");
-    messageBox.innerText = "Verifying your credentials, please wait...";
+    messageBox.innerText = "Checking your details...";
     messageBox.className = "form-message";
 
     const email = document.getElementById("email").value.trim();
@@ -57,7 +57,7 @@ window.handleLogin = async (event) => {
         const data = await response.json();
 
         if (response.ok) {
-            messageBox.innerText = "Success! Welcome back to Bridge of Hope.";
+            messageBox.innerText = "Login successful! Redirecting to dashboard...";
             messageBox.className = "form-message success";
 
             localStorage.setItem("userId", data.id);
@@ -71,13 +71,13 @@ window.handleLogin = async (event) => {
                 window.location.href = pages[currentRole];
             }, 1000);
         } else {
-            messageBox.innerText = data.detail || "Oops! The email or password you entered is incorrect. Please try again.";
+            messageBox.innerText = `Login failed: ${data.detail || "Incorrect email or password."}`;
             messageBox.className = "form-message error";
             loginBtn.disabled = false;
             loginBtn.classList.remove("btn-loading");
         }
     } catch (error) {
-        messageBox.innerText = "Unable to connect to the server. Please check your internet connection or try again later.";
+        messageBox.innerText = "Connection error. Please try again.";
         messageBox.className = "form-message error";
         loginBtn.disabled = false;
         loginBtn.classList.remove("btn-loading");

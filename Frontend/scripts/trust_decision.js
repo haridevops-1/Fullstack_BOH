@@ -28,7 +28,7 @@ async function getDonationInfo(id) {
       document.getElementById("acceptBtn").onclick = () => updateDecision(id, "accepted");
       document.getElementById("rejectBtn").onclick = () => updateDecision(id, "rejected");
     }
-  } catch (e) { alert("An unexpected error occurred while loading donation information. Please try again."); }
+  } catch (e) { alert("Error loading details. Try again."); }
 }
 
 async function updateDecision(id, status) {
@@ -39,8 +39,11 @@ async function updateDecision(id, status) {
       body: JSON.stringify({ status })
     });
     if (res.ok) {
-      alert("Success! Your decision has been saved successfully.");
+      alert("Success: Your decision has been saved.");
       window.location.href = "Trust_dashboard.html";
+    } else {
+      const err = await res.json();
+      alert(`Failed to save decision: ${err.detail || "Server error"}`);
     }
-  } catch (e) { alert("An unexpected error occurred while processing your decision. Please try again."); }
+  } catch (e) { alert("Error: Could not connect to the server."); }
 }

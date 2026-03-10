@@ -24,10 +24,10 @@ async function fetchDonation(id, isInitial = false) {
       const newStatus = item.status.toLowerCase();
       if (!isInitial && lastStatus && lastStatus !== newStatus) {
         const msgs = {
-          accepted: "Good news! The trust has accepted your donation.",
-          reached: "Update: The trust vehicle has reached your location!",
-          picked: "Success: Your food donation has been picked up.",
-          completed: "Celebration! The donation process is officially complete."
+          accepted: "Trust accepted your donation!",
+          reached: "Vehicle reached your location!",
+          picked: "Food picked up successfully!",
+          completed: "Donation process complete!"
         };
         showToast(msgs[newStatus] || `Status updated: ${item.status}`, newStatus);
       }

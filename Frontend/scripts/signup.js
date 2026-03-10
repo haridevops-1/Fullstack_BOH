@@ -45,7 +45,7 @@ window.handleSignup = async (event) => {
 
   signupBtn.disabled = true;
   signupBtn.classList.add("btn-loading");
-  messageBox.innerText = "Creating your account, please wait...";
+  messageBox.innerText = "Creating your account...";
   messageBox.className = "form-message";
 
   const email = document.getElementById("email").value.trim();
@@ -56,7 +56,7 @@ window.handleSignup = async (event) => {
   const pincode = document.getElementById("pincode").value.trim();
 
   if (password !== confirmPassword) {
-    messageBox.innerText = "Oops! The passwords you entered do not match. Please re-check and try again.";
+    messageBox.innerText = "Passwords do not match.";
     messageBox.className = "form-message error";
     signupBtn.disabled = false;
     signupBtn.classList.remove("btn-loading");
@@ -81,7 +81,7 @@ window.handleSignup = async (event) => {
     } else {
       const trustPhoto = document.getElementById("trustPhoto");
       if (!trustPhoto || !trustPhoto.files[0]) {
-        throw new Error("Alert: Please upload a verification image for your trust to proceed.");
+        throw new Error("Please upload a trust verification photo.");
       }
       const photoString = await getBase64(trustPhoto.files[0]);
       signupData = {
@@ -101,17 +101,17 @@ window.handleSignup = async (event) => {
 
     const result = await response.json();
     if (response.ok) {
-      messageBox.innerText = "Registration successful! Redirecting you to the login page...";
+      messageBox.innerText = "Registration successful! You can now log in.";
       messageBox.className = "form-message success";
       setTimeout(() => window.location.href = "login.html", 2000);
     } else {
-      messageBox.innerText = result.detail || "Something went wrong during signup. Please try again later.";
+      messageBox.innerText = `Registration failed: ${result.detail || "Please check your information."}`;
       messageBox.className = "form-message error";
       signupBtn.disabled = false;
       signupBtn.classList.remove("btn-loading");
     }
   } catch (error) {
-    messageBox.innerText = error.message || "A server error occurred. Please check your connection.";
+    messageBox.innerText = error.message || "Error occurred. Please try again.";
     messageBox.className = "form-message error";
     signupBtn.disabled = false;
     signupBtn.classList.remove("btn-loading");

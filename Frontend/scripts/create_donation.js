@@ -16,7 +16,7 @@ async function handleDonationSubmit(event) {
   const trustId = params.get("trustId");
   const donorId = localStorage.getItem("userId");
 
-  if (!trustId) return alert("Please select a trust from the dashboard before making a donation.");
+  if (!trustId) return alert("Please select a trust first.");
 
   const data = {
     name: document.getElementById("contactName").value,
@@ -39,11 +39,11 @@ async function handleDonationSubmit(event) {
     });
 
     if (res.ok) {
-      alert("Success! Your donation request has been submitted and is waiting for trust acceptance.");
+      alert("Success: Your donation request has been submitted.");
       window.location.href = "Donor_dashboard.html";
     } else {
       const err = await res.json();
-      alert(`Failed: ${err.detail || "Unknown error"}`);
+      alert(`Failed to send request: ${err.detail || "Please check your details."}`);
     }
-  } catch (e) { alert("Connection failed. Please check your internet or try again later."); }
+  } catch (e) { alert("Error: Could not connect to the server."); }
 }
