@@ -14,9 +14,9 @@ export function logout() {
 }
 
 export function formatDate(dateString) {
-    if (!dateString) return "Date Unknown";
+    if (!dateString) return "No Date";
     const date = new Date(dateString);
-    if (isNaN(date.getTime())) return "Date Unknown";
+    if (isNaN(date.getTime())) return "Invalid Date";
     return date.toLocaleString('en-US', {
         month: 'short', day: 'numeric', year: 'numeric',
         hour: 'numeric', minute: '2-digit', hour12: true
