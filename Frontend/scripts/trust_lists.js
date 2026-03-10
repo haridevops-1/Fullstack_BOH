@@ -77,7 +77,7 @@ async function loadTrustList() {
           (item.trust_photo ||
             "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600&auto=format&fit=crop") +
           '">' +
-          '<div class="verified-badge">? Verified</div>' +
+          '<div class="verified-badge">' + (item.is_verified ? ' ✓' : '✓') + ' Verified</div>' +
           "</div>" +
           '<div class="details">' +
           '<div class="trust-name">' +
