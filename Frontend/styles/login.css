@@ -443,3 +443,40 @@ footer {
     transform: rotate(360deg);
   }
 }
+
+/* --- RESPONSIVE DESIGN (Mobile) --- */
+@media screen and (max-width: 768px) {
+  header {
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .nav-links {
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .auth-container {
+    padding: 30px 20px;
+    margin: 20px;
+  }
+
+  .role-toggle {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-row {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .footer-col h4::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

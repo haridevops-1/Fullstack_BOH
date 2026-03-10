@@ -1,14 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
 html {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
 
 
 
 
 
-* { font-family: "Poppins", sans-serif !important;
+* {
+    font-family: "Poppins", sans-serif !important;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -16,11 +17,11 @@ html {
 
 body {
     font-family: "Poppins", sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
+    font-size: 16px;
+    line-height: 1.6;
     background-color: #f4f6f8;
     color: #333333;
-  animation: fadeIn 0.8s ease-in-out;
+    animation: fadeIn 0.8s ease-in-out;
 }
 
 /* --- GLOBAL HEADER --- */
@@ -53,9 +54,9 @@ header {
 }
 
 .nav-links a {
-  font-size: 16px;
-  position: relative;
-  padding-bottom: 5px;
+    font-size: 16px;
+    position: relative;
+    padding-bottom: 5px;
     text-decoration: none;
     color: #ffffff;
     font-weight: 500;
@@ -63,18 +64,18 @@ header {
 }
 
 .nav-links a::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  height: 2px;
-  background-color: #ffcc00;
-  transition: width 0.3s ease;
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #ffcc00;
+    transition: width 0.3s ease;
 }
 
 .nav-links a:hover::after {
-  width: 100%;
+    width: 100%;
 }
 
 .nav-links a:hover {
@@ -83,8 +84,8 @@ header {
 
 /* ADMIN DASHBOARD - CLEAN & BEGINNER FRIENDLY */
 body {
-  font-size: 16px;
-  font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    font-family: "Poppins", sans-serif;
     background-color: #f8fafc;
 }
 
@@ -285,17 +286,65 @@ body {
     color: white;
 }
 
-/* MOBILE RESPONSIVE */
-@media (max-width: 768px) {
+/* --- RESPONSIVE DESIGN (Mobile) --- */
+@media screen and (max-width: 768px) {
+    header {
+        flex-direction: column;
+        height: auto;
+        padding: 20px;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .nav-links {
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .container {
+        padding: 20px 15px;
+    }
+
+    .greeting-box {
+        padding: 20px;
+        text-align: center;
+        border-left: none;
+        border-top: 8px solid #134b85;
+    }
+
     .main-field {
         grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .verification-section {
+        padding: 20px;
+        overflow-x: auto;
     }
 
     .admin-table {
-        display: block;
-        overflow-x: auto;
+        min-width: 800px;
+    }
+
+    .approve-btn,
+    .reject-btn {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .footer-row {
+        flex-direction: column;
+        text-align: center;
+        gap: 30px;
+    }
+
+    .footer-col h4::after {
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
+
 
 /* --- GLOBAL FOOTER --- */
 footer {
@@ -389,22 +438,13 @@ footer {
 
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

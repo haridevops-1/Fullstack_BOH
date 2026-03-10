@@ -597,3 +597,77 @@ footer {
   color: #1e40af;
   border: 1px solid #bfdbfe;
 }
+
+/* --- RESPONSIVE DESIGN (Mobile) --- */
+@media screen and (max-width: 768px) {
+  header {
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .nav-links {
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .top-head {
+    padding: 0 20px;
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .container {
+    padding: 0 15px;
+  }
+
+  .table-card {
+    overflow-x: auto;
+  }
+
+  .styled-table {
+    min-width: 600px;
+  }
+
+  .pending-card-row {
+    margin: 10px;
+  }
+
+  .card-header-top {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .detail-row strong {
+    width: auto;
+  }
+
+  .card-footer-action {
+    text-align: center;
+  }
+
+  .decide-btn {
+    width: 100%;
+  }
+
+  .footer-row {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .footer-col h4::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

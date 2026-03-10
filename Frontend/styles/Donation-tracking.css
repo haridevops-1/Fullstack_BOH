@@ -358,12 +358,57 @@ footer {
   }
 }
 
-@media (max-width: 768px) {
-  .donation-info {
-    grid-template-columns: 1fr;
+/* --- RESPONSIVE DESIGN (Mobile) --- */
+@media screen and (max-width: 768px) {
+  header {
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .nav-links {
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   .donation-card {
-    padding: 25px;
+    padding: 20px;
+  }
+
+  .donation-info {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .timeline {
+    flex-direction: column;
+    gap: 50px;
+    align-items: center;
+    margin: 20px 0;
+  }
+
+  .timeline::before {
+    display: none;
+  }
+
+  .step p {
+    position: relative;
+    top: 5px;
+    width: auto;
+    text-align: center;
+  }
+
+  .footer-row {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .footer-col h4::after {
+    left: 50%;
+    transform: translateX(-50%);
   }
 }

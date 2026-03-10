@@ -483,14 +483,71 @@ body {
   font-style: italic;
 }
 
-/* RESPONSIVE */
-@media (max-width: 992px) {
+/* --- RESPONSIVE DESIGN (Mobile) --- */
+@media screen and (max-width: 768px) {
+  header {
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+    gap: 15px;
+    text-align: center;
+  }
 
-  .main-field,
-  .how-grid {
+  .nav-links {
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .container {
+    padding: 40px 15px;
+  }
+
+  .main-field {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .onboarding-card {
+    padding: 20px;
+  }
+
+  .steps-grid {
     grid-template-columns: 1fr;
   }
+
+  .quick-view-actions {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .table-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .recent-requests {
+    padding: 15px;
+    overflow-x: auto;
+  }
+
+  .request-table {
+    min-width: 600px;
+  }
+
+  .footer-row {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .footer-col h4::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
+
 
 /* --- GLOBAL FOOTER --- */
 footer {
@@ -637,6 +694,7 @@ footer {
     opacity: 0;
     transform: translateX(100%);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -647,6 +705,7 @@ footer {
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
@@ -668,9 +727,20 @@ footer {
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
-  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  }
+
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+  }
 }
 
 /* Category Badge */

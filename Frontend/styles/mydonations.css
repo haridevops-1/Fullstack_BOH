@@ -353,3 +353,53 @@ footer {
   color: #1e40af;
   border: 1px solid #bfdbfe;
 }
+
+/* --- RESPONSIVE DESIGN (Mobile) --- */
+@media screen and (max-width: 768px) {
+  header {
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .nav-links {
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .back-button {
+    padding: 0 20px;
+    justify-content: center;
+  }
+
+  .container {
+    padding: 0 15px;
+    margin-top: 20px;
+  }
+
+  .card {
+    overflow-x: auto;
+  }
+
+  table {
+    min-width: 600px;
+  }
+
+  .footer-row {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .footer-col h4::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .footer-container {
+    padding: 0 20px;
+  }
+}

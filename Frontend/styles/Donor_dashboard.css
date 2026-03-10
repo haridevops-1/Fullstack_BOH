@@ -556,3 +556,62 @@ footer {
   color: #1e40af;
   border: 1px solid #bfdbfe;
 }
+
+/* --- RESPONSIVE DESIGN (Mobile) --- */
+@media screen and (max-width: 768px) {
+  header {
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .nav-links {
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .container {
+    padding: 40px 15px;
+  }
+
+  .main-field {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .dashboard-details {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .onboarding-card {
+    padding: 20px;
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .my-donations {
+    padding: 15px;
+    overflow-x: auto;
+  }
+
+  .donation-table {
+    min-width: 600px;
+  }
+
+  .footer-row {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .footer-col h4::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
