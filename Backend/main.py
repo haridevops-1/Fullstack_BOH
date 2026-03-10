@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 import os
 import time
 
-from dependencies import engine, Base
+from database import engine, Base
 from routers import (
     donor_auth, donor_actions, donor_profile,
     trust_auth, trust_actions, trust_profile,
@@ -16,6 +16,9 @@ async def lifespan(app: FastAPI):
     # This runs when the server starts
     print("LOG: BRIDGE OF HOPE BACKEND STARTING...")
     try:
+        # Important: Importing models here ensures they are registered with 'Base'
+        import models 
+        
         # Create database tables if they don't exist
         Base.metadata.create_all(bind=engine)
         print("LOG: DATABASE CONNECTION SUCCESSFUL")
@@ -45,6 +48,23 @@ async def log_requests(request: Request, call_next):
     duration = time.time() - start_time
     print(f"DEBUG: {request.method} {request.url.path} - {response.status_code} ({duration:.2f}s)")
     return response
+
+# Global Error Handler: This helps debug 500 errors but ignores normal login/signup errors
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    # If the error is a normal "status" error (like 404 or 401), let it go through!
+    if isinstance(exc, StarletteHTTPException):
+        return await http_exception_handler(request, exc)
+    
+    print(f"CRITICAL ERROR on {request.url.path}: {exc}")
+    return {
+        "detail": f"Database or Server Error: {str(exc)}",
+        "error_type": type(exc).__name__
+    }
+
+from fastapi.exception_handlers import http_exception_handler
 
 # Register all Routers
 app.include_router(donor_auth.router)

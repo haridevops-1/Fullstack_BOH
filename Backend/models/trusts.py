@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, Text
-from dependencies import Base
+from database import Base
 
 class Trust(Base):
     __tablename__ = "trusts"

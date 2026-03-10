@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from dependencies import get_db
-import models, schemas, auth_utils
+import models, schemas
+from cloudinary_utils import upload_image
+from security_utils import hash_password, verify_password
 
 router = APIRouter(prefix="/api/trust", tags=["Trust Auth"])
-
 
 @router.post("/signup", response_model=schemas.TrustRead)
 def signup(trust_data: schemas.TrustCreate, db: Session = Depends(get_db)):
@@ -24,12 +25,12 @@ def signup(trust_data: schemas.TrustCreate, db: Session = Depends(get_db)):
             trust_address=trust_data.trust_address,
             mobile_number=trust_data.mobile_number,
             email_id=trust_data.email_id,
-            password=auth_utils.hash_password(trust_data.password),
+            password=hash_password(trust_data.password),
             username=trust_data.username,
             city=trust_data.city,
             pincode=trust_data.pincode,
             license_number=trust_data.license_number,
-            trust_photo=trust_data.trust_photo,
+            trust_photo=upload_image(trust_data.trust_photo),
             is_verified=False
         )
 
@@ -40,9 +41,8 @@ def signup(trust_data: schemas.TrustCreate, db: Session = Depends(get_db)):
         print(f"LOG: Trust signup SUCCESS for {trust_data.trust_name}")
         return new_trust
     except Exception as e:
-        print(f"CRITICAL: Database error during trust signup: {e}")
-        raise HTTPException(status_code=500, detail="Database internal error. Check logs.")
-
+        print(f"CRITICAL: Error during trust signup: {e}")
+        raise HTTPException(status_code=500, detail=f"Signup Error: {str(e)}")
 
 @router.post("/login")
 def login(login_data: schemas.TrustLogin, db: Session = Depends(get_db)):
@@ -57,7 +57,8 @@ def login(login_data: schemas.TrustLogin, db: Session = Depends(get_db)):
             print(f"LOG: Trust login FAILED - {login_data.email_id} not found.")
             raise HTTPException(status_code=404, detail="Trust not found")
 
-        if not auth_utils.verify_password(login_data.password, trust.password):
+        # Verify encrypted password
+        if not verify_password(login_data.password, trust.password):
             print(f"LOG: Trust login FAILED - Wrong password for {login_data.email_id}")
             raise HTTPException(status_code=401, detail="Wrong password")
 
@@ -65,14 +66,9 @@ def login(login_data: schemas.TrustLogin, db: Session = Depends(get_db)):
             print(f"LOG: Trust login FAILED - {login_data.email_id} IS NOT VERIFIED.")
             raise HTTPException(status_code=403, detail="Your trust account is pending admin approval and cannot login yet.")
 
-        # Create a JWT token
-        access_token = auth_utils.create_access_token(data={"id": trust.id, "role": "trust"})
-
         print(f"LOG: Trust login SUCCESS for {login_data.email_id}")
         return {
             "message": "Login successful",
-            "access_token": access_token,
-            "token_type": "bearer",
             "id": trust.id,
             "role": "trust",
             "name": trust.trust_name
@@ -80,5 +76,5 @@ def login(login_data: schemas.TrustLogin, db: Session = Depends(get_db)):
     except HTTPException:
         raise
     except Exception as e:
-        print(f"CRITICAL: Database error during trust login: {e}")
-        raise HTTPException(status_code=500, detail="Database error. Please check backend connection.")
+        print(f"CRITICAL: Error during login: {e}")
+        raise HTTPException(status_code=500, detail=f"Login Error: {str(e)}")

@@ -11,32 +11,5 @@ function logout() {
     window.location.href = "../index.html";
 }
 
-/* -----------------------------
-   Global Server Health Check
------------------------------ */
 
-// Check every 15 seconds to see if server is still connected
-setInterval(function () {
-    // Only check if a user is currently logged in
-    var userId = localStorage.getItem("userId");
-    if (!userId) return;
-
-    // We use AbortController to stop waiting after 10 seconds
-    var controller = new AbortController();
-    var timeoutId = setTimeout(function () {
-        controller.abort();
-    }, 10000); // 10 seconds limit
-
-    // Try to ping the backend
-    fetch("https://bridge-of-hope-backend-r53q.vercel.app", { signal: controller.signal })
-        .then(function (response) {
-            // If we got a response, clear the timer (Server is UP)
-            clearTimeout(timeoutId);
-        })
-        .catch(function (error) {
-            // If it takes more than 10s or server is down
-            alert("Lost connection to server for more than 10 seconds. You will be logged out for security.");
-            logout();
-        });
-}, 15000);
 

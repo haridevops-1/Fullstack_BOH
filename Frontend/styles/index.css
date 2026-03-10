@@ -90,7 +90,7 @@ header {
   height: 600px;
   margin: 30px;
   border-radius: 30px;
-  background: url("./assets/front-view-box-being-prepared-with-food-donation.jpg")
+  background: url("../assets/front-view-box-being-prepared-with-food-donation.jpg")
     center/cover no-repeat;
   display: flex;
   align-items: center;

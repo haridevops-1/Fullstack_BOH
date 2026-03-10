@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from dependencies import get_db
-import models, schemas, auth_utils
+import models, schemas
+from cloudinary_utils import upload_image
+from security_utils import hash_password, verify_password
 
 # Router for Donor Login and Signup
 router = APIRouter(prefix="/api/donor", tags=["Donor Auth"])
@@ -27,9 +29,9 @@ def signup(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
             email=user_data.email,
             mobile_number=user_data.mobile_number,
             city=user_data.city,
-            pincode=user_data.Pincode,
-            password=auth_utils.hash_password(user_data.password),
-            photo=user_data.photo
+            Pincode=user_data.Pincode,
+            password=hash_password(user_data.password),
+            photo=upload_image(user_data.photo)
         )
 
         # Add to database and save
@@ -39,8 +41,8 @@ def signup(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
 
         return new_user
     except Exception as e:
-        print(f"CRITICAL: Database error during signup: {e}")
-        raise HTTPException(status_code=500, detail="Database internal error")
+        print(f"CRITICAL: Error during signup: {e}")
+        raise HTTPException(status_code=500, detail=f"Signup Error: {str(e)}")
 
 # Function to handle donor LOGIN
 @router.post("/login")
@@ -56,18 +58,13 @@ def login(login_data: schemas.UserLogin, db: Session = Depends(get_db)):
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
 
-        # Check if the password matches using helper function
-        if not auth_utils.verify_password(login_data.password, user.password):
+        # Verify encrypted password
+        if not verify_password(login_data.password, user.password):
             raise HTTPException(status_code=401, detail="Wrong password")
 
-        # Create a JWT token
-        access_token = auth_utils.create_access_token(data={"id": user.id, "role": "donor"})
-
-        # If everything is correct, send back the details and token
+        # If everything is correct, send back the user details
         return {
             "message": "Login successful",
-            "access_token": access_token,
-            "token_type": "bearer",
             "id": user.id,
             "role": "donor",
             "name": user.Firstname,
@@ -76,5 +73,5 @@ def login(login_data: schemas.UserLogin, db: Session = Depends(get_db)):
     except HTTPException:
         raise
     except Exception as e:
-        print(f"CRITICAL: Database error during login: {e}")
-        raise HTTPException(status_code=500, detail="Database error. Check logs.")
+        print(f"CRITICAL: Error during login: {e}")
+        raise HTTPException(status_code=500, detail=f"Login Error: {str(e)}")

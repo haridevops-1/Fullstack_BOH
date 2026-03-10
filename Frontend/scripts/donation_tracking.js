@@ -94,7 +94,7 @@ async function fetchDonationRecord(id) {
         else if (status === "accepted")
           msg.innerText = "Trust accepted your donation.";
         else if (status === "reached")
-          msg.innerText = "Driver has reached your location.";
+          msg.innerText = "Trust has reached your location.";
         else if (status === "picked")
           msg.innerText = "Food has been picked up.";
         else if (status === "completed")
