@@ -60,7 +60,7 @@ header {
   max-width: 900px;
   margin: 60px auto;
   padding: 0 20px;
-  animation: fadeIn 0.8s ease-out;
+  animation: fadeIn 0.3s ease-out;
 }
 
 @keyframes fadeIn {

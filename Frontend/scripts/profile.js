@@ -1,7 +1,15 @@
 import { BACKEND_URL, getAuthHeaders, checkAuth } from './api.js';
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (checkAuth()) loadUserProfile();
+  if (checkAuth()) {
+    // Show cached name immediately while loading full profile
+    const cachedName = localStorage.getItem("userName");
+    if (cachedName) {
+      document.querySelector(".profile-name h3").innerText = cachedName;
+      document.querySelector(".avatar").innerText = cachedName.charAt(0).toUpperCase();
+    }
+    loadUserProfile();
+  }
 });
 
 async function loadUserProfile() {
@@ -15,7 +23,7 @@ async function loadUserProfile() {
       const data = await response.json();
       showProfile(data, role);
     }
-  } catch (e) { alert("Error loading profile. Try again."); }
+  } catch (e) { console.error("Error loading profile:", e); }
 }
 
 function showProfile(data, role) {
@@ -25,6 +33,12 @@ function showProfile(data, role) {
   document.querySelector(".profile-name h3").innerText = name;
   const avatar = document.querySelector(".avatar");
   avatar.innerHTML = photo && photo !== "null" ? `<img src="${photo}">` : name.charAt(0).toUpperCase();
+
+  // Update status pill
+  const statusPill = document.querySelector(".status-pill");
+  if (statusPill) {
+    statusPill.innerText = role === "donor" ? "Account Status: Active" : "Account Status: Verified";
+  }
 
   const grid = document.querySelector(".profile-grid");
   if (role === "donor") {
