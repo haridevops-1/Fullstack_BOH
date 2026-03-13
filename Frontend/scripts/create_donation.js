@@ -1,4 +1,4 @@
-import { BACKEND_URL, getAuthHeaders, cheAuth } from './api.js';
+import { BACKEND_URL, getAuthHeaders, checkAuth } from './api.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   if (!checkAuth("donor")) return;
