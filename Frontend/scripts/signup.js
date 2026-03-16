@@ -61,11 +61,27 @@ window.handleSignup = async (event) => {
     messageBox.className = "form-message error";
     return;
   }
+
+  // Simple Email Check: Must contain '@' and '.'
+  if (email.indexOf("@") === -1 || email.indexOf(".") === -1) {
+    messageBox.innerText = "Error: Please enter a valid email address.";
+    messageBox.className = "form-message error";
+    return;
+  }
+
   if (password === "") {
     messageBox.innerText = "Error: Password is required.";
     messageBox.className = "form-message error";
     return;
   }
+
+  // Simple Password Length Check
+  if (password.length < 6) {
+    messageBox.innerText = "Error: Password must be at least 6 characters long.";
+    messageBox.className = "form-message error";
+    return;
+  }
+
   if (password !== confirmPassword) {
     messageBox.innerText = "Error: Passwords do not match.";
     messageBox.className = "form-message error";
@@ -76,13 +92,45 @@ window.handleSignup = async (event) => {
     messageBox.className = "form-message error";
     return;
   }
+
+  // Check if mobile number contains ONLY numbers
+  let isOnlyNumbers = true;
+  for (let i = 0; i < mobile.length; i++) {
+    if (mobile[i] < "0" || mobile[i] > "9") {
+      isOnlyNumbers = false;
+      break;
+    }
+  }
+
+  if (isOnlyNumbers === false) {
+    messageBox.innerText = "Error: Mobile number must contain only numbers.";
+    messageBox.className = "form-message error";
+    return;
+  }
+
   if (city === "") {
     messageBox.innerText = "Error: City is required.";
     messageBox.className = "form-message error";
     return;
   }
+
   if (pincode === "") {
     messageBox.innerText = "Error: Pincode is required.";
+    messageBox.className = "form-message error";
+    return;
+  }
+
+  // Check if pincode contains ONLY numbers
+  let isPincodeNumeric = true;
+  for (let i = 0; i < pincode.length; i++) {
+    if (pincode[i] < "0" || pincode[i] > "9") {
+      isPincodeNumeric = false;
+      break;
+    }
+  }
+
+  if (isPincodeNumeric === false || pincode.length < 6) {
+    messageBox.innerText = "Error: Pincode must be at least 6 numbers.";
     messageBox.className = "form-message error";
     return;
   }

@@ -45,12 +45,49 @@ async function handleDonationSubmit(event) {
     alert("Please enter a valid 10-digit mobile number.");
     return;
   }
+
+  // Check if mobile number contains ONLY numbers
+  let isOnlyNumbers = true;
+  for (let i = 0; i < mobileNumber.length; i++) {
+    if (mobileNumber[i] < "0" || mobileNumber[i] > "9") {
+      isOnlyNumbers = false;
+      break;
+    }
+  }
+
+  if (isOnlyNumbers === false) {
+    alert("Error: Mobile number must contain only numbers (0-9).");
+    return;
+  }
   if (address === "") {
     alert("Please enter the pickup address.");
     return;
   }
   if (city === "") {
     alert("Please enter the city.");
+    return;
+  }
+  if (pincode === "") {
+    alert("Please enter the pincode.");
+    return;
+  }
+
+  // Pincode validation: only numbers and at least 6 digits
+  let isPincodeNumeric = true;
+  for (let i = 0; i < pincode.length; i++) {
+    if (pincode[i] < "0" || pincode[i] > "9") {
+      isPincodeNumeric = false;
+      break;
+    }
+  }
+  if (isPincodeNumeric === false || pincode.length < 6) {
+    alert("Error: Pincode must be at least 6 numbers.");
+    return;
+  }
+
+  // Quantity validation: ensure it's a positive number
+  if (quantity <= 0) {
+    alert("Error: Quantity must be at least 1.");
     return;
   }
 
