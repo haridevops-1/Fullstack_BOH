@@ -1,4 +1,4 @@
-import { BACKEND_URL } from './api.js';
+import { BACKEND_URL } from "./api.js";
 
 let currentRole = "donor";
 
@@ -26,7 +26,8 @@ window.togglePassword = (inputId) => {
   const input = document.getElementById(inputId);
   const icon = event.currentTarget;
   input.type = input.type === "password" ? "text" : "password";
-  icon.src = input.type === "text" ? "../assets/eye-on.png" : "../assets/eye-off.png";
+  icon.src =
+    input.type === "text" ? "../assets/eye-on.png" : "../assets/eye-off.png";
 };
 
 const getBase64 = (file) => {
@@ -34,7 +35,7 @@ const getBase64 = (file) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
+    reader.onerror = (error) => reject(error);
   });
 };
 
@@ -76,7 +77,12 @@ window.handleSignup = async (event) => {
       signupData = {
         Firstname: document.getElementById("firstName").value,
         Lastname: document.getElementById("lastName").value,
-        email, password, mobile_number: mobile, city, Pincode: pincode, photo: photoString
+        email,
+        password,
+        mobile_number: mobile,
+        city,
+        Pincode: pincode,
+        photo: photoString,
       };
     } else {
       const trustPhoto = document.getElementById("trustPhoto");
@@ -89,21 +95,26 @@ window.handleSignup = async (event) => {
         trust_address: document.getElementById("trustAddress").value,
         username: document.getElementById("username").value,
         license_number: document.getElementById("licenseNumber").value,
-        email_id: email, password, mobile_number: mobile, city, pincode, trust_photo: photoString
+        email_id: email,
+        password,
+        mobile_number: mobile,
+        city,
+        pincode,
+        trust_photo: photoString,
       };
     }
 
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(signupData)
+      body: JSON.stringify(signupData),
     });
 
     const result = await response.json();
     if (response.ok) {
       messageBox.innerText = "Registration successful! You can now log in.";
       messageBox.className = "form-message success";
-      setTimeout(() => window.location.href = "login.html", 2000);
+      setTimeout(() => (window.location.href = "login.html"), 2000);
     } else {
       messageBox.innerText = `Registration failed: ${result.detail || "Please check your information."}`;
       messageBox.className = "form-message error";

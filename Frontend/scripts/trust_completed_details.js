@@ -1,4 +1,4 @@
-import { BACKEND_URL, getAuthHeaders, checkAuth } from './api.js';
+import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   if (checkAuth("trust")) fetchCompleted();
@@ -9,17 +9,25 @@ async function fetchCompleted() {
   const tableBody = document.getElementById("completedTableBody");
   if (!tableBody) return;
 
-  tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Looking for completed works...</td></tr>';
+  tableBody.innerHTML =
+    '<tr><td colspan="7" style="text-align:center;">Looking for completed works...</td></tr>';
 
   try {
-    const res = await fetch(`${BACKEND_URL}/api/trust/donations_details?trust_id=${trustId}`, { headers: getAuthHeaders() });
+    const res = await fetch(
+      `${BACKEND_URL}/api/trust/donations_details?trust_id=${trustId}`,
+      { headers: getAuthHeaders() },
+    );
     if (res.ok) {
       const list = await res.json();
-      const completed = list.filter(d => d.status.toLowerCase() === "completed");
+      const completed = list.filter(
+        (d) => d.status.toLowerCase() === "completed",
+      );
 
-      tableBody.innerHTML = completed.length ? "" : '<tr><td colspan="7" style="text-align:center;">No completed donations yet.</td></tr>';
+      tableBody.innerHTML = completed.length
+        ? ""
+        : '<tr><td colspan="7" style="text-align:center;">No completed donations yet.</td></tr>';
 
-      completed.forEach(item => {
+      completed.forEach((item) => {
         const row = document.createElement("tr");
         const cat = (item.category || "veg").toLowerCase();
         row.innerHTML = `
@@ -33,5 +41,8 @@ async function fetchCompleted() {
         tableBody.appendChild(row);
       });
     }
-  } catch (e) { tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:red;">Error.</td></tr>'; }
+  } catch (e) {
+    tableBody.innerHTML =
+      '<tr><td colspan="7" style="text-align:center;color:red;">Error.</td></tr>';
+  }
 }

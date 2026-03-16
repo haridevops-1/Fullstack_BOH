@@ -1,4 +1,4 @@
-import { BACKEND_URL, getAuthHeaders, checkAuth } from './api.js';
+import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   if (checkAuth("trust")) fetchIncomingRequests();
@@ -9,20 +9,28 @@ async function fetchIncomingRequests() {
   const container = document.querySelector(".container");
   if (!container) return;
 
-  container.innerHTML = '<p style="text-align:center;padding:20px;">Fetching new requests...</p>';
+  container.innerHTML =
+    '<p style="text-align:center;padding:20px;">Fetching new requests...</p>';
 
   try {
-    const response = await fetch(`${BACKEND_URL}/api/trust/donations_details?trust_id=${trustId}`, { headers: getAuthHeaders() });
+    const response = await fetch(
+      `${BACKEND_URL}/api/trust/donations_details?trust_id=${trustId}`,
+      { headers: getAuthHeaders() },
+    );
     if (response.ok) {
       const donations = await response.json();
-      const pending = donations.filter(d => d.status.toLowerCase() === "pending");
+      const pending = donations.filter(
+        (d) => d.status.toLowerCase() === "pending",
+      );
 
-      container.innerHTML = pending.length ? "" : `
+      container.innerHTML = pending.length
+        ? ""
+        : `
                 <div style="text-align:center;padding:80px;background:white;border-radius:12px;border:1px solid #eaecf0;">
                     <p style="color:#64748b;font-size:18px;font-weight:500;">No new incoming requests.</p>
                 </div>`;
 
-      pending.forEach(item => {
+      pending.forEach((item) => {
         const card = document.createElement("div");
         card.className = "card pending-card-row";
         const cat = (item.category || "veg").toLowerCase();
@@ -41,5 +49,8 @@ async function fetchIncomingRequests() {
         container.appendChild(card);
       });
     }
-  } catch (e) { container.innerHTML = '<p style="color:red;text-align:center;">Error loading requests.</p>'; }
+  } catch (e) {
+    container.innerHTML =
+      '<p style="color:red;text-align:center;">Error loading requests.</p>';
+  }
 }

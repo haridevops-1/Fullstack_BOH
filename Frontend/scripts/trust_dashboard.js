@@ -1,4 +1,4 @@
-import { BACKEND_URL, getAuthHeaders, checkAuth } from './api.js';
+import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
 
 let seenDonationIds = new Set();
 let isFirstLoad = true;
@@ -30,15 +30,21 @@ document.addEventListener("DOMContentLoaded", function () {
 async function fetchTrustStats() {
   const trustId = localStorage.getItem("userId");
   try {
-    const response = await fetch(`${BACKEND_URL}/api/trust/donations_details?trust_id=${trustId}`, {
-      headers: getAuthHeaders()
-    });
+    const response = await fetch(
+      `${BACKEND_URL}/api/trust/donations_details?trust_id=${trustId}`,
+      {
+        headers: getAuthHeaders(),
+      },
+    );
 
     if (response.ok) {
       const list = await response.json();
-      let pending = 0, accepted = 0, rejected = 0, completed = 0;
+      let pending = 0,
+        accepted = 0,
+        rejected = 0,
+        completed = 0;
 
-      list.forEach(item => {
+      list.forEach((item) => {
         const s = item.status.toLowerCase();
         if (s === "pending") pending++;
         else if (["accepted", "reached", "picked"].includes(s)) accepted++;
@@ -62,20 +68,28 @@ async function fetchTrustStats() {
 async function loadRecentDonations(init = false) {
   const trustId = localStorage.getItem("userId");
   const tableBody = document.querySelector("tbody");
-  if (init) tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Looking for active requests...</td></tr>';
+  if (init)
+    tableBody.innerHTML =
+      '<tr><td colspan="6" style="text-align:center;">Looking for active requests...</td></tr>';
 
   try {
-    const response = await fetch(`${BACKEND_URL}/api/trust/donations_details?trust_id=${trustId}`, {
-      headers: getAuthHeaders()
-    });
+    const response = await fetch(
+      `${BACKEND_URL}/api/trust/donations_details?trust_id=${trustId}`,
+      {
+        headers: getAuthHeaders(),
+      },
+    );
 
     if (response.ok) {
       const donations = await response.json();
 
-      donations.forEach(item => {
+      donations.forEach((item) => {
         const status = item.status.toLowerCase();
         if (status === "pending" && !seenDonationIds.has(item.id)) {
-          if (!init && !isFirstLoad) showToast(`New Incoming Donation: ${item.food_name || "Food Request"}`);
+          if (!init && !isFirstLoad)
+            showToast(
+              `New Incoming Donation: ${item.food_name || "Food Request"}`,
+            );
           seenDonationIds.add(item.id);
         } else if (!seenDonationIds.has(item.id)) {
           seenDonationIds.add(item.id);
@@ -86,16 +100,25 @@ async function loadRecentDonations(init = false) {
       tableBody.innerHTML = "";
       let count = 0;
 
-      donations.forEach(item => {
+      donations.forEach((item) => {
         const status = item.status.toLowerCase();
         if (status !== "completed" && status !== "rejected") {
           const row = document.createElement("tr");
           row.onclick = () => {
-            window.location.href = status === "pending" ? `Trust_decision.html?id=${item.id}` : `Trust_update.html?id=${item.id}`;
+            window.location.href =
+              status === "pending"
+                ? `Trust_decision.html?id=${item.id}`
+                : `Trust_update.html?id=${item.id}`;
           };
 
-          const newBadge = status === "pending" ? '<span class="new-badge">NEW</span>' : "";
-          const catClass = item.category === "non-veg" ? "non-veg" : (item.category === "both" ? "both" : "veg");
+          const newBadge =
+            status === "pending" ? '<span class="new-badge">NEW</span>' : "";
+          const catClass =
+            item.category === "non-veg"
+              ? "non-veg"
+              : item.category === "both"
+                ? "both"
+                : "veg";
 
           row.innerHTML = `
                         <td>${item.name || "Anonymous donor"}${newBadge}</td>
@@ -111,11 +134,13 @@ async function loadRecentDonations(init = false) {
       });
 
       if (count === 0) {
-        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;">No active donation requests found.</td></tr>';
+        tableBody.innerHTML =
+          '<tr><td colspan="6" style="text-align:center;padding:40px;">No active donation requests found.</td></tr>';
       }
     }
   } catch (error) {
-    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Connection error. Please try again.</td></tr>';
+    tableBody.innerHTML =
+      '<tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Connection error. Please try again.</td></tr>';
   }
 }
 

@@ -1,4 +1,4 @@
-import { BACKEND_URL, getAuthHeaders, checkAuth } from './api.js';
+import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   if (!checkAuth("trust")) return;
@@ -9,10 +9,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function getDonationInfo(id) {
   try {
-    const res = await fetch(`${BACKEND_URL}/api/donor/donations/${id}`, { headers: getAuthHeaders() });
+    const res = await fetch(`${BACKEND_URL}/api/donor/donations/${id}`, {
+      headers: getAuthHeaders(),
+    });
     if (res.ok) {
       const item = await res.json();
-      const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
+      const set = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = val;
+      };
       set("detDonor", item.name || "Anonymous");
       set("detFood", item.food_name);
       set("detQty", item.approx_quantity);
@@ -23,12 +28,17 @@ async function getDonationInfo(id) {
 
       const cat = (item.category || "veg").toLowerCase();
       const catEl = document.getElementById("detCategory");
-      if (catEl) catEl.innerHTML = `<span class="category-badge ${cat}">${cat}</span>`;
+      if (catEl)
+        catEl.innerHTML = `<span class="category-badge ${cat}">${cat}</span>`;
 
-      document.getElementById("acceptBtn").onclick = () => updateDecision(id, "accepted");
-      document.getElementById("rejectBtn").onclick = () => updateDecision(id, "rejected");
+      document.getElementById("acceptBtn").onclick = () =>
+        updateDecision(id, "accepted");
+      document.getElementById("rejectBtn").onclick = () =>
+        updateDecision(id, "rejected");
     }
-  } catch (e) { alert("Error loading details. Try again."); }
+  } catch (e) {
+    alert("Error loading details. Try again.");
+  }
 }
 
 async function updateDecision(id, status) {
@@ -36,7 +46,7 @@ async function updateDecision(id, status) {
     const res = await fetch(`${BACKEND_URL}/api/trust/donations/${id}/status`, {
       method: "PUT",
       headers: getAuthHeaders(),
-      body: JSON.stringify({ status })
+      body: JSON.stringify({ status }),
     });
     if (res.ok) {
       alert("Success: Your decision has been saved.");
@@ -45,5 +55,7 @@ async function updateDecision(id, status) {
       const err = await res.json();
       alert(`Failed to save decision: ${err.detail || "Server error"}`);
     }
-  } catch (e) { alert("Error: Could not connect to the server."); }
+  } catch (e) {
+    alert("Error: Could not connect to the server.");
+  }
 }

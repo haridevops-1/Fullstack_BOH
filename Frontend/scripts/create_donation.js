@@ -1,10 +1,11 @@
-import { BACKEND_URL, getAuthHeaders, checkAuth } from './api.js';
+import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   if (!checkAuth("donor")) return;
   const params = new URLSearchParams(window.location.search);
   const trustName = params.get("trustName");
-  if (trustName) document.querySelector(".head h1").innerText = `Donating to ${trustName}`;
+  if (trustName)
+    document.querySelector(".head h1").innerText = `Donating to ${trustName}`;
 
   const form = document.querySelector("form");
   if (form) form.onsubmit = handleDonationSubmit;
@@ -32,18 +33,25 @@ async function handleDonationSubmit(event) {
   };
 
   try {
-    const res = await fetch(`${BACKEND_URL}/api/donor/new_donation?trust_id=${trustId}&donor_id=${donorId}`, {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(data),
-    });
+    const res = await fetch(
+      `${BACKEND_URL}/api/donor/new_donation?trust_id=${trustId}&donor_id=${donorId}`,
+      {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data),
+      },
+    );
 
     if (res.ok) {
       alert("Success: Your donation request has been submitted.");
       window.location.href = "Donor_dashboard.html";
     } else {
       const err = await res.json();
-      alert(`Failed to send request: ${err.detail || "Please check your details."}`);
+      alert(
+        `Failed to send request: ${err.detail || "Please check your details."}`,
+      );
     }
-  } catch (e) { alert("Error: Could not connect to the server."); }
+  } catch (e) {
+    alert("Error: Could not connect to the server.");
+  }
 }

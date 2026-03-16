@@ -1,4 +1,4 @@
-import { BACKEND_URL, getAuthHeaders, checkAuth } from './api.js';
+import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   if (checkAuth("trust")) fetchRejected();
@@ -9,15 +9,21 @@ async function fetchRejected() {
   const container = document.querySelector(".container");
   if (!container) return;
 
-  container.innerHTML = '<p style="text-align:center;padding:20px;">Loading rejection history...</p>';
+  container.innerHTML =
+    '<p style="text-align:center;padding:20px;">Loading rejection history...</p>';
 
   try {
-    const res = await fetch(`${BACKEND_URL}/api/trust/rejected_details?trust_id=${trustId}`, { headers: getAuthHeaders() });
+    const res = await fetch(
+      `${BACKEND_URL}/api/trust/rejected_details?trust_id=${trustId}`,
+      { headers: getAuthHeaders() },
+    );
     if (res.ok) {
       const list = await res.json();
-      container.innerHTML = list.length ? "" : '<p style="text-align:center;color:#666;margin-top:50px;">No rejected requests found.</p>';
+      container.innerHTML = list.length
+        ? ""
+        : '<p style="text-align:center;color:#666;margin-top:50px;">No rejected requests found.</p>';
 
-      list.forEach(item => {
+      list.forEach((item) => {
         const card = document.createElement("div");
         card.className = "card";
         card.innerHTML = `
@@ -33,5 +39,7 @@ async function fetchRejected() {
         container.appendChild(card);
       });
     }
-  } catch (e) { container.innerHTML = '<p style="text-align:center;color:red;">Error.</p>'; }
+  } catch (e) {
+    container.innerHTML = '<p style="text-align:center;color:red;">Error.</p>';
+  }
 }
