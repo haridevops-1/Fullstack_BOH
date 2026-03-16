@@ -90,21 +90,21 @@ async function saveChanges(role) {
   const info =
     role === "donor"
       ? {
-          Firstname: inputs[0].value,
-          Lastname: inputs[1].value,
-          email: inputs[2].value,
-          mobile_number: inputs[3].value,
-          city: inputs[4].value,
-          Pincode: inputs[5].value,
-        }
+        Firstname: inputs[0].value,
+        Lastname: inputs[1].value,
+        email: inputs[2].value,
+        mobile_number: inputs[3].value,
+        city: inputs[4].value,
+        Pincode: inputs[5].value,
+      }
       : {
-          trust_name: inputs[0].value,
-          email_id: inputs[1].value,
-          mobile_number: inputs[2].value,
-          trust_address: inputs[3].value,
-          city: inputs[4].value,
-          pincode: inputs[5].value,
-        };
+        trust_name: inputs[0].value,
+        email_id: inputs[1].value,
+        mobile_number: inputs[2].value,
+        trust_address: inputs[3].value,
+        city: inputs[4].value,
+        pincode: inputs[5].value,
+      };
 
   const url =
     role === "donor"

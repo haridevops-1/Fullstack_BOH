@@ -1,85 +1,137 @@
 import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  if (!checkAuth("trust")) return;
-  const id = new URLSearchParams(window.location.search).get("id");
-  if (id) {
-    fetchDonation(id);
-    setupPreview();
-    document.getElementById("updateStatusBtn").onclick = () => sendUpdate(id);
+// This function runs when the page is fully loaded
+document.addEventListener("DOMContentLoaded", function () {
+  // 1. Check if the user is a logged-in trust
+  if (checkAuth("trust") === false) {
+    return;
+  }
+
+  // 2. Get the donation ID from the URL (e.g., Trust_update.html?id=123)
+  const urlParameters = new URLSearchParams(window.location.search);
+  const donationId = urlParameters.get("id");
+
+  if (donationId) {
+    // Fetch the details for this donation
+    fetchDonationDetails(donationId);
+    
+    // Set up the image preview functionality
+    setupImagePreview();
+    
+    // Set up the "Update Status" button
+    const updateButton = document.getElementById("updateStatusBtn");
+    if (updateButton) {
+      updateButton.onclick = function () {
+        handleStatusUpdate(donationId);
+      };
+    }
   } else {
+    // If no ID is found, send the user back to the dashboard
     window.location.href = "Trust_dashboard.html";
   }
 });
 
-function setupPreview() {
-  const input = document.getElementById("proofImage");
-  const preview = document.getElementById("previewImg");
-  if (!input) return;
-  input.onchange = () => {
-    const file = input.files[0];
+// This function shows a preview of the image once the user selects a file
+function setupImagePreview() {
+  const fileInput = document.getElementById("proofImage");
+  const previewImage = document.getElementById("previewImg");
+
+  if (!fileInput) return;
+
+  fileInput.onchange = function () {
+    const file = fileInput.files[0];
     if (!file) return;
+
     const reader = new FileReader();
-    reader.onload = (e) => {
-      preview.src = e.target.result;
-      preview.style.display = "block";
+    reader.onload = function (event) {
+      previewImage.src = event.target.result;
+      previewImage.style.display = "block"; // Show the image element
     };
     reader.readAsDataURL(file);
   };
 }
 
-async function fetchDonation(id) {
+// This function fetches donation details and puts them in the HTML
+async function fetchDonationDetails(id) {
   try {
-    const res = await fetch(`${BACKEND_URL}/api/donor/donations/${id}`, {
+    const response = await fetch(BACKEND_URL + "/api/donor/donations/" + id, {
       headers: getAuthHeaders(),
     });
-    if (res.ok) {
-      const item = await res.json();
-      const set = (id, val) => {
-        const el = document.getElementById(id);
-        if (el) el.innerText = val;
+
+    if (response.ok === true) {
+      const donationItem = await response.json();
+
+      // Helper function to set text in elements
+      const setText = function (elementId, value) {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.innerText = value;
+        }
       };
-      set("updateFood", item.food_name);
-      set("updateQty", item.approx_quantity);
-      set("updateDonor", item.name);
-      set("updatePhone", item.mobile_number);
-      set("updateAddress", `${item.address}, ${item.city}`);
-      const sel = document.getElementById("statusSelect");
-      if (sel) sel.value = item.status.toLowerCase();
+
+      setText("updateFood", donationItem.food_name);
+      setText("updateQty", donationItem.approx_quantity);
+      setText("updateDonor", donationItem.name);
+      setText("updatePhone", donationItem.mobile_number);
+      setText("updateAddress", donationItem.address + ", " + donationItem.city);
+
+      // Set the select box to the current status
+      const statusSelect = document.getElementById("statusSelect");
+      if (statusSelect) {
+        statusSelect.value = donationItem.status.toLowerCase();
+      }
     }
-  } catch (e) {
-    alert("Error loading details. Try again.");
+  } catch (error) {
+    alert("Error loading details. Please refresh and try again.");
   }
 }
 
-async function sendUpdate(id) {
-  const status = document.getElementById("statusSelect").value;
-  const update = { status };
-  const file = document.getElementById("proofImage").files[0];
+// This function sends the updated status and proof image to the server
+async function handleStatusUpdate(id) {
+  const statusSelect = document.getElementById("statusSelect");
+  const selectedStatus = statusSelect.value;
+  
+  const updateData = {
+    status: selectedStatus
+  };
 
-  if (file) {
-    update.proof_image = await new Promise((r) => {
-      const rd = new FileReader();
-      rd.onload = () => r(rd.result);
-      rd.readAsDataURL(file);
+  const fileInput = document.getElementById("proofImage");
+  const selectedFile = fileInput.files[0];
+
+  // If the user selected a proof image, we need to convert it to a string first
+  if (selectedFile) {
+    // We use a Promise to wait for the file to be read
+    updateData.proof_image = await new Promise(function (resolve) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        resolve(reader.result);
+      };
+      reader.readAsDataURL(selectedFile);
     });
   }
 
   try {
-    const res = await fetch(`${BACKEND_URL}/api/trust/donations/${id}/status`, {
+    // Send the PUT request to the server
+    const response = await fetch(BACKEND_URL + "/api/trust/donations/" + id + "/status", {
       method: "PUT",
       headers: getAuthHeaders(),
-      body: JSON.stringify(update),
+      body: JSON.stringify(updateData),
     });
-    if (res.ok) {
+
+    if (response.ok === true) {
       alert("Success: Donation status updated.");
-      window.location.href =
-        status === "completed" ? "Trust_dashboard.html" : location.href;
+      
+      // If the donation is completed, go back to dashboard. Otherwise, stay on same page.
+      if (selectedStatus === "completed") {
+        window.location.href = "Trust_dashboard.html";
+      } else {
+        window.location.reload();
+      }
     } else {
-      const err = await res.json();
-      alert(`Failed to update status: ${err.detail || "Server error"}`);
+      const errorData = await response.json();
+      alert("Failed to update status: " + (errorData.detail || "Server error"));
     }
-  } catch (e) {
+  } catch (error) {
     alert("Error: Could not connect to the server.");
   }
 }

@@ -1,61 +1,97 @@
 import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  if (!checkAuth("trust")) return;
-  const id = new URLSearchParams(window.location.search).get("id");
-  if (id) getDonationInfo(id);
-  else window.location.href = "Trust_dashboard.html";
+// This function runs when the page is loaded
+document.addEventListener("DOMContentLoaded", function () {
+  // 1. Check if the user is a logged-in trust
+  if (checkAuth("trust") === false) {
+    return;
+  }
+
+  // 2. Get the "id" from the URL (e.g., Trust_decision.html?id=12)
+  const urlParameters = new URLSearchParams(window.location.search);
+  const donationId = urlParameters.get("id");
+
+  if (donationId) {
+    // Fetch and show the information for this donation
+    getDonationInfo(donationId);
+  } else {
+    // If no ID is found, go back to the dashboard
+    window.location.href = "Trust_dashboard.html";
+  }
 });
 
+// This function fetches details about the donation from the server
 async function getDonationInfo(id) {
   try {
-    const res = await fetch(`${BACKEND_URL}/api/donor/donations/${id}`, {
+    const response = await fetch(BACKEND_URL + "/api/donor/donations/" + id, {
       headers: getAuthHeaders(),
     });
-    if (res.ok) {
-      const item = await res.json();
-      const set = (id, val) => {
-        const el = document.getElementById(id);
-        if (el) el.innerText = val;
+
+    if (response.ok === true) {
+      const donationItem = await response.json();
+
+      // Helper function to update text in the HTML elements
+      const updateText = function (elementId, value) {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.innerText = value;
+        }
       };
-      set("detDonor", item.name || "Anonymous");
-      set("detFood", item.food_name);
-      set("detQty", item.approx_quantity);
-      set("detPhone", item.mobile_number);
-      set("detAddress", item.address);
-      set("detCity", item.city);
-      set("detPincode", item.pincode || "N/A");
 
-      const cat = (item.category || "veg").toLowerCase();
-      const catEl = document.getElementById("detCategory");
-      if (catEl)
-        catEl.innerHTML = `<span class="category-badge ${cat}">${cat}</span>`;
+      // Fill in the donation details on the page
+      updateText("detDonor", donationItem.name || "Anonymous");
+      updateText("detFood", donationItem.food_name);
+      updateText("detQty", donationItem.approx_quantity);
+      updateText("detPhone", donationItem.mobile_number);
+      updateText("detAddress", donationItem.address);
+      updateText("detCity", donationItem.city);
+      updateText("detPincode", donationItem.pincode || "N/A");
 
-      document.getElementById("acceptBtn").onclick = () =>
-        updateDecision(id, "accepted");
-      document.getElementById("rejectBtn").onclick = () =>
-        updateDecision(id, "rejected");
+      // Show the category badge (Veg/Non-Veg)
+      const category = (donationItem.category || "veg").toLowerCase();
+      const categoryElement = document.getElementById("detCategory");
+      if (categoryElement) {
+        categoryElement.innerHTML = '<span class="category-badge ' + category + '">' + category + '</span>';
+      }
+
+      // Set up the Accept and Reject buttons
+      const acceptButton = document.getElementById("acceptBtn");
+      if (acceptButton) {
+        acceptButton.onclick = function () {
+          updateDonationDecision(id, "accepted");
+        };
+      }
+
+      const rejectButton = document.getElementById("rejectBtn");
+      if (rejectButton) {
+        rejectButton.onclick = function () {
+          updateDonationDecision(id, "rejected");
+        };
+      }
     }
-  } catch (e) {
-    alert("Error loading details. Try again.");
+  } catch (error) {
+    alert("Error loading details. Please try again.");
   }
 }
 
-async function updateDecision(id, status) {
+// This function sends the Accept or Reject decision to the server
+async function updateDonationDecision(id, selectedStatus) {
   try {
-    const res = await fetch(`${BACKEND_URL}/api/trust/donations/${id}/status`, {
+    const response = await fetch(BACKEND_URL + "/api/trust/donations/" + id + "/status", {
       method: "PUT",
       headers: getAuthHeaders(),
-      body: JSON.stringify({ status }),
+      body: JSON.stringify({ status: selectedStatus }),
     });
-    if (res.ok) {
+
+    if (response.ok === true) {
       alert("Success: Your decision has been saved.");
+      // Go back to the dashboard after a successful decision
       window.location.href = "Trust_dashboard.html";
     } else {
-      const err = await res.json();
-      alert(`Failed to save decision: ${err.detail || "Server error"}`);
+      const errorData = await response.json();
+      alert("Failed to save decision: " + (errorData.detail || "Server error"));
     }
-  } catch (e) {
+  } catch (error) {
     alert("Error: Could not connect to the server.");
   }
 }

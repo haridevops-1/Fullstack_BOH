@@ -1,145 +1,212 @@
 import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
 
-let previousStatuses = {}; // Map of donationId -> status
+// This object helps us remember the status of donations from the last time we checked.
+// It allows us to show a notification if the status changes.
+let previousDonationStatuses = {};
 
+// This function runs when the page is fully loaded
 document.addEventListener("DOMContentLoaded", function () {
-  if (!checkAuth("donor")) return;
+  // 1. Check if the user is logged in as a donor
+  if (checkAuth("donor") === false) {
+    return;
+  }
 
+  // 2. Show a welcome message with the user's name
   const userName = localStorage.getItem("userName");
-  const heading = document.getElementById("welcomeHeading");
-  if (heading && userName) heading.innerText = `Welcome, ${userName.trim()}`;
+  const welcomeHeading = document.getElementById("welcomeHeading");
+  if (welcomeHeading && userName) {
+    welcomeHeading.innerText = "Welcome, " + userName.trim();
+  }
 
-  fetchDonorRecentActivity(true);
+  // 3. Fetch the recent activity for the first time
+  fetchDonorDashboardData(true);
 
-  // Poll for status updates every 10 seconds
-  setInterval(() => fetchDonorRecentActivity(false), 10000);
+  // 4. Check for updates every 10 seconds (Polling)
+  setInterval(function () {
+    fetchDonorDashboardData(false);
+  }, 10000);
 });
 
-async function fetchDonorRecentActivity(isInitial = false) {
+// This function fetches data from the server and updates the dashboard
+async function fetchDonorDashboardData(isFirstLoad) {
   const donorId = localStorage.getItem("userId");
   const tableBody = document.querySelector(".donation-table tbody");
-  if (!tableBody) return;
+  
+  // If we can't find the table, stop
+  if (!tableBody) {
+    return;
+  }
 
-  if (isInitial) {
-    tableBody.innerHTML =
-      '<tr><td colspan="6" style="text-align:center;padding:20px;">Loading your dashboard...</td></tr>';
+  // If this is the first time loading, show a "Loading" message
+  if (isFirstLoad === true) {
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;">Loading your dashboard...</td></tr>';
   }
 
   try {
+    // Call the API to get donations for this donor
     const response = await fetch(
-      `${BACKEND_URL}/api/donor/donations?donor_id=${donorId}`,
+      BACKEND_URL + "/api/donor/donations?donor_id=" + donorId,
       {
         headers: getAuthHeaders(),
-      },
+      }
     );
 
-    if (response.ok) {
+    if (response.ok === true) {
       const donations = await response.json();
-      let pending = 0,
-        accepted = 0,
-        rejected = 0,
-        completed = 0;
+      
+      // Initialize counters for the status boxes
+      let pendingCount = 0;
+      let acceptedCount = 0;
+      let rejectedCount = 0;
+      let completedCount = 0;
 
-      donations.forEach((d) => {
-        const s = d.status.toLowerCase();
-        if (s === "pending") pending++;
-        else if (["accepted", "reached", "picked"].includes(s)) accepted++;
-        else if (s === "rejected") rejected++;
-        else if (s === "completed") completed++;
+      // Loop through each donation to count statuses and look for changes
+      for (let i = 0; i < donations.length; i++) {
+        const item = donations[i];
+        const currentStatus = item.status.toLowerCase();
 
-        // Tracking status changes for toasts
-        if (
-          !isInitial &&
-          previousStatuses[d.id] &&
-          previousStatuses[d.id] !== s
-        ) {
-          const statusLabels = {
-            accepted: "accepted your request!",
-            reached: "reached your location!",
-            picked: "picked up the food!",
-            completed: "completed the donation!",
-            rejected: "declined the request.",
-          };
-          if (statusLabels[s]) {
-            showToast(
-              `Update: ${d.trust_name || "A Trust"} has ${statusLabels[s]}`,
-              s,
-            );
-          }
+        // Count how many of each status we have
+        if (currentStatus === "pending") {
+          pendingCount++;
+        } else if (currentStatus === "accepted" || currentStatus === "reached" || currentStatus === "picked") {
+          acceptedCount++;
+        } else if (currentStatus === "rejected") {
+          rejectedCount++;
+        } else if (currentStatus === "completed") {
+          completedCount++;
         }
-        previousStatuses[d.id] = s;
-      });
 
-      document.querySelector(".pending-val").innerText = pending;
-      document.querySelector(".accept-val").innerText = accepted;
-      document.querySelector(".reject-val").innerText = rejected;
-      document.querySelector(".total-val").innerText = completed;
+        // --- CHECK FOR STATUS CHANGES (to show notifications) ---
+        // If this is NOT the first load, and we already know about this donation, 
+        // and the status has changed...
+        if (isFirstLoad === false && previousDonationStatuses[item.id]) {
+            if (previousDonationStatuses[item.id] !== currentStatus) {
+                // Determine what message to show
+                let notificationMessage = "";
+                if (currentStatus === "accepted") {
+                    notificationMessage = "accepted your request!";
+                } else if (currentStatus === "reached") {
+                    notificationMessage = "reached your location!";
+                } else if (currentStatus === "picked") {
+                    notificationMessage = "picked up the food!";
+                } else if (currentStatus === "completed") {
+                    notificationMessage = "completed the donation!";
+                } else if (currentStatus === "rejected") {
+                    notificationMessage = "declined the request.";
+                }
 
-      tableBody.innerHTML = "";
-      let shown = 0;
-
-      donations.forEach((item) => {
-        const status = item.status.toLowerCase();
-        if (status !== "completed" && status !== "rejected" && shown < 5) {
-          const row = document.createElement("tr");
-          row.style.cursor = "pointer";
-          row.onclick = () =>
-            (window.location.href = `Donation-tracking.html?id=${item.id}`);
-
-          const catClass =
-            item.category === "non-veg"
-              ? "non-veg"
-              : item.category === "both"
-                ? "both"
-                : "veg";
-
-          row.innerHTML = `
-                        <td style="font-weight:600;">${item.trust_name || "Anonymous Trust"}</td>
-                        <td><span class="category-badge ${catClass}">${item.category || "veg"}</span></td>
-                        <td>${item.food_name}</td>
-                        <td style="font-weight:500;">${item.approx_quantity}</td>
-                        <td>${item.city}</td>
-                        <td><span class="status ${status}">${item.status}</span></td>
-                    `;
-          tableBody.appendChild(row);
-          shown++;
+                if (notificationMessage !== "") {
+                    const trustName = item.trust_name || "A Trust";
+                    showStatusNotification("Update: " + trustName + " has " + notificationMessage, currentStatus);
+                }
+            }
         }
-      });
-
-      if (shown === 0) {
-        tableBody.innerHTML =
-          '<tr><td colspan="6" style="text-align:center;padding:40px;color:#94a3b8;">No active donations in progress.</td></tr>';
+        
+        // Remember the status for the next check
+        previousDonationStatuses[item.id] = currentStatus;
       }
+
+      // Update the numbers in the dashboard boxes
+      const pendingDisp = document.querySelector(".pending-val");
+      const acceptDisp = document.querySelector(".accept-val");
+      const rejectDisp = document.querySelector(".reject-val");
+      const totalDisp = document.querySelector(".total-val");
+      
+      if (pendingDisp) pendingDisp.innerText = pendingCount;
+      if (acceptDisp) acceptDisp.innerText = acceptedCount;
+      if (rejectDisp) rejectDisp.innerText = rejectedCount;
+      if (totalDisp) totalDisp.innerText = completedCount;
+
+      // Update the table with active (non-completed/non-rejected) donations
+      updateDonationTable(donations);
     }
   } catch (error) {
-    if (isInitial) {
-      tableBody.innerHTML =
-        '<tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Connection error. Please try again.</td></tr>';
+    if (isFirstLoad === true) {
+      tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Connection error. Please try again.</td></tr>';
     }
   }
 }
 
-function showToast(message, status) {
+// This function updates the HTML table with the list of donations
+function updateDonationTable(donations) {
+  const tableBody = document.querySelector(".donation-table tbody");
+  if (!tableBody) return;
+
+  tableBody.innerHTML = ""; // Clear existing rows
+  let countShown = 0;
+
+  for (let i = 0; i < donations.length; i++) {
+    const item = donations[i];
+    const status = item.status.toLowerCase();
+
+    // Only show active donations (not completed or rejected) and limit to 5 rows
+    if (status !== "completed" && status !== "rejected" && countShown < 5) {
+      const row = document.createElement("tr");
+      row.style.cursor = "pointer";
+      
+      // When a row is clicked, go to the tracking page
+      row.onclick = function () {
+        window.location.href = "Donation-tracking.html?id=" + item.id;
+      };
+
+      // Decide which CSS class to use for the category badge
+      let categoryClass = "veg";
+      if (item.category === "non-veg") {
+        categoryClass = "non-veg";
+      } else if (item.category === "both") {
+        categoryClass = "both";
+      }
+
+      // Build the HTML for the row
+      row.innerHTML = 
+        '<td style="font-weight:600;">' + (item.trust_name || "Anonymous Trust") + '</td>' +
+        '<td><span class="category-badge ' + categoryClass + '">' + (item.category || "veg") + '</span></td>' +
+        '<td>' + item.food_name + '</td>' +
+        '<td style="font-weight:500;">' + item.approx_quantity + '</td>' +
+        '<td>' + item.city + '</td>' +
+        '<td><span class="status ' + status + '">' + item.status + '</span></td>';
+        
+      tableBody.appendChild(row);
+      countShown++;
+    }
+  }
+
+  // If there are no active donations to show
+  if (countShown === 0) {
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#94a3b8;">No active donations in progress.</td></tr>';
+  }
+}
+
+// This function shows a small popup (notification) when a donation status changes
+function showStatusNotification(message, status) {
   const container = document.getElementById("toast-container");
   if (!container) return;
-  const toast = document.createElement("div");
-  toast.className = `toast status-update ${status}`;
-  const icons = {
-    accepted: "✅",
-    reached: "📍",
-    picked: "📦",
-    completed: "🎉",
-    rejected: "❌",
-  };
-  toast.innerHTML = `<span class="toast-icon">${icons[status] || "🔔"}</span><span class="toast-message">${message}</span>`;
-  container.appendChild(toast);
-  setTimeout(() => {
-    toast.style.animation = "fadeOut 0.5s ease-out forwards";
-    setTimeout(() => toast.remove(), 500);
+
+  const notification = document.createElement("div");
+  notification.className = "toast status-update " + status;
+
+  // Decide which icon to show
+  let icon = "🔔";
+  if (status === "accepted") icon = "✅";
+  else if (status === "reached") icon = "📍";
+  else if (status === "picked") icon = "📦";
+  else if (status === "completed") icon = "🎉";
+  else if (status === "rejected") icon = "❌";
+
+  notification.innerHTML = '<span class="toast-icon">' + icon + '</span><span class="toast-message">' + message + '</span>';
+  container.appendChild(notification);
+
+  // Automatically hide and remove the notification after 6 seconds
+  setTimeout(function () {
+    notification.style.animation = "fadeOut 0.5s ease-out forwards";
+    setTimeout(function () {
+      notification.remove();
+    }, 500);
   }, 6000);
 }
 
-window.logout = () => {
+// This function handles logging out
+window.logout = function () {
   localStorage.clear();
   window.location.href = "../index.html";
 };

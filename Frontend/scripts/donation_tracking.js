@@ -1,125 +1,193 @@
 import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
 
-let lastStatus = null;
+// This variable remembers the last status we saw, so we can detect changes
+let lastDonationStatus = null;
 
-document.addEventListener("DOMContentLoaded", () => {
-  if (!checkAuth("donor")) return;
-  const id = new URLSearchParams(window.location.search).get("id");
-  if (id) {
-    fetchDonation(id, true);
-    // Poll for status updates every 7 seconds
-    setInterval(() => fetchDonation(id, false), 7000);
+// This function runs when the page loads
+document.addEventListener("DOMContentLoaded", function () {
+  // 1. Check if the user is a donor
+  if (checkAuth("donor") === false) {
+    return;
+  }
+
+  // 2. Get the "id" of the donation from the URL (e.g., tracking.html?id=123)
+  const urlParameters = new URLSearchParams(window.location.search);
+  const donationId = urlParameters.get("id");
+
+  if (donationId) {
+    // Fetch the donation details for the first time
+    fetchDonationDetails(donationId, true);
+
+    // Check for status updates every 7 seconds (Polling)
+    setInterval(function () {
+      fetchDonationDetails(donationId, false);
+    }, 7000);
   } else {
+    // If no ID is found, go back to the dashboard
     window.location.href = "Donor_dashboard.html";
   }
 });
 
-async function fetchDonation(id, isInitial = false) {
+// This function fetches the latest info about a specific donation from the server
+async function fetchDonationDetails(id, isFirstLoad) {
   try {
-    const res = await fetch(`${BACKEND_URL}/api/donor/donations/${id}`, {
+    const response = await fetch(BACKEND_URL + "/api/donor/donations/" + id, {
       headers: getAuthHeaders(),
     });
-    if (res.ok) {
-      const item = await res.json();
-      updateUI(item);
 
-      const newStatus = item.status.toLowerCase();
-      if (!isInitial && lastStatus && lastStatus !== newStatus) {
-        const msgs = {
-          accepted: "Trust accepted your donation!",
-          reached: "Vehicle reached your location!",
-          picked: "Food picked up successfully!",
-          completed: "Donation process complete!",
-        };
-        showToast(
-          msgs[newStatus] || `Status updated: ${item.status}`,
-          newStatus,
-        );
+    if (response.ok === true) {
+      const donationItem = await response.json();
+      
+      // Update the information shown on the page
+      updateTrackingUI(donationItem);
+
+      const currentStatus = donationItem.status.toLowerCase();
+
+      // Show a notification if the status has changed since the last time we checked
+      if (isFirstLoad === false && lastDonationStatus !== null) {
+        if (lastDonationStatus !== currentStatus) {
+            let changeMessage = "";
+            if (currentStatus === "accepted") {
+                changeMessage = "Trust accepted your donation!";
+            } else if (currentStatus === "reached") {
+                changeMessage = "Vehicle reached your location!";
+            } else if (currentStatus === "picked") {
+                changeMessage = "Food picked up successfully!";
+            } else if (currentStatus === "completed") {
+                changeMessage = "Donation process complete!";
+            } else {
+                changeMessage = "Status updated: " + donationItem.status;
+            }
+
+            showNotification(changeMessage, currentStatus);
+        }
       }
-      lastStatus = newStatus;
+      
+      // Remember the status for the next check
+      lastDonationStatus = currentStatus;
     }
-  } catch (e) {
-    console.error("Polling error:", e);
+  } catch (error) {
+    console.error("Error fetching donation details:", error);
   }
 }
 
-function showToast(message, status) {
+// This function shows a small notification popup
+function showNotification(message, status) {
   const container = document.getElementById("toast-container");
   if (!container) return;
+
   const toast = document.createElement("div");
-  toast.className = `toast status-update ${status}`;
-  const icons = {
-    accepted: "✅",
-    reached: "📍",
-    picked: "📦",
-    completed: "🎉",
-  };
-  toast.innerHTML = `<span class="toast-icon">${icons[status] || "🔔"}</span><span class="toast-message">${message}</span>`;
+  toast.className = "toast status-update " + status;
+
+  // Decide which icon to show
+  let icon = "🔔";
+  if (status === "accepted") icon = "✅";
+  else if (status === "reached") icon = "📍";
+  else if (status === "picked") icon = "📦";
+  else if (status === "completed") icon = "🎉";
+
+  toast.innerHTML = '<span class="toast-icon">' + icon + '</span><span class="toast-message">' + message + '</span>';
   container.appendChild(toast);
-  setTimeout(() => {
+
+  // Automatically remove it after 6 seconds
+  setTimeout(function () {
     toast.style.animation = "fadeOut 0.5s ease-out forwards";
-    setTimeout(() => toast.remove(), 500);
+    setTimeout(function () {
+      toast.remove();
+    }, 500);
   }, 6000);
 }
 
-function updateUI(item) {
-  updateSteps(item.status);
-  const set = (id, val) => {
-    const el = document.getElementById(id);
-    if (el) el.innerText = val;
-  };
-  const htmlSet = (id, label, val) => {
-    const el = document.getElementById(id);
-    if (el) el.innerHTML = `<span>${label}</span>${val}`;
-  };
+// This function updates all the text and labels on the tracking page
+function updateTrackingUI(item) {
+  // 1. Update the visual progress steps (dots/lines)
+  updateProgressSteps(item.status);
 
-  htmlSet("trackFood", "Food Type", item.food_name);
-  htmlSet("trackQty", "Quantity", item.approx_quantity);
-  htmlSet("trackAddress", "Pickup Address", item.address);
-  htmlSet("trackTrust", "Assigned Trust", item.trust_name || "Looking...");
+  // 2. Set the text for various labels
+  const foodTypeEl = document.getElementById("trackFood");
+  if (foodTypeEl) foodTypeEl.innerHTML = "<span>Food Type</span>" + item.food_name;
 
+  const qtyEl = document.getElementById("trackQty");
+  if (qtyEl) qtyEl.innerHTML = "<span>Quantity</span>" + item.approx_quantity;
+
+  const addressEl = document.getElementById("trackAddress");
+  if (addressEl) addressEl.innerHTML = "<span>Pickup Address</span>" + item.address;
+
+  const trustEl = document.getElementById("trackTrust");
+  if (trustEl) trustEl.innerHTML = "<span>Assigned Trust</span>" + (item.trust_name || "Looking...");
+
+  // 3. Show driver and vehicle info if available
   if (item.driver_name || item.vehicle_number) {
-    const group = document.getElementById("liveTrackingGroup");
-    if (group) group.style.display = "block";
-    set("trackDriver", item.driver_name || "--");
-    set("trackPhone", item.driver_phone || "--");
-    set("trackVehicle", item.vehicle_number || "--");
-    set("trackEta", item.eta || "--");
+    const trackingGroup = document.getElementById("liveTrackingGroup");
+    if (trackingGroup) {
+      trackingGroup.style.display = "block";
+    }
+
+    const driverEl = document.getElementById("trackDriver");
+    if (driverEl) driverEl.innerText = item.driver_name || "--";
+
+    const phoneEl = document.getElementById("trackPhone");
+    if (phoneEl) phoneEl.innerText = item.driver_phone || "--";
+
+    const vehicleEl = document.getElementById("trackVehicle");
+    if (vehicleEl) vehicleEl.innerText = item.vehicle_number || "--";
+
+    const etaEl = document.getElementById("trackEta");
+    if (etaEl) etaEl.innerText = item.eta || "--";
   }
 
-  const msg = document.querySelector(".status-message");
-  if (msg) {
+  // 4. Update the main status heading message
+  const statusMsgEl = document.querySelector(".status-message");
+  if (statusMsgEl) {
     const s = item.status.toLowerCase();
-    const msgs = {
-      pending: "Waiting for trust...",
-      accepted: "Trust accepted!",
-      reached: "At your location!",
-      picked: "Food picked up!",
-      completed: "Success!",
-    };
-    msg.innerText = msgs[s] || `Status: ${item.status}`;
-    msg.className = "status-message " + s;
+    let displayMsg = "Status: " + item.status;
+    
+    if (s === "pending") displayMsg = "Waiting for trust...";
+    else if (s === "accepted") displayMsg = "Trust accepted!";
+    else if (s === "reached") displayMsg = "At your location!";
+    else if (s === "picked") displayMsg = "Food picked up!";
+    else if (s === "completed") displayMsg = "Success!";
+    
+    statusMsgEl.innerText = displayMsg;
+    statusMsgEl.className = "status-message " + s;
   }
 
+  // 5. Show the "Proof Image" if the food has been picked up
   if (item.proof_image) {
-    const infoSection =
-      document.querySelector(".info-section") ||
-      document.querySelector(".donation-card");
-    // Check if proof already exists to avoid duplicates during polling
-    if (!document.getElementById("proofImageDisplay")) {
-      const div = document.createElement("div");
-      div.id = "proofImageDisplay";
-      div.style.marginTop = "20px";
-      div.innerHTML = `<h3 style="margin-bottom:10px;">Pickup Proof:</h3><img src="${item.proof_image}" style="max-width:100%; border-radius:10px; border: 2px solid #e2e8f0;">`;
-      infoSection.appendChild(div);
+    // Find where to put the image (either info-section or donation-card)
+    let container = document.querySelector(".info-section");
+    if (!container) {
+        container = document.querySelector(".donation-card");
+    }
+
+    // Only add it if it doesn't already exist on the page
+    if (!document.getElementById("proofImageDiv")) {
+      const proofDiv = document.createElement("div");
+      proofDiv.id = "proofImageDiv";
+      proofDiv.style.marginTop = "20px";
+      proofDiv.innerHTML = '<h3 style="margin-bottom:10px;">Pickup Proof:</h3>' +
+                           '<img src="' + item.proof_image + '" style="max-width:100%; border-radius:10px; border: 2px solid #e2e8f0;">';
+      if (container) {
+        container.appendChild(proofDiv);
+      }
     }
   }
 }
 
-function updateSteps(status) {
-  const order = ["pending", "accepted", "reached", "picked", "completed"];
-  const level = order.indexOf(status.toLowerCase());
-  document
-    .querySelectorAll(".step")
-    .forEach((step, i) => step.classList.toggle("active", i <= level));
+// This function highlights the "steps" (Pending -> Accepted -> Reached -> Picked -> Completed)
+function updateProgressSteps(status) {
+  const statusOrder = ["pending", "accepted", "reached", "picked", "completed"];
+  const currentLevel = statusOrder.indexOf(status.toLowerCase());
+  
+  const allStepElements = document.querySelectorAll(".step");
+  
+  for (let i = 0; i < allStepElements.length; i++) {
+    const step = allStepElements[i];
+    // If the step index is less than or equal to our current status level, make it active
+    if (i <= currentLevel) {
+      step.classList.add("active");
+    } else {
+      step.classList.remove("active");
+    }
+  }
 }

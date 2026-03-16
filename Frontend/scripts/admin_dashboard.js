@@ -1,93 +1,137 @@
 import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
 
+// This function runs when the admin dashboard page starts up
 document.addEventListener("DOMContentLoaded", function () {
-  if (!checkAuth("admin")) return;
+  // 1. Make sure only admins can access this page
+  if (checkAuth("admin") === false) {
+    return;
+  }
+
+  // 2. Fetch the overall summary (stats)
   getAdminSummary();
+
+  // 3. Load the list of trusts that are waiting for approval
   loadPendingTrusts();
 });
 
+// This function fetches the total counts (pending, verified, donors)
 async function getAdminSummary() {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/admin/stats`, {
+    const response = await fetch(BACKEND_URL + "/api/admin/stats", {
       headers: getAuthHeaders(),
     });
-    if (response.ok) {
+
+    if (response.ok === true) {
       const stats = await response.json();
-      if (document.getElementById("pendingCount"))
-        document.getElementById("pendingCount").innerText =
-          stats.total_pending_trusts;
-      if (document.getElementById("verifiedCount"))
-        document.getElementById("verifiedCount").innerText =
-          stats.verified_trusts;
-      if (document.getElementById("donorCount"))
-        document.getElementById("donorCount").innerText = stats.total_donors;
+
+      // Update the numbers on the page
+      const pendingText = document.getElementById("pendingCount");
+      const verifiedText = document.getElementById("verifiedCount");
+      const donorText = document.getElementById("donorCount");
+
+      if (pendingText) {
+        pendingText.innerText = stats.total_pending_trusts;
+      }
+      if (verifiedText) {
+        verifiedText.innerText = stats.verified_trusts;
+      }
+      if (donorText) {
+        donorText.innerText = stats.total_donors;
+      }
     }
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error("Error getting summary:", error);
   }
 }
 
+// This function fetches and displays the trusts waiting for approval
 async function loadPendingTrusts() {
   const tableBody = document.querySelector("tbody");
-  tableBody.innerHTML =
-    '<tr><td colspan="6" style="text-align:center;">Loading...</td></tr>';
+  
+  // Show a loading message while we wait
+  tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Loading pending trusts...</td></tr>';
+
   try {
-    const response = await fetch(`${BACKEND_URL}/api/admin/pending_trusts`, {
+    const response = await fetch(BACKEND_URL + "/api/admin/pending_trusts", {
       headers: getAuthHeaders(),
     });
-    if (response.ok) {
+
+    if (response.ok === true) {
       const trusts = await response.json();
-      tableBody.innerHTML = trusts.length
-        ? ""
-        : '<tr><td colspan="6" style="text-align:center;">No pending registrations.</td></tr>';
-      trusts.forEach((t) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-                    <td>${t.trust_name}</td>
-                    <td>${t.license_number}</td>
-                    <td>${t.city}</td>
-                    <td><button class='view-btn' onclick="window.viewTrustPhoto('${t.trust_photo}')">View Photo</button></td>
-                    <td><span class='status-pending'>PENDING</span></td>
-                    <td class='action-cell'>
-                        <button class='approve-btn' onclick="window.respondToTrust(${t.id}, 'approve')">Approve</button>
-                        <button class='reject-btn' onclick="window.respondToTrust(${t.id}, 'reject')">Reject</button>
-                    </td>`;
-        tableBody.appendChild(row);
-      });
+
+      // Clear the loading message
+      tableBody.innerHTML = "";
+
+      // If there are no trusts to show
+      if (trusts.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No pending registrations found.</td></tr>';
+      } else {
+        // Loop through each trust and create a table row
+        for (let i = 0; i < trusts.length; i++) {
+          const t = trusts[i];
+          const row = document.createElement("tr");
+
+          // Build the row content
+          row.innerHTML = 
+            '<td>' + t.trust_name + '</td>' +
+            '<td>' + t.license_number + '</td>' +
+            '<td>' + t.city + '</td>' +
+            '<td><button class="view-btn" onclick="window.viewTrustPhoto(\'' + t.trust_photo + '\')">View Photo</button></td>' +
+            '<td><span class="status-pending">PENDING</span></td>' +
+            '<td class="action-cell">' +
+              '<button class="approve-btn" onclick="window.respondToTrust(' + t.id + ', \'approve\')">Approve</button>' +
+              '<button class="reject-btn" onclick="window.respondToTrust(' + t.id + ', \'reject\')">Reject</button>' +
+            '</td>';
+
+          tableBody.appendChild(row);
+        }
+      }
     }
-  } catch (e) {
-    tableBody.innerHTML =
-      '<tr><td colspan="6" style="text-align:center;color:red;">Error.</td></tr>';
+  } catch (error) {
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;">Error loading data.</td></tr>';
   }
 }
 
-window.respondToTrust = async (id, action) => {
-  if (!confirm(`Are you sure you want to ${action} this trust?`)) return;
+// This function handles Approve or Reject clicks
+window.respondToTrust = async function (id, action) {
+  // Ask for confirmation
+  const userConfirmed = confirm("Are you sure you want to " + action + " this trust?");
+  if (userConfirmed === false) {
+    return;
+  }
+
   try {
+    // Send the decision to the server
     const response = await fetch(
-      `${BACKEND_URL}/api/admin/verify_trust/${id}?action=${action}`,
+      BACKEND_URL + "/api/admin/verify_trust/" + id + "?action=" + action,
       {
         method: "PUT",
         headers: getAuthHeaders(),
-      },
+      }
     );
-    if (response.ok) {
-      alert(`Trust ${action}ed!`);
-      location.reload();
+
+    if (response.ok === true) {
+      alert("Trust " + action + "ed successfully!");
+      location.reload(); // Refresh the page to update the list
     }
-  } catch (e) {
-    alert("Error.");
+  } catch (error) {
+    alert("Error communicating with server.");
   }
 };
 
-window.viewTrustPhoto = (photo) => {
-  if (!photo || photo === "null") return alert("No photo.");
-  window
-    .open("")
-    .document.write(`<img src="${photo}" style="max-width:100%;">`);
+// This function opens the trust verification photo in a new window
+window.viewTrustPhoto = function (photo) {
+  if (!photo || photo === "null") {
+    alert("No photo available for this trust.");
+    return;
+  }
+  
+  const newWindow = window.open("");
+  newWindow.document.write('<img src="' + photo + '" style="max-width:100%;">');
 };
 
-window.logout = () => {
+// This function logs the admin out
+window.logout = function () {
   localStorage.clear();
   window.location.href = "../index.html";
 };

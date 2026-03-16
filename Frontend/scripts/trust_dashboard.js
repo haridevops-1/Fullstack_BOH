@@ -1,163 +1,230 @@
 import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
 
+// This Set helps us keep track of which donations we have already seen.
+// This is used to avoid showing multiple notifications for the same new donation.
 let seenDonationIds = new Set();
-let isFirstLoad = true;
+let isFirstPageLoad = true;
 
+// This function runs when the page is fully loaded
 document.addEventListener("DOMContentLoaded", function () {
-  if (!checkAuth("trust")) return;
+  // 1. Check if the user is logged in as a trust
+  if (checkAuth("trust") === false) {
+    return;
+  }
 
-  const name = localStorage.getItem("userName");
-  const heading = document.getElementById("welcomeHeading");
-  if (heading && name) heading.innerText = `Welcome, ${name}`;
+  // 2. Show a welcome message with the trust name
+  const userName = localStorage.getItem("userName");
+  const welcomeHeading = document.getElementById("welcomeHeading");
+  if (welcomeHeading && userName) {
+    welcomeHeading.innerText = "Welcome, " + userName;
+  }
 
-  fetchTrustStats();
-  loadRecentDonations(true);
+  // 3. Fetch stats and recent donations for the first time
+  fetchTrustDashboardStats();
+  loadRecentTrustDonations(true);
 
+  // 4. Set up the manual Refresh button
   const refreshBtn = document.querySelector(".refresh-btn");
   if (refreshBtn) {
-    refreshBtn.onclick = () => {
-      fetchTrustStats();
-      loadRecentDonations(false);
+    refreshBtn.onclick = function () {
+      fetchTrustDashboardStats();
+      loadRecentTrustDonations(false);
     };
   }
 
-  setInterval(() => {
-    fetchTrustStats();
-    loadRecentDonations(false);
+  // 5. Automatically check for updates every 10 seconds (Polling)
+  setInterval(function () {
+    fetchTrustDashboardStats();
+    loadRecentTrustDonations(false);
   }, 10000);
 });
 
-async function fetchTrustStats() {
+// This function fetches counts for the status boxes (Pending, Accepted, etc.)
+async function fetchTrustDashboardStats() {
   const trustId = localStorage.getItem("userId");
+  
   try {
     const response = await fetch(
-      `${BACKEND_URL}/api/trust/donations_details?trust_id=${trustId}`,
+      BACKEND_URL + "/api/trust/donations_details?trust_id=" + trustId,
       {
         headers: getAuthHeaders(),
-      },
+      }
     );
 
-    if (response.ok) {
-      const list = await response.json();
-      let pending = 0,
-        accepted = 0,
-        rejected = 0,
-        completed = 0;
+    if (response.ok === true) {
+      const donationList = await response.json();
+      
+      let pendingCount = 0;
+      let acceptedCount = 0;
+      let rejectedCount = 0;
+      let completedCount = 0;
 
-      list.forEach((item) => {
-        const s = item.status.toLowerCase();
-        if (s === "pending") pending++;
-        else if (["accepted", "reached", "picked"].includes(s)) accepted++;
-        else if (s === "rejected") rejected++;
-        else if (s === "completed") completed++;
-      });
+      // Loop through each donation to count statuses
+      for (let i = 0; i < donationList.length; i++) {
+        const item = donationList[i];
+        const status = item.status.toLowerCase();
 
-      document.querySelector(".pending").innerText = pending;
-      document.querySelector(".accept").innerText = accepted;
-      document.querySelector(".reject").innerText = rejected;
-      document.querySelector(".completed-count").innerText = completed;
+        if (status === "pending") {
+          pendingCount++;
+        } else if (status === "accepted" || status === "reached" || status === "picked") {
+          acceptedCount++;
+        } else if (status === "rejected") {
+          rejectedCount++;
+        } else if (status === "completed") {
+          completedCount++;
+        }
+      }
 
-      const footer = document.querySelector(".card-footer-text");
-      if (footer) footer.style.display = pending > 0 ? "none" : "block";
+      // Update the numbers on the dashboard
+      const pendingDisp = document.querySelector(".pending");
+      const acceptDisp = document.querySelector(".accept");
+      const rejectDisp = document.querySelector(".reject");
+      const completedDisp = document.querySelector(".completed-count");
+
+      if (pendingDisp) pendingDisp.innerText = pendingCount;
+      if (acceptDisp) acceptDisp.innerText = acceptedCount;
+      if (rejectDisp) rejectDisp.innerText = rejectedCount;
+      if (completedDisp) completedDisp.innerText = completedCount;
+
+      // Hide the "no requests" message in the footer if there are pending items
+      const footerMsg = document.querySelector(".card-footer-text");
+      if (footerMsg) {
+        if (pendingCount > 0) {
+          footerMsg.style.display = "none";
+        } else {
+          footerMsg.style.display = "block";
+        }
+      }
     }
   } catch (error) {
     console.error("Error loading stats:", error);
   }
 }
 
-async function loadRecentDonations(init = false) {
+// This function loads the active donations into the table
+async function loadRecentTrustDonations(isInitial) {
   const trustId = localStorage.getItem("userId");
   const tableBody = document.querySelector("tbody");
-  if (init)
-    tableBody.innerHTML =
-      '<tr><td colspan="6" style="text-align:center;">Looking for active requests...</td></tr>';
+  
+  if (!tableBody) return;
+
+  // Show loading message on the first load
+  if (isInitial === true) {
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Looking for active requests...</td></tr>';
+  }
 
   try {
     const response = await fetch(
-      `${BACKEND_URL}/api/trust/donations_details?trust_id=${trustId}`,
+      BACKEND_URL + "/api/trust/donations_details?trust_id=" + trustId,
       {
         headers: getAuthHeaders(),
-      },
+      }
     );
 
-    if (response.ok) {
+    if (response.ok === true) {
       const donations = await response.json();
 
-      donations.forEach((item) => {
+      // Check for new incoming donations to show a toast notification
+      for (let i = 0; i < donations.length; i++) {
+        const item = donations[i];
+        const id = item.id;
         const status = item.status.toLowerCase();
-        if (status === "pending" && !seenDonationIds.has(item.id)) {
-          if (!init && !isFirstLoad)
-            showToast(
-              `New Incoming Donation: ${item.food_name || "Food Request"}`,
-            );
-          seenDonationIds.add(item.id);
-        } else if (!seenDonationIds.has(item.id)) {
-          seenDonationIds.add(item.id);
+
+        // If this is a NEW pending donation we haven't seen before...
+        if (status === "pending" && seenDonationIds.has(id) === false) {
+           // Only show notification if the page has already finished its initial load
+           if (isInitial === false && isFirstPageLoad === false) {
+             showNotificationToast("New Incoming Donation: " + (item.food_name || "Food Request"));
+           }
+           seenDonationIds.add(id);
+        } else if (seenDonationIds.has(id) === false) {
+           seenDonationIds.add(id);
         }
-      });
+      }
 
-      isFirstLoad = false;
+      // After checking for new items, mark initial load as finished
+      isFirstPageLoad = false;
+
+      // Clear the table and rebuild it
       tableBody.innerHTML = "";
-      let count = 0;
+      let countShown = 0;
 
-      donations.forEach((item) => {
+      for (let i = 0; i < donations.length; i++) {
+        const item = donations[i];
         const status = item.status.toLowerCase();
+
+        // Only show active donations (not completed or rejected)
         if (status !== "completed" && status !== "rejected") {
           const row = document.createElement("tr");
-          row.onclick = () => {
-            window.location.href =
-              status === "pending"
-                ? `Trust_decision.html?id=${item.id}`
-                : `Trust_update.html?id=${item.id}`;
+
+          // When the row is clicked, decide which page to go to
+          row.onclick = function () {
+            if (status === "pending") {
+              window.location.href = "Trust_decision.html?id=" + item.id;
+            } else {
+              window.location.href = "Trust_update.html?id=" + item.id;
+            }
           };
 
-          const newBadge =
-            status === "pending" ? '<span class="new-badge">NEW</span>' : "";
-          const catClass =
-            item.category === "non-veg"
-              ? "non-veg"
-              : item.category === "both"
-                ? "both"
-                : "veg";
+          // Decide if we should show a "NEW" badge
+          let badgeHTML = "";
+          if (status === "pending") {
+            badgeHTML = '<span class="new-badge">NEW</span>';
+          }
 
-          row.innerHTML = `
-                        <td>${item.name || "Anonymous donor"}${newBadge}</td>
-                        <td>${item.food_name}</td>
-                        <td><span class="category-badge ${catClass}">${item.category || "veg"}</span></td>
-                        <td>${item.approx_quantity}</td>
-                        <td>${item.city}</td>
-                        <td><span class="status ${status}">${item.status}</span></td>
-                    `;
+          // Decide category badge CSS class
+          let categoryClass = "veg";
+          if (item.category === "non-veg") {
+            categoryClass = "non-veg";
+          } else if (item.category === "both") {
+            categoryClass = "both";
+          }
+
+          // Build the row HTML
+          row.innerHTML = 
+            '<td>' + (item.name || "Anonymous donor") + badgeHTML + '</td>' +
+            '<td>' + item.food_name + '</td>' +
+            '<td><span class="category-badge ' + categoryClass + '">' + (item.category || "veg") + '</span></td>' +
+            '<td>' + item.approx_quantity + '</td>' +
+            '<td>' + item.city + '</td>' +
+            '<td><span class="status ' + status + '">' + item.status + '</span></td>';
+
           tableBody.appendChild(row);
-          count++;
+          countShown++;
         }
-      });
+      }
 
-      if (count === 0) {
-        tableBody.innerHTML =
-          '<tr><td colspan="6" style="text-align:center;padding:40px;">No active donation requests found.</td></tr>';
+      // If there are no active donations
+      if (countShown === 0) {
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;">No active donation requests found.</td></tr>';
       }
     }
   } catch (error) {
-    tableBody.innerHTML =
-      '<tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Connection error. Please try again.</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Connection error. Please try again.</td></tr>';
   }
 }
 
-function showToast(message) {
+// This function shows a small notification popup for new donations
+function showNotificationToast(message) {
   const container = document.getElementById("toast-container");
   if (!container) return;
+
   const toast = document.createElement("div");
   toast.className = "toast incoming";
-  toast.innerHTML = `<span class="toast-icon">🛎️</span><span class="toast-message">${message}</span>`;
+  toast.innerHTML = '<span class="toast-icon">🛎️</span><span class="toast-message">' + message + '</span>';
   container.appendChild(toast);
-  setTimeout(() => {
+
+  // Automatically hide after 5 seconds
+  setTimeout(function () {
     toast.style.animation = "fadeOut 0.5s ease-out forwards";
-    setTimeout(() => toast.remove(), 500);
+    setTimeout(function () {
+      toast.remove();
+    }, 500);
   }, 5000);
 }
 
-window.logout = () => {
+// This function handles the logout process
+window.logout = function () {
   localStorage.clear();
   window.location.href = "../index.html";
 };
