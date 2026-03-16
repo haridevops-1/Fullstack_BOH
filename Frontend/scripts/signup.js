@@ -41,14 +41,13 @@ const getBase64 = (file) => {
 
 window.handleSignup = async (event) => {
   event.preventDefault();
+  
+  // 1. Get UI elements
   const messageBox = document.getElementById("messageBox");
-  const signupBtn = event.target.querySelector("button[type='submit']");
+  const signupForm = event.target;
+  const signupBtn = signupForm.querySelector("button[type='submit']");
 
-  signupBtn.disabled = true;
-  signupBtn.classList.add("btn-loading");
-  messageBox.innerText = "Creating your account...";
-  messageBox.className = "form-message";
-
+  // 2. Get common field values
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
@@ -56,13 +55,66 @@ window.handleSignup = async (event) => {
   const city = document.getElementById("city").value.trim();
   const pincode = document.getElementById("pincode").value.trim();
 
-  if (password !== confirmPassword) {
-    messageBox.innerText = "Passwords do not match.";
+  // 3. Simple Validation Checklist
+  if (email === "") {
+    messageBox.innerText = "Error: Email is required.";
     messageBox.className = "form-message error";
-    signupBtn.disabled = false;
-    signupBtn.classList.remove("btn-loading");
     return;
   }
+  if (password === "") {
+    messageBox.innerText = "Error: Password is required.";
+    messageBox.className = "form-message error";
+    return;
+  }
+  if (password !== confirmPassword) {
+    messageBox.innerText = "Error: Passwords do not match.";
+    messageBox.className = "form-message error";
+    return;
+  }
+  if (mobile === "" || mobile.length < 10) {
+    messageBox.innerText = "Error: Please enter a valid 10-digit mobile number.";
+    messageBox.className = "form-message error";
+    return;
+  }
+  if (city === "") {
+    messageBox.innerText = "Error: City is required.";
+    messageBox.className = "form-message error";
+    return;
+  }
+  if (pincode === "") {
+    messageBox.innerText = "Error: Pincode is required.";
+    messageBox.className = "form-message error";
+    return;
+  }
+
+  // 4. Role-specific validation
+  if (currentRole === "donor") {
+    const firstName = document.getElementById("firstName").value.trim();
+    if (firstName === "") {
+      messageBox.innerText = "Error: First name is required.";
+      messageBox.className = "form-message error";
+      return;
+    }
+  } else {
+    const trustName = document.getElementById("trustName").value.trim();
+    const licenseNumber = document.getElementById("licenseNumber").value.trim();
+    if (trustName === "") {
+      messageBox.innerText = "Error: Trust name is required.";
+      messageBox.className = "form-message error";
+      return;
+    }
+    if (licenseNumber === "") {
+      messageBox.innerText = "Error: License number is required.";
+      messageBox.className = "form-message error";
+      return;
+    }
+  }
+
+  // 5. If everything is fine, proceed with signup
+  signupBtn.disabled = true;
+  signupBtn.classList.add("btn-loading");
+  messageBox.innerText = "Creating your account...";
+  messageBox.className = "form-message";
 
   let signupData = {};
   let apiUrl = `${BACKEND_URL}/api/${currentRole}/signup`;

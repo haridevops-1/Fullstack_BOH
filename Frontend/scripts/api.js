@@ -27,14 +27,15 @@ export function formatDate(dateString) {
   });
 }
 
-// Redirect if not logged in
+// Redirect if not logged in or if role is wrong
 export function checkAuth(role) {
   const userId = localStorage.getItem("userId");
   const userRole = localStorage.getItem("userRole");
   const token = localStorage.getItem("authToken");
 
+  // If there is no user ID or token, or the role doesn't match
   if (!userId || !token || (role && userRole !== role)) {
-    alert("Access denied. Please login.");
+    // We just send them to the login page without a popup alert
     window.location.href = "login.html";
     return false;
   }

@@ -87,23 +87,32 @@ function startEdit(btn) {
 async function saveChanges(role) {
   const userId = localStorage.getItem("userId");
   const inputs = document.querySelectorAll(".edit-input");
+
+  // Simple Validation: Check if any input is empty
+  for (let i = 0; i < inputs.length; i++) {
+    if (inputs[i].value.trim() === "") {
+      alert("Error: All fields are required. Please fill in all information.");
+      return; // Stop here if any field is empty
+    }
+  }
+
   const info =
     role === "donor"
       ? {
-        Firstname: inputs[0].value,
-        Lastname: inputs[1].value,
-        email: inputs[2].value,
-        mobile_number: inputs[3].value,
-        city: inputs[4].value,
-        Pincode: inputs[5].value,
+        Firstname: inputs[0].value.trim(),
+        Lastname: inputs[1].value.trim(),
+        email: inputs[2].value.trim(),
+        mobile_number: inputs[3].value.trim(),
+        city: inputs[4].value.trim(),
+        Pincode: inputs[5].value.trim(),
       }
       : {
-        trust_name: inputs[0].value,
-        email_id: inputs[1].value,
-        mobile_number: inputs[2].value,
-        trust_address: inputs[3].value,
-        city: inputs[4].value,
-        pincode: inputs[5].value,
+        trust_name: inputs[0].value.trim(),
+        email_id: inputs[1].value.trim(),
+        mobile_number: inputs[2].value.trim(),
+        trust_address: inputs[3].value.trim(),
+        city: inputs[4].value.trim(),
+        pincode: inputs[5].value.trim(),
       };
 
   const url =

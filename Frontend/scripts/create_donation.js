@@ -13,22 +13,57 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function handleDonationSubmit(event) {
   event.preventDefault();
+  
   const params = new URLSearchParams(window.location.search);
   const trustId = params.get("trustId");
   const donorId = localStorage.getItem("userId");
 
-  if (!trustId) return alert("Please select a trust first.");
+  if (!trustId) {
+    alert("Error: No trust selected. Please select a trust from the list first.");
+    return;
+  }
+
+  // Get field values
+  const contactName = document.getElementById("contactName").value.trim();
+  const mobileNumber = document.getElementById("mobileNumber").value.trim();
+  const foodName = document.getElementById("foodName").value.trim();
+  const quantity = document.getElementById("quantity").value.trim();
+  const address = document.getElementById("address").value.trim();
+  const city = document.getElementById("city").value.trim();
+  const pincode = document.getElementById("pincode").value.trim();
+
+  // Simple Validation Checklist
+  if (foodName === "") {
+    alert("Please enter the name of the food you are donating.");
+    return;
+  }
+  if (quantity === "") {
+    alert("Please enter the approximate quantity.");
+    return;
+  }
+  if (mobileNumber === "" || mobileNumber.length < 10) {
+    alert("Please enter a valid 10-digit mobile number.");
+    return;
+  }
+  if (address === "") {
+    alert("Please enter the pickup address.");
+    return;
+  }
+  if (city === "") {
+    alert("Please enter the city.");
+    return;
+  }
 
   const data = {
-    name: document.getElementById("contactName").value,
-    mobile_number: document.getElementById("mobileNumber").value,
-    food_name: document.getElementById("foodName").value,
+    name: contactName || "Donor",
+    mobile_number: mobileNumber,
+    food_name: foodName,
     category: document.getElementById("category").value,
-    approx_quantity: document.getElementById("quantity").value,
-    address: document.getElementById("address").value,
+    approx_quantity: quantity,
+    address: address,
     area_landmark: document.getElementById("landmark").value,
-    city: document.getElementById("city").value,
-    pincode: document.getElementById("pincode").value,
+    city: city,
+    pincode: pincode,
     notes: document.getElementById("notes").value,
   };
 

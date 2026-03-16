@@ -30,23 +30,39 @@ window.togglePassword = (inputId) => {
 
 window.handleLogin = async (event) => {
   event.preventDefault();
+  
+  // 1. Get the elements we need
   const messageBox = document.getElementById("messageBox");
-  const loginBtn = event.target.querySelector("button[type='submit']");
+  const loginForm = event.target;
+  const loginBtn = loginForm.querySelector("button[type='submit']");
+
+  // 2. Simple Validation: Check if fields are empty
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  if (email === "" || password === "") {
+    messageBox.innerText = "Error: Please enter both email and password.";
+    messageBox.className = "form-message error";
+    return; // Stop here if fields are empty
+  }
+
+  // 3. Prepare for login - clear any old session data first
+  // This helps prevent "Access Denied" issues when switching between donor and trust
+  localStorage.clear();
 
   loginBtn.disabled = true;
   loginBtn.classList.add("btn-loading");
   messageBox.innerText = "Checking your details...";
   messageBox.className = "form-message";
 
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-
-  let endpoint = `${BACKEND_URL}/api/${currentRole}/login`;
+  let endpoint = BACKEND_URL + "/api/" + currentRole + "/login";
   let payload = { email, password };
 
-  // Trust login uses email_id instead of email
+  // Note: Trust login usually uses 'email_id' instead of 'email' in the backend
   if (currentRole === "trust") {
-    payload = { email_id: email, password };
+    payload = { email_id: email, password: password };
   }
 
   try {
@@ -58,26 +74,33 @@ window.handleLogin = async (event) => {
 
     const data = await response.json();
 
-    if (response.ok) {
-      messageBox.innerText = "Login successful! Redirecting to dashboard...";
+    if (response.ok === true) {
+      messageBox.innerText = "Login successful! Redirecting...";
       messageBox.className = "form-message success";
 
+      // Save user info to the browser's storage
       localStorage.setItem("userId", data.id);
       localStorage.setItem("userRole", currentRole);
       localStorage.setItem("userName", data.name || "User");
       localStorage.setItem("authToken", data.access_token);
-      if (data.city) localStorage.setItem("userCity", data.city);
+      if (data.city) {
+        localStorage.setItem("userCity", data.city);
+      }
 
-      setTimeout(() => {
-        const pages = {
-          donor: "Donor_dashboard.html",
-          trust: "Trust_dashboard.html",
-          admin: "admin_dashboard.html",
-        };
-        window.location.href = pages[currentRole];
+      // Wait 1 second then go to the dashboard
+      setTimeout(function () {
+        if (currentRole === "donor") {
+          window.location.href = "Donor_dashboard.html";
+        } else if (currentRole === "trust") {
+          window.location.href = "Trust_dashboard.html";
+        } else if (currentRole === "admin") {
+          window.location.href = "admin_dashboard.html";
+        }
       }, 1000);
+      
     } else {
-      messageBox.innerText = `Login failed: ${data.detail || "Incorrect email or password."}`;
+      // Show the exact error message from the server
+      messageBox.innerText = "Login failed: " + (data.detail || "Invalid email or password.");
       messageBox.className = "form-message error";
       loginBtn.disabled = false;
       loginBtn.classList.remove("btn-loading");
