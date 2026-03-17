@@ -47,10 +47,14 @@ async function loadTrustList() {
         container.innerHTML = '<div style="text-align:center;color:grey;width:100%;grid-column:1/-1;padding:60px;">No trusts found.</div>';
       } else {
         // FILTERING LOGIC: Only show trusts that match the donor's city
-        // Note: We do a case-insensitive check to be safe
         const filteredTrusts = trustsArray.filter(t => {
           if (!userCity || userCity === "your area") return true; 
-          return t.city.toLowerCase().trim() === userCity.toLowerCase().trim();
+          
+          // CLEAN BOTH NAMES for comparison: Handle typos like 'cxChennai'
+          const cleanDonorCity = userCity.toLowerCase().replace(/^cx/i, "").trim();
+          const cleanTrustCity = (t.city || "").toLowerCase().replace(/^cx/i, "").trim();
+          
+          return cleanTrustCity === cleanDonorCity;
         });
 
         if (filteredTrusts.length === 0) {
@@ -60,7 +64,7 @@ async function loadTrustList() {
           for (let i = 0; i < filteredTrusts.length; i++) {
             const trustItem = filteredTrusts[i];
             const card = document.createElement("div");
-            card.className = "trust-card";
+            card.className = "premium-card";
 
             // Use a default image if the trust doesn't have one
             const trustPhoto = trustItem.trust_photo || "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600&auto=format&fit=crop";

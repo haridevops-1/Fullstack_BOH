@@ -1,4 +1,4 @@
-import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
+import { BACKEND_URL, getAuthHeaders, checkAuth, showToast } from "./api.js";
 
 // This function runs when the admin dashboard page starts up
 document.addEventListener("DOMContentLoaded", function () {
@@ -111,18 +111,18 @@ window.respondToTrust = async function (id, action) {
     );
 
     if (response.ok === true) {
-      alert("Trust " + action + "ed successfully!");
-      location.reload(); // Refresh the page to update the list
+      showToast("Trust " + action + "ed successfully!", "success");
+      setTimeout(() => location.reload(), 2000); // Refresh the page after toast
     }
   } catch (error) {
-    alert("Error communicating with server.");
+    showToast("Error communicating with server.", "error");
   }
 };
 
 // This function opens the trust verification photo in a new window
 window.viewTrustPhoto = function (photo) {
   if (!photo || photo === "null") {
-    alert("No photo available for this trust.");
+    showToast("No photo available for this trust.", "warning");
     return;
   }
   

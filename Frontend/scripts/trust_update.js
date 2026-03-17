@@ -1,4 +1,4 @@
-import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
+import { BACKEND_URL, getAuthHeaders, checkAuth, showToast } from "./api.js";
 
 // This function runs when the page is fully loaded
 document.addEventListener("DOMContentLoaded", function () {
@@ -75,6 +75,17 @@ async function fetchDonationDetails(id) {
       setText("updatePhone", donationItem.mobile_number);
       setText("updateAddress", donationItem.address + ", " + donationItem.city);
 
+      // Set the tracking fields if they have data
+      const setVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val || "";
+      };
+      
+      setVal("driverName", donationItem.driver_name);
+      setVal("driverPhone", donationItem.driver_phone);
+      setVal("vehicleNumber", donationItem.vehicle_number);
+      setVal("eta", donationItem.eta);
+
       // Set the select box to the current status
       const statusSelect = document.getElementById("statusSelect");
       if (statusSelect) {
@@ -91,8 +102,14 @@ async function handleStatusUpdate(id) {
   const statusSelect = document.getElementById("statusSelect");
   const selectedStatus = statusSelect.value;
   
+  const getVal = (id) => document.getElementById(id).value.trim();
+  
   const updateData = {
-    status: selectedStatus
+    status: selectedStatus,
+    driver_name: getVal("driverName") || null,
+    driver_phone: getVal("driverPhone") || null,
+    vehicle_number: getVal("vehicleNumber") || null,
+    eta: getVal("eta") || null
   };
 
   const fileInput = document.getElementById("proofImage");
@@ -119,19 +136,21 @@ async function handleStatusUpdate(id) {
     });
 
     if (response.ok === true) {
-      alert("Success: Donation status updated.");
+      showToast("Success: Donation status updated.", "success");
       
       // If the donation is completed, go back to dashboard. Otherwise, stay on same page.
-      if (selectedStatus === "completed") {
-        window.location.href = "Trust_dashboard.html";
-      } else {
-        window.location.reload();
-      }
+      setTimeout(() => {
+        if (selectedStatus === "completed") {
+          window.location.href = "Trust_dashboard.html";
+        } else {
+          window.location.reload();
+        }
+      }, 2000);
     } else {
       const errorData = await response.json();
-      alert("Failed to update status: " + (errorData.detail || "Server error"));
+      showToast("Failed to update status: " + (errorData.detail || "Server error"), "error");
     }
   } catch (error) {
-    alert("Error: Could not connect to the server.");
+    showToast("Error: Could not connect to the server.", "error");
   }
 }

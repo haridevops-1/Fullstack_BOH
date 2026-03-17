@@ -1,4 +1,4 @@
-import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
+import { BACKEND_URL, getAuthHeaders, checkAuth, showToast } from "./api.js";
 
 // This function runs when the page is loaded
 document.addEventListener("DOMContentLoaded", function () {
@@ -84,14 +84,16 @@ async function updateDonationDecision(id, selectedStatus) {
     });
 
     if (response.ok === true) {
-      alert("Success: Your decision has been saved.");
+      showToast("Success: Your decision has been saved.", "success");
       // Go back to the dashboard after a successful decision
-      window.location.href = "Trust_dashboard.html";
+      setTimeout(() => {
+        window.location.href = "Trust_dashboard.html";
+      }, 2000);
     } else {
       const errorData = await response.json();
-      alert("Failed to save decision: " + (errorData.detail || "Server error"));
+      showToast("Failed to save decision: " + (errorData.detail || "Server error"), "error");
     }
   } catch (error) {
-    alert("Error: Could not connect to the server.");
+    showToast("Error: Could not connect to the server.", "error");
   }
 }
