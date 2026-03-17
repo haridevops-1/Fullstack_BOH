@@ -28,7 +28,7 @@ def update_profile(donor_id: int, profile_data: schemas.DonorProfileUpdate, db: 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    # If the frontend sent a new name, email, etc., update it in the database
+    # If the frontend sent a neue name, email, etc., update it in the database
     if profile_data.Firstname: user.Firstname = profile_data.Firstname
     if profile_data.Lastname: user.Lastname = profile_data.Lastname
     if profile_data.email: user.email = profile_data.email

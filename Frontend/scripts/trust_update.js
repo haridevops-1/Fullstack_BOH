@@ -75,17 +75,6 @@ async function fetchDonationDetails(id) {
       setText("updatePhone", donationItem.mobile_number);
       setText("updateAddress", donationItem.address + ", " + donationItem.city);
 
-      // Set the tracking fields if they have data
-      const setVal = (id, val) => {
-        const el = document.getElementById(id);
-        if (el) el.value = val || "";
-      };
-      
-      setVal("driverName", donationItem.driver_name);
-      setVal("driverPhone", donationItem.driver_phone);
-      setVal("vehicleNumber", donationItem.vehicle_number);
-      setVal("eta", donationItem.eta);
-
       // Set the select box to the current status
       const statusSelect = document.getElementById("statusSelect");
       if (statusSelect) {
@@ -102,14 +91,8 @@ async function handleStatusUpdate(id) {
   const statusSelect = document.getElementById("statusSelect");
   const selectedStatus = statusSelect.value;
   
-  const getVal = (id) => document.getElementById(id).value.trim();
-  
   const updateData = {
-    status: selectedStatus,
-    driver_name: getVal("driverName") || null,
-    driver_phone: getVal("driverPhone") || null,
-    vehicle_number: getVal("vehicleNumber") || null,
-    eta: getVal("eta") || null
+    status: selectedStatus
   };
 
   const fileInput = document.getElementById("proofImage");
