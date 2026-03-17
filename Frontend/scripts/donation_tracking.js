@@ -1,4 +1,4 @@
-import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
+import { BACKEND_URL, getAuthHeaders, checkAuth, showToast } from "./api.js";
 
 // This variable remembers the last status we saw, so we can detect changes
 let lastDonationStatus = null;
@@ -59,7 +59,7 @@ async function fetchDonationDetails(id, isFirstLoad) {
                 changeMessage = "Status updated: " + donationItem.status;
             }
 
-            showNotification(changeMessage, currentStatus);
+            showToast(changeMessage, currentStatus);
         }
       }
       
@@ -71,32 +71,6 @@ async function fetchDonationDetails(id, isFirstLoad) {
   }
 }
 
-// This function shows a small notification popup
-function showNotification(message, status) {
-  const container = document.getElementById("toast-container");
-  if (!container) return;
-
-  const toast = document.createElement("div");
-  toast.className = "toast status-update " + status;
-
-  // Decide which icon to show
-  let icon = "🔔";
-  if (status === "accepted") icon = "✅";
-  else if (status === "reached") icon = "📍";
-  else if (status === "picked") icon = "📦";
-  else if (status === "completed") icon = "🎉";
-
-  toast.innerHTML = '<span class="toast-icon">' + icon + '</span><span class="toast-message">' + message + '</span>';
-  container.appendChild(toast);
-
-  // Automatically remove it after 6 seconds
-  setTimeout(function () {
-    toast.style.animation = "fadeOut 0.5s ease-out forwards";
-    setTimeout(function () {
-      toast.remove();
-    }, 500);
-  }, 6000);
-}
 
 // This function updates all the text and labels on the tracking page
 function updateTrackingUI(item) {

@@ -1,4 +1,4 @@
-import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
+import { BACKEND_URL, getAuthHeaders, checkAuth, showToast } from "./api.js";
 
 // This Set helps us keep track of which donations we have already seen.
 // This is used to avoid showing multiple notifications for the same new donation.
@@ -15,8 +15,12 @@ document.addEventListener("DOMContentLoaded", function () {
   // 2. Show a welcome message with the trust name
   const userName = localStorage.getItem("userName");
   const welcomeHeading = document.getElementById("welcomeHeading");
-  if (welcomeHeading && userName) {
-    welcomeHeading.innerText = "Welcome, " + userName;
+  if (welcomeHeading) {
+    if (userName && userName !== "undefined" && userName !== "null") {
+      welcomeHeading.innerText = "Welcome, " + userName;
+    } else {
+      welcomeHeading.innerText = "Welcome, Trust Partner";
+    }
   }
 
   // 3. Fetch stats and recent donations for the first time
@@ -42,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // This function fetches counts for the status boxes (Pending, Accepted, etc.)
 async function fetchTrustDashboardStats() {
   const trustId = localStorage.getItem("userId");
-  
+
   try {
     const response = await fetch(
       BACKEND_URL + "/api/trust/donations_details?trust_id=" + trustId,
@@ -53,7 +57,7 @@ async function fetchTrustDashboardStats() {
 
     if (response.ok === true) {
       const donationList = await response.json();
-      
+
       let pendingCount = 0;
       let acceptedCount = 0;
       let rejectedCount = 0;
@@ -105,7 +109,7 @@ async function fetchTrustDashboardStats() {
 async function loadRecentTrustDonations(isInitial) {
   const trustId = localStorage.getItem("userId");
   const tableBody = document.querySelector("tbody");
-  
+
   if (!tableBody) return;
 
   // Show loading message on the first load
@@ -132,13 +136,13 @@ async function loadRecentTrustDonations(isInitial) {
 
         // If this is a NEW pending donation we haven't seen before...
         if (status === "pending" && seenDonationIds.has(id) === false) {
-           // Only show notification if the page has already finished its initial load
-           if (isInitial === false && isFirstPageLoad === false) {
-             showNotificationToast("New Incoming Donation: " + (item.food_name || "Food Request"));
-           }
-           seenDonationIds.add(id);
+          // Only show notification if the page has already finished its initial load
+          if (isInitial === false && isFirstPageLoad === false) {
+            showNotificationToast("New Incoming Donation: " + (item.food_name || "Food Request"));
+          }
+          seenDonationIds.add(id);
         } else if (seenDonationIds.has(id) === false) {
-           seenDonationIds.add(id);
+          seenDonationIds.add(id);
         }
       }
 
@@ -181,7 +185,7 @@ async function loadRecentTrustDonations(isInitial) {
           }
 
           // Build the row HTML
-          row.innerHTML = 
+          row.innerHTML =
             '<td>' + (item.name || "Anonymous donor") + badgeHTML + '</td>' +
             '<td>' + item.food_name + '</td>' +
             '<td><span class="category-badge ' + categoryClass + '">' + (item.category || "veg") + '</span></td>' +

@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Text
 from sqlalchemy.sql import func
+import datetime
 from database import Base
 
 class Donation(Base):
@@ -19,7 +20,7 @@ class Donation(Base):
     pincode = Column(String)
     notes = Column(Text, nullable=True)
     status = Column(String, default="pending")
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), default=func.now(), server_default=func.now())
     
     # Extra fields for trust updates
     driver_name = Column(String, nullable=True)

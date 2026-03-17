@@ -1,4 +1,4 @@
-import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
+import { BACKEND_URL, getAuthHeaders, checkAuth, showToast } from "./api.js";
 
 // This object helps us remember the status of donations from the last time we checked.
 // It allows us to show a notification if the status changes.
@@ -14,8 +14,12 @@ document.addEventListener("DOMContentLoaded", function () {
   // 2. Show a welcome message with the user's name
   const userName = localStorage.getItem("userName");
   const welcomeHeading = document.getElementById("welcomeHeading");
-  if (welcomeHeading && userName) {
-    welcomeHeading.innerText = "Welcome, " + userName.trim();
+  if (welcomeHeading) {
+    if (userName && userName !== "undefined" && userName !== "null") {
+      welcomeHeading.innerText = "Welcome, " + userName.trim();
+    } else {
+      welcomeHeading.innerText = "Welcome, Donor";
+    }
   }
 
   // 3. Fetch the recent activity for the first time
@@ -102,7 +106,7 @@ async function fetchDonorDashboardData(isFirstLoad) {
 
             if (notificationMessage !== "") {
               const trustName = item.trust_name || "A Trust";
-              showStatusNotification(
+              showToast(
                 "Update: " + trustName + " has " + notificationMessage,
                 currentStatus,
               );

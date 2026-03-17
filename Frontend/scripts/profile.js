@@ -1,4 +1,4 @@
-import { BACKEND_URL, getAuthHeaders, checkAuth } from "./api.js";
+import { BACKEND_URL, getAuthHeaders, checkAuth, showToast } from "./api.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   if (checkAuth()) {
@@ -127,11 +127,11 @@ async function saveChanges(role) {
       body: JSON.stringify(info),
     });
     if (res.ok) {
-      alert("Success: Your profile has been updated.");
-      location.reload();
+      showToast("Success: Your profile has been updated.", "success");
+      setTimeout(() => location.reload(), 2000);
     } else {
       const err = await res.json();
-      alert(`Failed to update profile: ${err.detail || "Server error"}`);
+      showToast(`Failed to update profile: ${err.detail || "Server error"}`, "error");
     }
   } catch (e) {
     alert("Error: Could not connect to the server.");

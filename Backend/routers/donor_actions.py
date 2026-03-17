@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from dependencies import get_db, get_current_user
 import models, schemas
+import datetime
 from typing import List
 
 router = APIRouter(prefix="/api/donor", tags=["Donor Actions"])
@@ -42,7 +43,8 @@ def create_donation(trust_id: int, donor_id: int, donation_data: schemas.Donatio
         city=donation_data.city,
         pincode=donation_data.pincode,
         notes=donation_data.notes,
-        status="pending"
+        status="pending",
+        created_at=datetime.datetime.now()
     )
     db.add(new_donation)
     db.commit()
