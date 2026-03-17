@@ -88,63 +88,12 @@ async function saveChanges(role) {
   const userId = localStorage.getItem("userId");
   const inputs = document.querySelectorAll(".edit-input");
 
-  // 1. Simple Validation: Check if any input is empty
+  // Simple Validation: Check if any input is empty
   for (let i = 0; i < inputs.length; i++) {
     if (inputs[i].value.trim() === "") {
       alert("Error: All fields are required. Please fill in all information.");
       return; // Stop here if any field is empty
     }
-  }
-
-  // 2. Mobile number validation: Check which input is the phone based on role
-  let mobileInputIndex = 2; // For Trust, it's the 3rd input (index 2)
-  if (role === "donor") {
-    mobileInputIndex = 3; // For Donor, it's the 4th input (index 3)
-  }
-
-  const mobileValue = inputs[mobileInputIndex].value.trim();
-  
-  // 3. Mobile number validation: length and numeric-only
-  if (mobileValue.length < 10) {
-    alert("Error: Mobile number must be at least 10 digits.");
-    return;
-  }
-
-  let isOnlyNumbers = true;
-  for (let i = 0; i < mobileValue.length; i++) {
-    if (mobileValue[i] < "0" || mobileValue[i] > "9") {
-      isOnlyNumbers = false;
-      break;
-    }
-  }
-
-  if (isOnlyNumbers === false) {
-    alert("Error: Mobile number must contain only numbers (0-9).");
-    return;
-  }
-
-  // 4. Email validation: must have '@' and '.'
-  // Donors: email is index 2, Trusts: email is index 1
-  let emailIndex = (role === "donor") ? 2 : 1;
-  const emailValue = inputs[emailIndex].value.trim();
-  if (emailValue.indexOf("@") === -1 || emailValue.indexOf(".") === -1) {
-    alert("Error: Please enter a valid email address.");
-    return;
-  }
-
-  // 5. Pincode validation: numeric-only and 6 digits
-  // Donors: pincode is index 5, Trusts: pincode is index 5
-  const pinValue = inputs[5].value.trim();
-  let isPinNumeric = true;
-  for (let i = 0; i < pinValue.length; i++) {
-    if (pinValue[i] < "0" || pinValue[i] > "9") {
-      isPinNumeric = false;
-      break;
-    }
-  }
-  if (isPinNumeric === false || pinValue.length < 6) {
-    alert("Error: Pincode must be at least 6 numbers.");
-    return;
   }
 
   const info =

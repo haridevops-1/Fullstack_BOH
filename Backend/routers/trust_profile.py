@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from dependencies import get_db, get_current_user
 import models, schemas
-from cloudinary_utils import upload_image
 
 # Router for Trust Profile actions
 router = APIRouter(prefix="/api/trust/profile", tags=["Trust Profile"])
@@ -34,7 +33,7 @@ def update_profile(trust_id: int, profile_data: schemas.TrustProfileUpdate, db: 
     if profile_data.trust_address: trust.trust_address = profile_data.trust_address
     if profile_data.city: trust.city = profile_data.city
     if profile_data.pincode: trust.pincode = profile_data.pincode
-    if profile_data.trust_photo: trust.trust_photo = upload_image(profile_data.trust_photo)
+    if profile_data.trust_photo: trust.trust_photo = profile_data.trust_photo
     
     # Save the changes to the database
     db.commit()

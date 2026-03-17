@@ -30,7 +30,7 @@ window.togglePassword = (inputId) => {
 
 window.handleLogin = async (event) => {
   event.preventDefault();
-  
+
   // 1. Get the elements we need
   const messageBox = document.getElementById("messageBox");
   const loginForm = event.target;
@@ -97,10 +97,10 @@ window.handleLogin = async (event) => {
           window.location.href = "admin_dashboard.html";
         }
       }, 1000);
-      
     } else {
       // Show the exact error message from the server
-      messageBox.innerText = "Login failed: " + (data.detail || "Invalid email or password.");
+      messageBox.innerText =
+        "Login failed: " + (data.detail || "Invalid email or password.");
       messageBox.className = "form-message error";
       loginBtn.disabled = false;
       loginBtn.classList.remove("btn-loading");

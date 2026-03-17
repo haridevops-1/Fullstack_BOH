@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
 async function fetchDonorDashboardData(isFirstLoad) {
   const donorId = localStorage.getItem("userId");
   const tableBody = document.querySelector(".donation-table tbody");
-  
+
   // If we can't find the table, stop
   if (!tableBody) {
     return;
@@ -39,7 +39,8 @@ async function fetchDonorDashboardData(isFirstLoad) {
 
   // If this is the first time loading, show a "Loading" message
   if (isFirstLoad === true) {
-    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;">Loading your dashboard...</td></tr>';
+    tableBody.innerHTML =
+      '<tr><td colspan="6" style="text-align:center;padding:20px;">Loading your dashboard...</td></tr>';
   }
 
   try {
@@ -48,12 +49,12 @@ async function fetchDonorDashboardData(isFirstLoad) {
       BACKEND_URL + "/api/donor/donations?donor_id=" + donorId,
       {
         headers: getAuthHeaders(),
-      }
+      },
     );
 
     if (response.ok === true) {
       const donations = await response.json();
-      
+
       // Initialize counters for the status boxes
       let pendingCount = 0;
       let acceptedCount = 0;
@@ -68,7 +69,11 @@ async function fetchDonorDashboardData(isFirstLoad) {
         // Count how many of each status we have
         if (currentStatus === "pending") {
           pendingCount++;
-        } else if (currentStatus === "accepted" || currentStatus === "reached" || currentStatus === "picked") {
+        } else if (
+          currentStatus === "accepted" ||
+          currentStatus === "reached" ||
+          currentStatus === "picked"
+        ) {
           acceptedCount++;
         } else if (currentStatus === "rejected") {
           rejectedCount++;
@@ -77,31 +82,34 @@ async function fetchDonorDashboardData(isFirstLoad) {
         }
 
         // --- CHECK FOR STATUS CHANGES (to show notifications) ---
-        // If this is NOT the first load, and we already know about this donation, 
+        // If this is NOT the first load, and we already know about this donation,
         // and the status has changed...
         if (isFirstLoad === false && previousDonationStatuses[item.id]) {
-            if (previousDonationStatuses[item.id] !== currentStatus) {
-                // Determine what message to show
-                let notificationMessage = "";
-                if (currentStatus === "accepted") {
-                    notificationMessage = "accepted your request!";
-                } else if (currentStatus === "reached") {
-                    notificationMessage = "reached your location!";
-                } else if (currentStatus === "picked") {
-                    notificationMessage = "picked up the food!";
-                } else if (currentStatus === "completed") {
-                    notificationMessage = "completed the donation!";
-                } else if (currentStatus === "rejected") {
-                    notificationMessage = "declined the request.";
-                }
-
-                if (notificationMessage !== "") {
-                    const trustName = item.trust_name || "A Trust";
-                    showStatusNotification("Update: " + trustName + " has " + notificationMessage, currentStatus);
-                }
+          if (previousDonationStatuses[item.id] !== currentStatus) {
+            // Determine what message to show
+            let notificationMessage = "";
+            if (currentStatus === "accepted") {
+              notificationMessage = "accepted your request!";
+            } else if (currentStatus === "reached") {
+              notificationMessage = "reached your location!";
+            } else if (currentStatus === "picked") {
+              notificationMessage = "picked up the food!";
+            } else if (currentStatus === "completed") {
+              notificationMessage = "completed the donation!";
+            } else if (currentStatus === "rejected") {
+              notificationMessage = "declined the request.";
             }
+
+            if (notificationMessage !== "") {
+              const trustName = item.trust_name || "A Trust";
+              showStatusNotification(
+                "Update: " + trustName + " has " + notificationMessage,
+                currentStatus,
+              );
+            }
+          }
         }
-        
+
         // Remember the status for the next check
         previousDonationStatuses[item.id] = currentStatus;
       }
@@ -111,7 +119,7 @@ async function fetchDonorDashboardData(isFirstLoad) {
       const acceptDisp = document.querySelector(".accept-val");
       const rejectDisp = document.querySelector(".reject-val");
       const totalDisp = document.querySelector(".total-val");
-      
+
       if (pendingDisp) pendingDisp.innerText = pendingCount;
       if (acceptDisp) acceptDisp.innerText = acceptedCount;
       if (rejectDisp) rejectDisp.innerText = rejectedCount;
@@ -122,7 +130,8 @@ async function fetchDonorDashboardData(isFirstLoad) {
     }
   } catch (error) {
     if (isFirstLoad === true) {
-      tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Connection error. Please try again.</td></tr>';
+      tableBody.innerHTML =
+        '<tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Connection error. Please try again.</td></tr>';
     }
   }
 }
@@ -143,7 +152,7 @@ function updateDonationTable(donations) {
     if (status !== "completed" && status !== "rejected" && countShown < 5) {
       const row = document.createElement("tr");
       row.style.cursor = "pointer";
-      
+
       // When a row is clicked, go to the tracking page
       row.onclick = function () {
         window.location.href = "Donation-tracking.html?id=" + item.id;
@@ -158,14 +167,30 @@ function updateDonationTable(donations) {
       }
 
       // Build the HTML for the row
-      row.innerHTML = 
-        '<td style="font-weight:600;">' + (item.trust_name || "Anonymous Trust") + '</td>' +
-        '<td><span class="category-badge ' + categoryClass + '">' + (item.category || "veg") + '</span></td>' +
-        '<td>' + item.food_name + '</td>' +
-        '<td style="font-weight:500;">' + item.approx_quantity + '</td>' +
-        '<td>' + item.city + '</td>' +
-        '<td><span class="status ' + status + '">' + item.status + '</span></td>';
-        
+      row.innerHTML =
+        '<td style="font-weight:600;">' +
+        (item.trust_name || "Anonymous Trust") +
+        "</td>" +
+        '<td><span class="category-badge ' +
+        categoryClass +
+        '">' +
+        (item.category || "veg") +
+        "</span></td>" +
+        "<td>" +
+        item.food_name +
+        "</td>" +
+        '<td style="font-weight:500;">' +
+        item.approx_quantity +
+        "</td>" +
+        "<td>" +
+        item.city +
+        "</td>" +
+        '<td><span class="status ' +
+        status +
+        '">' +
+        item.status +
+        "</span></td>";
+
       tableBody.appendChild(row);
       countShown++;
     }
@@ -173,7 +198,8 @@ function updateDonationTable(donations) {
 
   // If there are no active donations to show
   if (countShown === 0) {
-    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#94a3b8;">No active donations in progress.</td></tr>';
+    tableBody.innerHTML =
+      '<tr><td colspan="6" style="text-align:center;padding:40px;color:#94a3b8;">No active donations in progress.</td></tr>';
   }
 }
 
@@ -193,7 +219,12 @@ function showStatusNotification(message, status) {
   else if (status === "completed") icon = "🎉";
   else if (status === "rejected") icon = "❌";
 
-  notification.innerHTML = '<span class="toast-icon">' + icon + '</span><span class="toast-message">' + message + '</span>';
+  notification.innerHTML =
+    '<span class="toast-icon">' +
+    icon +
+    '</span><span class="toast-message">' +
+    message +
+    "</span>";
   container.appendChild(notification);
 
   // Automatically hide and remove the notification after 6 seconds
