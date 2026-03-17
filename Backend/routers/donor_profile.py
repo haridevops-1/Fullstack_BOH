@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from dependencies import get_db, get_current_user
 import models, schemas
+from cloudinary_utils import upload_image
 
 # We create a router to handle all "Donor Profile" related links
 router = APIRouter(prefix="/api/donor/profile", tags=["Donor Profile"])
@@ -34,7 +35,7 @@ def update_profile(donor_id: int, profile_data: schemas.DonorProfileUpdate, db: 
     if profile_data.mobile_number: user.mobile_number = profile_data.mobile_number
     if profile_data.city: user.city = profile_data.city
     if profile_data.Pincode: user.Pincode = profile_data.Pincode
-    if profile_data.photo: user.photo = profile_data.photo
+    if profile_data.photo: user.photo = upload_image(profile_data.photo)
     
     # Save the changes to the database
     db.commit()

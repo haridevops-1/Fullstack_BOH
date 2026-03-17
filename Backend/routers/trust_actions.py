@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from dependencies import get_db, get_current_user
 import models, schemas
+from cloudinary_utils import upload_image
 from typing import List
 
 router = APIRouter(prefix="/api/trust", tags=["Trust Actions"])
@@ -54,7 +55,7 @@ def update_status(id: int, status_data: schemas.StatusUpdate, db: Session = Depe
     if status_data.eta is not None:
         donation.eta = status_data.eta
     if status_data.proof_image is not None:
-        donation.proof_image = status_data.proof_image
+        donation.proof_image = upload_image(status_data.proof_image)
         
     db.commit()
     return {"message": "Donation details updated successfully"}
