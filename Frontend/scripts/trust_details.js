@@ -19,7 +19,7 @@ async function fetchIncomingRequests() {
     return;
   }
 
-  // Show a message while we wait for the data
+  // Show a loading message
   container.innerHTML = '<p style="text-align:center;padding:20px;">Fetching new requests...</p>';
 
   try {
