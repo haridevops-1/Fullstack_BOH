@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from dependencies import get_db, get_current_user
 import models, schemas
-from cloudinary_utils import upload_image
 from typing import List
 
 router = APIRouter(prefix="/api/trust", tags=["Trust Actions"])

@@ -70,3 +70,7 @@ export function showToast(message, type = "info") {
     setTimeout(() => toast.remove(), 500);
   }, 4000);
 }
+
+// Expose these to window so they can be called from HTML onclick attributes
+window.logout = logout;
+window.showToast = showToast;

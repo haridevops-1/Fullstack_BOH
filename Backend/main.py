@@ -59,10 +59,14 @@ async def global_exception_handler(request: Request, exc: Exception):
         return await http_exception_handler(request, exc)
     
     print(f"CRITICAL ERROR on {request.url.path}: {exc}")
-    return {
-        "detail": f"Database or Server Error: {str(exc)}",
-        "error_type": type(exc).__name__
-    }
+    from fastapi.responses import JSONResponse
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": f"Database or Server Error: {str(exc)}",
+            "error_type": type(exc).__name__
+        }
+    )
 
 from fastapi.exception_handlers import http_exception_handler
 

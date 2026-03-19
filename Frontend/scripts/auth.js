@@ -24,3 +24,7 @@ export function getAuthHeaders() {
     "Authorization": authString
   };
 }
+
+// Global exposure for HTML event handlers
+window.logout = logout;
+window.getAuthHeaders = getAuthHeaders;

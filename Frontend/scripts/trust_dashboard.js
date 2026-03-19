@@ -227,8 +227,3 @@ function showNotificationToast(message) {
   }, 5000);
 }
 
-// This function handles the logout process
-window.logout = function () {
-  localStorage.clear();
-  window.location.href = "../index.html";
-};
