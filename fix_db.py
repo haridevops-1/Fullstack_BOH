@@ -4,7 +4,7 @@ import sys
 from dotenv import load_dotenv
 
 # Try to load environment variables from .env
-load_dotenv()
+load_dotenv(override=True)
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 

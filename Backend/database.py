@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 import os
 
 # Load environment variables
-load_dotenv()
+# Load environment variables, force override if already set
+load_dotenv(override=True)
 
 # Get database URL
 DATABASE_URL = os.getenv("DATABASE_URL")
