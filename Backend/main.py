@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import os
@@ -38,13 +39,17 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Bridge of Hope API", lifespan=lifespan)
 
-# Enable CORS for all
+# Enable CORS with explicit origins for stability on Vercel
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:5500",
+        "https://bridge-of-hope-frontend-jqj4.vercel.app",
+        "https://bridge-of-hope-frontend.vercel.app"
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    allow_credentials=False,
 )
 
 
@@ -71,10 +76,15 @@ async def global_exception_handler(request: Request, exc: Exception):
         return await http_exception_handler(request, exc)
 
     print(f"CRITICAL ERROR on {request.url.path}: {exc}")
-    return {
-        "detail": f"Database or Server Error: {str(exc)}",
-        "error_type": type(exc).__name__,
-    }
+    
+    # Return JSONResponse explicitly to ensure CORS headers are attached on error!
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": f"Database or Server Error: {str(exc)}",
+            "error_type": type(exc).__name__,
+        }
+    )
 
 
 from fastapi.exception_handlers import http_exception_handler
