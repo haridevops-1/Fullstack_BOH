@@ -53,6 +53,10 @@ async function handleDonationSubmit(event) {
     showToast("Please enter the city.", "warning");
     return;
   }
+  if (!document.getElementById("pickupTime").value) {
+    showToast("Please select your preferred pickup time.", "warning");
+    return;
+  }
 
   const data = {
     name: contactName || "Donor",
@@ -65,6 +69,7 @@ async function handleDonationSubmit(event) {
     city: city,
     pincode: pincode,
     notes: document.getElementById("notes").value,
+    scheduled_time: document.getElementById("pickupTime").value,
   };
 
   try {
@@ -76,7 +81,7 @@ async function handleDonationSubmit(event) {
         body: JSON.stringify(data),
       },
     );
-
+ 
     if (res.ok) {
       showToast("Success: Your donation request has been submitted.", "success");
       setTimeout(() => {

@@ -1,4 +1,5 @@
-export const BACKEND_URL = "https://bridge-of-hope-backend-r53q.vercel.app";
+// export const BACKEND_URL = "https://bridge-of-hope-backend-r53q.vercel.app";
+export const BACKEND_URL = "http://localhost:8000";
 export const CLOUDINARY_CLOUD_NAME = "dqqjyumh8";
 export const CLOUDINARY_API_KEY = "156294232916679";
 

@@ -88,8 +88,16 @@
         </div>
 
         <h3>Additional Info</h3>
-        <label>Notes (optional)</label>
-        <textarea id="notes" placeholder="Mention allergens, spice level, or packing instructions..."></textarea>
+        <div class="additional-info" style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+          <div>
+            <label>Preferred Pickup Time (1-hour window)</label>
+            <input type="datetime-local" id="pickupTime" required />
+          </div>
+          <div>
+            <label>Notes (optional)</label>
+            <textarea id="notes" placeholder="Mention allergens, spice level, or packing instructions..."></textarea>
+          </div>
+        </div>
 
         <div class="submit-button">
           <button type="button" class="btn-1" onclick="window.location.href='Trust_lists.html'">Cancel</button>

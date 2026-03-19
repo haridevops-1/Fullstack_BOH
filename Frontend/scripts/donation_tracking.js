@@ -37,7 +37,7 @@ async function fetchDonationDetails(id, isFirstLoad) {
 
     if (response.ok === true) {
       const donationItem = await response.json();
-
+      
       // Update the information shown on the page
       updateTrackingUI(donationItem);
 
@@ -46,23 +46,23 @@ async function fetchDonationDetails(id, isFirstLoad) {
       // Show a notification if the status has changed since the last time we checked
       if (isFirstLoad === false && lastDonationStatus !== null) {
         if (lastDonationStatus !== currentStatus) {
-          let changeMessage = "";
-          if (currentStatus === "accepted") {
-            changeMessage = "Trust accepted your donation!";
-          } else if (currentStatus === "reached") {
-            changeMessage = "Trust reached your location!";
-          } else if (currentStatus === "picked") {
-            changeMessage = "Food picked up successfully!";
-          } else if (currentStatus === "completed") {
-            changeMessage = "Donation process completed!";
-          } else {
-            changeMessage = "Status updated: " + donationItem.status;
-          }
+            let changeMessage = "";
+            if (currentStatus === "accepted") {
+                changeMessage = "Trust accepted your donation!";
+            } else if (currentStatus === "reached") {
+                changeMessage = "Vehicle reached your location!";
+            } else if (currentStatus === "picked") {
+                changeMessage = "Food picked up successfully!";
+            } else if (currentStatus === "completed") {
+                changeMessage = "Donation process complete!";
+            } else {
+                changeMessage = "Status updated: " + donationItem.status;
+            }
 
-          showToast(changeMessage, currentStatus);
+            showToast(changeMessage, currentStatus);
         }
       }
-
+      
       // Remember the status for the next check
       lastDonationStatus = currentStatus;
     }
@@ -90,71 +90,32 @@ function updateTrackingUI(item) {
   const trustEl = document.getElementById("trackTrust");
   if (trustEl) trustEl.innerHTML = "<span>Assigned Trust</span>" + (item.trust_name || "Looking...");
 
-  // 3. Show driver and vehicle info if available
-  if (item.driver_name || item.vehicle_number) {
-    const trackingGroup = document.getElementById("liveTrackingGroup");
-    if (trackingGroup) {
-      trackingGroup.style.display = "block";
-    }
-
-    const driverEl = document.getElementById("trackDriver");
-    if (driverEl) driverEl.innerText = item.driver_name || "--";
-
-    const phoneEl = document.getElementById("trackPhone");
-    if (phoneEl) phoneEl.innerText = item.driver_phone || "--";
-
-    const vehicleEl = document.getElementById("trackVehicle");
-    if (vehicleEl) vehicleEl.innerText = item.vehicle_number || "--";
-
-    const etaEl = document.getElementById("trackEta");
-    if (etaEl) etaEl.innerText = item.eta || "--";
-  }
 
   // 4. Update the main status heading message
   const statusMsgEl = document.querySelector(".status-message");
   if (statusMsgEl) {
     const s = item.status.toLowerCase();
     let displayMsg = "Status: " + item.status;
-
+    
     if (s === "pending") displayMsg = "Waiting for trust...";
     else if (s === "accepted") displayMsg = "Trust accepted!";
     else if (s === "reached") displayMsg = "At your location!";
     else if (s === "picked") displayMsg = "Food picked up!";
     else if (s === "completed") displayMsg = "Success!";
-
+    
     statusMsgEl.innerText = displayMsg;
     statusMsgEl.className = "status-message " + s;
   }
 
-  // 5. Show the "Proof Image" if the food has been picked up
-  if (item.proof_image) {
-    // Find where to put the image (either info-section or donation-card)
-    let container = document.querySelector(".info-section");
-    if (!container) {
-      container = document.querySelector(".donation-card");
-    }
-
-    // Only add it if it doesn't already exist on the page
-    if (!document.getElementById("proofImageDiv")) {
-      const proofDiv = document.createElement("div");
-      proofDiv.id = "proofImageDiv";
-      proofDiv.style.marginTop = "20px";
-      proofDiv.innerHTML = '<h3 style="margin-bottom:10px;">Pickup Proof:</h3>' +
-        '<img src="' + item.proof_image + '" style="width:200px; height:200px; object-fit:cover; border-radius:10px; border: 2px solid #e2e8f0;">';
-      if (container) {
-        container.appendChild(proofDiv);
-      }
-    }
-  }
 }
 
 // This function highlights the "steps" (Pending -> Accepted -> Reached -> Picked -> Completed)
 function updateProgressSteps(status) {
   const statusOrder = ["pending", "accepted", "reached", "picked", "completed"];
   const currentLevel = statusOrder.indexOf(status.toLowerCase());
-
+  
   const allStepElements = document.querySelectorAll(".step");
-
+  
   for (let i = 0; i < allStepElements.length; i++) {
     const step = allStepElements[i];
     // If the step index is less than or equal to our current status level, make it active

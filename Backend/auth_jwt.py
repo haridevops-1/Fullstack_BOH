@@ -24,6 +24,6 @@ def verify_token(token: str):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except jwt.ExpiredSignatureError:
-        return "Token Expired"
+        return None
     except jwt.InvalidTokenError:
-        return "Invalid Token"
+        return None

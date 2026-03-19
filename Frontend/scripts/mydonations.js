@@ -31,25 +31,17 @@ async function loadDonationHistory() {
   }
 
   if (isRejectedPage === true) {
-    // 1. Hide the Action (Track) column header
-    const actionHeader = document.querySelector("th:nth-child(8)");
+    const actionHeader = document.querySelector("th:nth-child(9)");
     if (actionHeader) {
       actionHeader.style.display = "none";
-    }
-
-    // 2. Insert the 'Reason' column header before Status or Date
-    // Actually, let's just add it at the end (before Action, which is now hidden)
-    const tableHeadRow = document.querySelector("thead tr");
-    if (tableHeadRow) {
-      const reasonTh = document.createElement("th");
-      reasonTh.innerText = "Reject Reason";
-      // We insert it before the last column (Track)
-      tableHeadRow.insertBefore(reasonTh, tableHeadRow.cells[7]);
     }
   }
 
   // Show a "Searching" message while we wait for the server
-  let columnCount = 8;
+  let columnCount = 9;
+  if (isRejectedPage === true) {
+    columnCount = 8;
+  }
   tableBody.innerHTML = '<tr><td colspan="' + columnCount + '" style="text-align:center;padding:20px;">Searching for records...</td></tr>';
 
   try {
@@ -104,7 +96,7 @@ async function loadDonationHistory() {
             categoryClass = "both";
           }
 
-          // 5. Build the row HTML
+          // Build the row HTML
           let rowHTML = 
             '<td>' + (item.trust_name || "Anonymous Trust") + '</td>' +
             '<td>' + item.food_name + '</td>' +
@@ -112,12 +104,8 @@ async function loadDonationHistory() {
             '<td>' + item.approx_quantity + '</td>' +
             '<td>' + item.address + ', ' + item.city + '</td>' +
             '<td><span class="status ' + status + '">' + item.status + '</span></td>' +
+            '<td style="font-size: 0.9em; max-width: 150px; color: #ef4444; font-weight: 500;">' + (item.reject_reason || '<span style="color: #94a3b8;">N/A</span>') + '</td>' +
             '<td>' + formattedDate + '</td>';
-            
-          // If it's the rejected page, we insert the "Reason" cell before the hidden Track button
-          if (isRejectedPage === true) {
-              rowHTML += '<td style="color:#ef4444; font-weight:600;">' + (item.reject_reason || "No reason specified") + '</td>';
-          }
             
           // Add the "Track" button only if it's not the rejected page
           if (isRejectedPage === false) {

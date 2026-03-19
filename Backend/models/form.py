@@ -23,9 +23,5 @@ class Donation(Base):
     created_at = Column(DateTime(timezone=True), default=func.now(), server_default=func.now())
     
     # Extra fields for trust updates
-    driver_name = Column(String, nullable=True)
-    driver_phone = Column(String, nullable=True)
-    vehicle_number = Column(String, nullable=True)
-    eta = Column(String, nullable=True)
-    proof_image = Column(Text, nullable=True)
+    scheduled_time = Column(String, nullable=True)
     reject_reason = Column(String, nullable=True)

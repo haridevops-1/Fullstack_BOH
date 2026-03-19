@@ -13,6 +13,7 @@ class DonationCreate(BaseModel):
     city: str
     pincode: str
     notes: Optional[str] = None
+    scheduled_time: Optional[str] = None
 
 class DonationRead(BaseModel):
     id: int
@@ -31,11 +32,7 @@ class DonationRead(BaseModel):
     status: str
     created_at: Optional[datetime] = None
     
-    driver_name: Optional[str] = None
-    driver_phone: Optional[str] = None
-    vehicle_number: Optional[str] = None
-    eta: Optional[str] = None
-    proof_image: Optional[str] = None
+    scheduled_time: Optional[str] = None
     reject_reason: Optional[str] = None
     
     class Config:
@@ -43,9 +40,4 @@ class DonationRead(BaseModel):
 
 class StatusUpdate(BaseModel):
     status: str
-    driver_name: Optional[str] = None
-    driver_phone: Optional[str] = None
-    vehicle_number: Optional[str] = None
-    eta: Optional[str] = None
-    proof_image: Optional[str] = None
     reject_reason: Optional[str] = None

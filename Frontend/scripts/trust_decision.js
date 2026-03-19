@@ -46,6 +46,14 @@ async function getDonationInfo(id) {
       updateText("detAddress", donationItem.address);
       updateText("detCity", donationItem.city);
       updateText("detPincode", donationItem.pincode || "N/A");
+      
+      // Formatting the time for display
+      if (donationItem.scheduled_time) {
+        const d = new Date(donationItem.scheduled_time);
+        updateText("detTime", d.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) + " (1-hour window)");
+      } else {
+        updateText("detTime", "Not specified");
+      }
 
       // Show the category badge (Veg/Non-Veg)
       const category = (donationItem.category || "veg").toLowerCase();
@@ -65,7 +73,22 @@ async function getDonationInfo(id) {
       const rejectButton = document.getElementById("rejectBtn");
       if (rejectButton) {
         rejectButton.onclick = function () {
-          updateDonationDecision(id, "rejected");
+          const rejectionSection = document.getElementById("rejectionSection");
+          const reasonBox = document.getElementById("rejectReason");
+          
+          if (rejectionSection.style.display === "none") {
+            // First click: show the reason box
+            rejectionSection.style.display = "block";
+            showToast("Please provide a reason for rejection.", "warning");
+          } else {
+            // Second click: check if reason is filled and send
+            const reason = reasonBox.value.trim();
+            if (reason === "") {
+              showToast("Error: You must write a reason to reject.", "error");
+              return;
+            }
+            updateDonationDecision(id, "rejected", reason);
+          }
         };
       }
     }
@@ -75,30 +98,15 @@ async function getDonationInfo(id) {
 }
 
 // This function sends the Accept or Reject decision to the server
-async function updateDonationDecision(id, selectedStatus) {
-  let reason = null;
-
-  // 1. If the status is rejected, ask for a reason
-  if (selectedStatus === "rejected") {
-    reason = prompt("Please enter the reason for rejection:");
-    
-    // If they cancel the prompt, stop here
-    if (reason === null) return;
-    
-    // If they leave it blank, we suggest a default reason or keep it empty
-    if (reason.trim() === "") {
-        reason = "Not specified by trust";
-    }
-  }
-
+async function updateDonationDecision(id, selectedStatus, reason = null) {
   try {
+    const payload = { status: selectedStatus };
+    if (reason) payload.reject_reason = reason;
+
     const response = await fetch(BACKEND_URL + "/api/trust/donations/" + id + "/status", {
       method: "PUT",
       headers: getAuthHeaders(),
-      body: JSON.stringify({ 
-          status: selectedStatus,
-          reject_reason: reason 
-      }),
+      body: JSON.stringify(payload),
     });
 
     if (response.ok === true) {

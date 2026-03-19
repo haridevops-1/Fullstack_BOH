@@ -440,18 +440,6 @@ footer {
   overflow: hidden;
 }
 
-.toast.success {
-  border-left-color: #10b981;
-}
-
-.toast.error {
-  border-left-color: #ef4444;
-}
-
-.toast.warning {
-  border-left-color: #f59e0b;
-}
-
 .toast.status-update {
   border-left-color: #3b82f6;
 }

@@ -15,9 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fetch the details for this donation
     fetchDonationDetails(donationId);
     
-    // Set up the image preview functionality
-    setupImagePreview();
-    
     // Set up the "Update Status" button
     const updateButton = document.getElementById("updateStatusBtn");
     if (updateButton) {
@@ -31,25 +28,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-// This function shows a preview of the image once the user selects a file
-function setupImagePreview() {
-  const fileInput = document.getElementById("proofImage");
-  const previewImage = document.getElementById("previewImg");
-
-  if (!fileInput) return;
-
-  fileInput.onchange = function () {
-    const file = fileInput.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      previewImage.src = event.target.result;
-      previewImage.style.display = "block"; // Show the image element
-    };
-    reader.readAsDataURL(file);
-  };
-}
 
 // This function fetches donation details and puts them in the HTML
 async function fetchDonationDetails(id) {
@@ -95,20 +73,6 @@ async function handleStatusUpdate(id) {
     status: selectedStatus
   };
 
-  const fileInput = document.getElementById("proofImage");
-  const selectedFile = fileInput.files[0];
-
-  // If the user selected a proof image, we need to convert it to a string first
-  if (selectedFile) {
-    // We use a Promise to wait for the file to be read
-    updateData.proof_image = await new Promise(function (resolve) {
-      const reader = new FileReader();
-      reader.onload = function () {
-        resolve(reader.result);
-      };
-      reader.readAsDataURL(selectedFile);
-    });
-  }
 
   try {
     // Send the PUT request to the server

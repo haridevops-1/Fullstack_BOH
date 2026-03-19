@@ -43,19 +43,9 @@ def update_status(id: int, status_data: schemas.StatusUpdate, db: Session = Depe
     if not donation:
         raise HTTPException(status_code=404, detail="Donation not found")
     
-    # Save the status and tracking info
+    # Save the status
     donation.status = status_data.status
     
-    if status_data.driver_name is not None:
-        donation.driver_name = status_data.driver_name
-    if status_data.driver_phone is not None:
-        donation.driver_phone = status_data.driver_phone
-    if status_data.vehicle_number is not None:
-        donation.vehicle_number = status_data.vehicle_number
-    if status_data.eta is not None:
-        donation.eta = status_data.eta
-    if status_data.proof_image is not None:
-        donation.proof_image = upload_image(status_data.proof_image)
     if status_data.reject_reason is not None:
         donation.reject_reason = status_data.reject_reason
         
