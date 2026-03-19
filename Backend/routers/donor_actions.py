@@ -60,7 +60,15 @@ def get_donations(donor_id: int, db: Session = Depends(get_db), current_user: di
     
     donations_list = []
     for donation, trust_name in results:
-        d_dict = {c.name: getattr(donation, c.name) for c in donation.__table__.columns}
+        # Get all columns that actually exist in the database table for this object
+        d_dict = {}
+        for column in donation.__table__.columns:
+            try:
+                d_dict[column.name] = getattr(donation, column.name)
+            except Exception:
+                # If the column exists in models but NOT in the real DB yet, skip it!
+                d_dict[column.name] = None
+        
         d_dict["trust_name"] = trust_name
         donations_list.append(d_dict)
     
@@ -76,7 +84,15 @@ def get_donation_detail(id: int, db: Session = Depends(get_db), current_user: di
         raise HTTPException(status_code=404, detail="Donation not found")
         
     donation, trust_name = result
-    d_dict = {c.name: getattr(donation, c.name) for c in donation.__table__.columns}
+    
+    # Safely build the dictionary
+    d_dict = {}
+    for column in donation.__table__.columns:
+        try:
+            d_dict[column.name] = getattr(donation, column.name)
+        except Exception:
+            d_dict[column.name] = None
+
     d_dict["trust_name"] = trust_name
     return d_dict
 

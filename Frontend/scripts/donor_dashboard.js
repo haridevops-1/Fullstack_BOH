@@ -240,8 +240,3 @@ function showStatusNotification(message, status) {
   }, 6000);
 }
 
-// This function handles logging out
-window.logout = function () {
-  localStorage.clear();
-  window.location.href = "../index.html";
-};
