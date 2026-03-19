@@ -34,10 +34,14 @@ app = FastAPI(title="Bridge of Hope API", lifespan=lifespan)
 # Enable CORS for all
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+        "https://bridge-of-hope-frontend-jqj4.vercel.app"
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
-    allow_credentials=False,
+    allow_credentials=True,
 )
 
 # Request Logging Middleware (Helpful for debugging)
