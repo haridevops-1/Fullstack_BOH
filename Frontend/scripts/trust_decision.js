@@ -76,11 +76,29 @@ async function getDonationInfo(id) {
 
 // This function sends the Accept or Reject decision to the server
 async function updateDonationDecision(id, selectedStatus) {
+  let reason = null;
+
+  // 1. If the status is rejected, ask for a reason
+  if (selectedStatus === "rejected") {
+    reason = prompt("Please enter the reason for rejection:");
+    
+    // If they cancel the prompt, stop here
+    if (reason === null) return;
+    
+    // If they leave it blank, we suggest a default reason or keep it empty
+    if (reason.trim() === "") {
+        reason = "Not specified by trust";
+    }
+  }
+
   try {
     const response = await fetch(BACKEND_URL + "/api/trust/donations/" + id + "/status", {
       method: "PUT",
       headers: getAuthHeaders(),
-      body: JSON.stringify({ status: selectedStatus }),
+      body: JSON.stringify({ 
+          status: selectedStatus,
+          reject_reason: reason 
+      }),
     });
 
     if (response.ok === true) {

@@ -36,6 +36,7 @@ class DonationRead(BaseModel):
     vehicle_number: Optional[str] = None
     eta: Optional[str] = None
     proof_image: Optional[str] = None
+    reject_reason: Optional[str] = None
     
     class Config:
         from_attributes = True
@@ -47,3 +48,4 @@ class StatusUpdate(BaseModel):
     vehicle_number: Optional[str] = None
     eta: Optional[str] = None
     proof_image: Optional[str] = None
+    reject_reason: Optional[str] = None

@@ -56,6 +56,8 @@ def update_status(id: int, status_data: schemas.StatusUpdate, db: Session = Depe
         donation.eta = status_data.eta
     if status_data.proof_image is not None:
         donation.proof_image = upload_image(status_data.proof_image)
+    if status_data.reject_reason is not None:
+        donation.reject_reason = status_data.reject_reason
         
     db.commit()
     return {"message": "Donation details updated successfully"}

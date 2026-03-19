@@ -37,7 +37,7 @@ async function fetchDonationDetails(id, isFirstLoad) {
 
     if (response.ok === true) {
       const donationItem = await response.json();
-      
+
       // Update the information shown on the page
       updateTrackingUI(donationItem);
 
@@ -46,23 +46,23 @@ async function fetchDonationDetails(id, isFirstLoad) {
       // Show a notification if the status has changed since the last time we checked
       if (isFirstLoad === false && lastDonationStatus !== null) {
         if (lastDonationStatus !== currentStatus) {
-            let changeMessage = "";
-            if (currentStatus === "accepted") {
-                changeMessage = "Trust accepted your donation!";
-            } else if (currentStatus === "reached") {
-                changeMessage = "Vehicle reached your location!";
-            } else if (currentStatus === "picked") {
-                changeMessage = "Food picked up successfully!";
-            } else if (currentStatus === "completed") {
-                changeMessage = "Donation process complete!";
-            } else {
-                changeMessage = "Status updated: " + donationItem.status;
-            }
+          let changeMessage = "";
+          if (currentStatus === "accepted") {
+            changeMessage = "Trust accepted your donation!";
+          } else if (currentStatus === "reached") {
+            changeMessage = "Trust reached your location!";
+          } else if (currentStatus === "picked") {
+            changeMessage = "Food picked up successfully!";
+          } else if (currentStatus === "completed") {
+            changeMessage = "Donation process completed!";
+          } else {
+            changeMessage = "Status updated: " + donationItem.status;
+          }
 
-            showToast(changeMessage, currentStatus);
+          showToast(changeMessage, currentStatus);
         }
       }
-      
+
       // Remember the status for the next check
       lastDonationStatus = currentStatus;
     }
@@ -115,13 +115,13 @@ function updateTrackingUI(item) {
   if (statusMsgEl) {
     const s = item.status.toLowerCase();
     let displayMsg = "Status: " + item.status;
-    
+
     if (s === "pending") displayMsg = "Waiting for trust...";
     else if (s === "accepted") displayMsg = "Trust accepted!";
     else if (s === "reached") displayMsg = "At your location!";
     else if (s === "picked") displayMsg = "Food picked up!";
     else if (s === "completed") displayMsg = "Success!";
-    
+
     statusMsgEl.innerText = displayMsg;
     statusMsgEl.className = "status-message " + s;
   }
@@ -131,7 +131,7 @@ function updateTrackingUI(item) {
     // Find where to put the image (either info-section or donation-card)
     let container = document.querySelector(".info-section");
     if (!container) {
-        container = document.querySelector(".donation-card");
+      container = document.querySelector(".donation-card");
     }
 
     // Only add it if it doesn't already exist on the page
@@ -140,7 +140,7 @@ function updateTrackingUI(item) {
       proofDiv.id = "proofImageDiv";
       proofDiv.style.marginTop = "20px";
       proofDiv.innerHTML = '<h3 style="margin-bottom:10px;">Pickup Proof:</h3>' +
-                           '<img src="' + item.proof_image + '" style="max-width:100%; border-radius:10px; border: 2px solid #e2e8f0;">';
+        '<img src="' + item.proof_image + '" style="width:200px; height:200px; object-fit:cover; border-radius:10px; border: 2px solid #e2e8f0;">';
       if (container) {
         container.appendChild(proofDiv);
       }
@@ -152,9 +152,9 @@ function updateTrackingUI(item) {
 function updateProgressSteps(status) {
   const statusOrder = ["pending", "accepted", "reached", "picked", "completed"];
   const currentLevel = statusOrder.indexOf(status.toLowerCase());
-  
+
   const allStepElements = document.querySelectorAll(".step");
-  
+
   for (let i = 0; i < allStepElements.length; i++) {
     const step = allStepElements[i];
     // If the step index is less than or equal to our current status level, make it active

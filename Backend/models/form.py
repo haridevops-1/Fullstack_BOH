@@ -28,3 +28,4 @@ class Donation(Base):
     vehicle_number = Column(String, nullable=True)
     eta = Column(String, nullable=True)
     proof_image = Column(Text, nullable=True)
+    reject_reason = Column(String, nullable=True)
