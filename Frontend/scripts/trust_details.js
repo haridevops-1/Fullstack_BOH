@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+
 // This function fetches only the NEW (pending) requests from the server
 async function fetchIncomingRequests() {
   const trustId = localStorage.getItem("userId");
