@@ -17,6 +17,19 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // Set up the "Update Status" button
     const updateButton = document.getElementById("updateStatusBtn");
+    const statusSelect = document.getElementById("statusSelect");
+    const proofUploadSection = document.getElementById("proofUploadSection");
+
+    if (statusSelect && proofUploadSection) {
+      statusSelect.onchange = function() {
+        if (statusSelect.value === "completed") {
+          proofUploadSection.style.display = "block";
+        } else {
+          proofUploadSection.style.display = "none";
+        }
+      };
+    }
+
     if (updateButton) {
       updateButton.onclick = function () {
         handleStatusUpdate(donationId);
@@ -68,13 +81,35 @@ async function fetchDonationDetails(id) {
 async function handleStatusUpdate(id) {
   const statusSelect = document.getElementById("statusSelect");
   const selectedStatus = statusSelect.value;
+  const updateBtn = document.getElementById("updateStatusBtn");
+  const loadingOverlay = document.getElementById("loadingOverlay");
+
+  if (loadingOverlay) loadingOverlay.style.display = "flex";
+  if (updateBtn) updateBtn.disabled = true;
   
   const updateData = {
     status: selectedStatus
   };
 
-
   try {
+    // If completed, we need the photo
+    if (selectedStatus === "completed") {
+      const photoInput = document.getElementById("completionPhoto");
+      if (photoInput && photoInput.files[0]) {
+        const reader = new FileReader();
+        const photoBase64 = await new Promise((resolve) => {
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(photoInput.files[0]);
+        });
+        updateData.completion_image = photoBase64;
+      } else {
+        showToast("Required: Please upload a proof photo to complete the donation.", "warning");
+        if (loadingOverlay) loadingOverlay.style.display = "none";
+        if (updateBtn) updateBtn.disabled = false;
+        return;
+      }
+    }
+
     // Send the PUT request to the server
     const response = await fetch(BACKEND_URL + "/api/trust/donations/" + id + "/status", {
       method: "PUT",
@@ -85,7 +120,7 @@ async function handleStatusUpdate(id) {
     if (response.ok === true) {
       showToast("Success: Donation status updated.", "success");
       
-      // If the donation is completed, go back to dashboard. Otherwise, stay on same page.
+      // If the donation is completed, go back to dashboard. Otherwise, refresh page.
       setTimeout(() => {
         if (selectedStatus === "completed") {
           window.location.href = "Trust_dashboard.html";
@@ -96,8 +131,12 @@ async function handleStatusUpdate(id) {
     } else {
       const errorData = await response.json();
       showToast("Failed to update status: " + (errorData.detail || "Server error"), "error");
+      if (loadingOverlay) loadingOverlay.style.display = "none";
+      if (updateBtn) updateBtn.disabled = false;
     }
   } catch (error) {
     showToast("Error: Could not connect to the server.", "error");
+    if (loadingOverlay) loadingOverlay.style.display = "none";
+    if (updateBtn) updateBtn.disabled = false;
   }
 }

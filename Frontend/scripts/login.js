@@ -54,6 +54,9 @@ window.handleLogin = async (event) => {
 
   loginBtn.disabled = true;
   loginBtn.classList.add("btn-loading");
+  const loadingOverlay = document.getElementById("loadingOverlay");
+  if (loadingOverlay) loadingOverlay.style.display = "flex";
+  
   messageBox.innerText = "Checking your details...";
   messageBox.className = "form-message";
 
@@ -104,11 +107,13 @@ window.handleLogin = async (event) => {
       messageBox.className = "form-message error";
       loginBtn.disabled = false;
       loginBtn.classList.remove("btn-loading");
+      if (loadingOverlay) loadingOverlay.style.display = "none";
     }
   } catch (error) {
     messageBox.innerText = "Connection error. Please try again.";
     messageBox.className = "form-message error";
     loginBtn.disabled = false;
     loginBtn.classList.remove("btn-loading");
+    if (loadingOverlay) loadingOverlay.style.display = "none";
   }
 };

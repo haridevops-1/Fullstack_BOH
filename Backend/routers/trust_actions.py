@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from dependencies import get_db, get_current_user
 import models, schemas
 from typing import List
+from cloudinary_utils import upload_image
 
 router = APIRouter(prefix="/api/trust", tags=["Trust Actions"])
 
@@ -47,6 +48,9 @@ def update_status(id: int, status_data: schemas.StatusUpdate, db: Session = Depe
     
     if status_data.reject_reason is not None:
         donation.reject_reason = status_data.reject_reason
+    
+    if status_data.completion_image is not None:
+        donation.completion_image = upload_image(status_data.completion_image)
         
     db.commit()
     return {"message": "Donation details updated successfully"}

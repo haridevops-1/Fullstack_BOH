@@ -99,6 +99,9 @@ async function getDonationInfo(id) {
 
 // This function sends the Accept or Reject decision to the server
 async function updateDonationDecision(id, selectedStatus, reason = null) {
+  const loadingOverlay = document.getElementById("loadingOverlay");
+  if (loadingOverlay) loadingOverlay.style.display = "flex";
+  
   try {
     const payload = { status: selectedStatus };
     if (reason) payload.reject_reason = reason;
@@ -118,8 +121,11 @@ async function updateDonationDecision(id, selectedStatus, reason = null) {
     } else {
       const errorData = await response.json();
       showToast("Failed to save decision: " + (errorData.detail || "Server error"), "error");
+      if (loadingOverlay) loadingOverlay.style.display = "none";
     }
   } catch (error) {
     showToast("Error: Could not connect to the server.", "error");
+    if (loadingOverlay) loadingOverlay.style.display = "none";
   }
 }
+""

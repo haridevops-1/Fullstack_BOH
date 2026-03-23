@@ -101,6 +101,9 @@ window.respondToTrust = async function (id, action) {
   }
 
   try {
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    if (loadingOverlay) loadingOverlay.style.display = "flex";
+
     // Send the decision to the server
     const response = await fetch(
       BACKEND_URL + "/api/admin/verify_trust/" + id + "?action=" + action,
@@ -113,9 +116,15 @@ window.respondToTrust = async function (id, action) {
     if (response.ok === true) {
       showToast("Trust " + action + "ed successfully!", "success");
       setTimeout(() => location.reload(), 2000); // Refresh the page after toast
+    } else {
+      const errorData = await response.json();
+      showToast("Verification failed: " + (errorData.detail || "Server error"), "error");
+      if (loadingOverlay) loadingOverlay.style.display = "none";
     }
   } catch (error) {
     showToast("Error communicating with server.", "error");
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    if (loadingOverlay) loadingOverlay.style.display = "none";
   }
 };
 

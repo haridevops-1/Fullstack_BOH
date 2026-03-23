@@ -17,11 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
   if (donationId) {
     // Fetch the donation details for the first time
     fetchDonationDetails(donationId, true);
-
-    // Check for status updates every 7 seconds (Polling)
-    setInterval(function () {
-      fetchDonationDetails(donationId, false);
-    }, 7000);
   } else {
     // If no ID is found, go back to the dashboard
     window.location.href = "Donor_dashboard.html";
@@ -107,6 +102,13 @@ function updateTrackingUI(item) {
     statusMsgEl.className = "status-message " + s;
   }
 
+  // 5. Show completion proof image
+  const proofContainer = document.getElementById("proofContainer");
+  const proofImage = document.getElementById("proofImage");
+  if (proofContainer && proofImage && item.completion_image) {
+    proofImage.src = item.completion_image;
+    proofContainer.style.display = "block";
+  }
 }
 
 // This function highlights the "steps" (Pending -> Accepted -> Reached -> Picked -> Completed)

@@ -6,9 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Create Donation - BridgeOfHope</title>
   <link rel="stylesheet" href="../styles/create_donation.css" />
+  <link rel="stylesheet" href="../styles/loading.css" />
+</head>
 </head>
 
 <body>
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner-overlay"></div>
+    <div class="loading-text-overlay">Finalizing your donation...</div>
+  </div>
   <!-- Header -->
   <header>
     <div class="logo">
@@ -88,9 +94,9 @@
         </div>
 
         <h3>Additional Info</h3>
-        <div class="additional-info" style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+        <div class="additional-info additional-info-grid">
           <div>
-            <label>Preferred Pickup Time (1-hour window)</label>
+            <label>Preferred Pickup Time</label>
             <input type="datetime-local" id="pickupTime" required />
           </div>
           <div>

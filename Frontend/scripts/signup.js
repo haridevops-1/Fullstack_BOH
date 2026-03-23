@@ -113,6 +113,9 @@ window.handleSignup = async (event) => {
   // 5. If everything is fine, proceed with signup
   signupBtn.disabled = true;
   signupBtn.classList.add("btn-loading");
+  const loadingOverlay = document.getElementById("loadingOverlay");
+  if (loadingOverlay) loadingOverlay.style.display = "flex";
+
   messageBox.innerText = "Creating your account...";
   messageBox.className = "form-message";
 
@@ -153,6 +156,7 @@ window.handleSignup = async (event) => {
         city,
         pincode,
         trust_photo: photoString,
+        total_members: document.getElementById("totalMembers").value,
       };
     }
 
@@ -172,11 +176,13 @@ window.handleSignup = async (event) => {
       messageBox.className = "form-message error";
       signupBtn.disabled = false;
       signupBtn.classList.remove("btn-loading");
+      if (loadingOverlay) loadingOverlay.style.display = "none";
     }
   } catch (error) {
     messageBox.innerText = error.message || "Error occurred. Please try again.";
     messageBox.className = "form-message error";
     signupBtn.disabled = false;
     signupBtn.classList.remove("btn-loading");
+    if (loadingOverlay) loadingOverlay.style.display = "none";
   }
 };
