@@ -107,18 +107,6 @@ function updateTrackingUI(item) {
     statusMsgEl.className = "status-message " + s;
   }
 
-  // 5. Show Proof Section if Status is Completed
-  const proofSection = document.getElementById("proofSection");
-  const proofPhoto = document.getElementById("trustProofPhoto");
-  if (proofSection && proofPhoto) {
-    if (item.status.toLowerCase() === "completed" && item.proof_image) {
-      proofPhoto.src = item.proof_image;
-      proofSection.style.display = "block";
-    } else {
-      proofSection.style.display = "none";
-    }
-  }
-
 }
 
 // This function highlights the "steps" (Pending -> Accepted -> Reached -> Picked -> Completed)

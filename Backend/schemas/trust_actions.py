@@ -34,7 +34,6 @@ class DonationRead(BaseModel):
     
     scheduled_time: Optional[str] = None
     reject_reason: Optional[str] = None
-    proof_image: Optional[str] = None
     
     class Config:
         from_attributes = True
@@ -42,4 +41,3 @@ class DonationRead(BaseModel):
 class StatusUpdate(BaseModel):
     status: str
     reject_reason: Optional[str] = None
-    proof_image: Optional[str] = None

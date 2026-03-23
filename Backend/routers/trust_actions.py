@@ -36,8 +36,6 @@ def rejected_details(trust_id: int, db: Session = Depends(get_db), current_user:
         models.Donation.status == "rejected"
     ).order_by(models.Donation.created_at.desc()).all()
 
-from cloudinary_utils import upload_image
-
 @router.put("/donations/{id}/status")
 def update_status(id: int, status_data: schemas.StatusUpdate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     donation = db.query(models.Donation).filter(models.Donation.id == id).first()
@@ -49,12 +47,6 @@ def update_status(id: int, status_data: schemas.StatusUpdate, db: Session = Depe
     
     if status_data.reject_reason is not None:
         donation.reject_reason = status_data.reject_reason
-
-    # Handle proof image upload
-    if status_data.proof_image:
-        # Base64 string will be uploaded to Cloudinary
-        image_url = upload_image(status_data.proof_image)
-        donation.proof_image = image_url
         
     db.commit()
     return {"message": "Donation details updated successfully"}
