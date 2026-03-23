@@ -123,3 +123,4 @@ async function updateDonationDecision(id, selectedStatus, reason = null) {
     showToast("Error: Could not connect to the server.", "error");
   }
 }
+""

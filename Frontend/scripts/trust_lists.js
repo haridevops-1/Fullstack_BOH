@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (checkAuth("donor") === true) {
     loadTrustList();
   }
-  
+
   // Make the logout function available to the window
   window.logout = logout;
 });
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // This function fetches all trusts and displays them in cards
 async function loadTrustList() {
   const container = document.querySelector(".all-container");
-  
+
   // If no container found, stop
   if (!container) {
     return;
@@ -49,7 +49,7 @@ async function loadTrustList() {
         // FILTERING LOGIC: Only show trusts that match the donor's city
         // Note: We do a case-insensitive check to be safe
         const filteredTrusts = trustsArray.filter(t => {
-          if (!userCity || userCity === "your area") return true; 
+          if (!userCity || userCity === "your area") return true;
           return t.city.toLowerCase().trim() === userCity.toLowerCase().trim();
         });
 
@@ -67,24 +67,24 @@ async function loadTrustList() {
 
             // CLEAN CITY NAME: Handle typos like 'cxHENNAI'
             let rawCity = trustItem.city || "Not specified";
-            let cleanCity = rawCity.replace(/^cx/i, "").trim(); 
+            let cleanCity = rawCity.replace(/^cx/i, "").trim();
             // Capitalize first letter
             cleanCity = cleanCity.charAt(0).toUpperCase() + cleanCity.slice(1).toLowerCase();
 
             // Build the card HTML
-            card.innerHTML = 
+            card.innerHTML =
               '<div class="image-wrapper">' +
-                  '<img src="' + trustPhoto + '">' +
-                  '<div class="verified-badge">✓ Verified</div>' +
+              '<img src="' + trustPhoto + '">' +
+              '<div class="verified-badge">✓ Verified</div>' +
               '</div>' +
               '<div class="details">' +
-                  '<div class="trust-name">' + (trustItem.trust_name || "Verified Trust") + '</div>' +
-                  '<div class="info-group">' +
-                      '<div class="info-item"><span class="label">Mobile</span><span class="value">' + (trustItem.mobile_number || "Contact Admin") + '</span></div>' +
-                      '<div class="info-item"><span class="label">Address</span><span class="value">' + (trustItem.trust_address || "Not specified") + '</span></div>' +
-                      '<div class="info-item"><span class="label">City</span><span class="value">' + cleanCity + '</span></div>' +
-                  '</div>' +
-                  '<button class="donate-btn-large">Donate Now</button>' +
+              '<div class="trust-name">' + (trustItem.trust_name || "Verified Trust") + '</div>' +
+              '<div class="info-group">' +
+              '<div class="info-item"><span class="label">Mobile</span><span class="value">' + (trustItem.mobile_number || "Contact Admin") + '</span></div>' +
+              '<div class="info-item"><span class="label">Address</span><span class="value">' + (trustItem.trust_address || "Not specified") + '</span></div>' +
+              '<div class="info-item"><span class="label">City</span><span class="value">' + cleanCity + '</span></div>' +
+              '</div>' +
+              '<button class="donate-btn-large">Donate Now</button>' +
               '</div>';
 
             // Set up the "Donate Now" button click event
