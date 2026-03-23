@@ -99,6 +99,19 @@ async function getDonationInfo(id) {
 
 // This function sends the Accept or Reject decision to the server
 async function updateDonationDecision(id, selectedStatus, reason = null) {
+  const acceptBtn = document.getElementById("acceptBtn");
+  const rejectBtn = document.getElementById("rejectBtn");
+
+  // Determine which button was clicked (or just disable both)
+  if (selectedStatus === "accepted" && acceptBtn) {
+    acceptBtn.classList.add("btn-loading");
+  } else if (selectedStatus === "rejected" && rejectBtn) {
+    rejectBtn.classList.add("btn-loading");
+  }
+
+  if (acceptBtn) acceptBtn.disabled = true;
+  if (rejectBtn) rejectBtn.disabled = true;
+
   try {
     const payload = { status: selectedStatus };
     if (reason) payload.reject_reason = reason;
@@ -118,9 +131,13 @@ async function updateDonationDecision(id, selectedStatus, reason = null) {
     } else {
       const errorData = await response.json();
       showToast("Failed to save decision: " + (errorData.detail || "Server error"), "error");
+      if (acceptBtn) { acceptBtn.classList.remove("btn-loading"); acceptBtn.disabled = false; }
+      if (rejectBtn) { rejectBtn.classList.remove("btn-loading"); rejectBtn.disabled = false; }
     }
   } catch (error) {
     showToast("Error: Could not connect to the server.", "error");
+    if (acceptBtn) { acceptBtn.classList.remove("btn-loading"); acceptBtn.disabled = false; }
+    if (rejectBtn) { rejectBtn.classList.remove("btn-loading"); rejectBtn.disabled = false; }
   }
 }
 ""

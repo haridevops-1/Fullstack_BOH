@@ -72,6 +72,12 @@ async function handleDonationSubmit(event) {
     scheduled_time: document.getElementById("pickupTime").value,
   };
 
+  const submitBtn = document.querySelector(".btn-2");
+  if (submitBtn) {
+    submitBtn.classList.add("btn-loading");
+    submitBtn.disabled = true;
+  }
+
   try {
     const res = await fetch(
       `${BACKEND_URL}/api/donor/new_donation?trust_id=${trustId}&donor_id=${donorId}`,
@@ -90,8 +96,16 @@ async function handleDonationSubmit(event) {
     } else {
       const err = await res.json();
       showToast(`Failed to send request: ${err.detail || "Please check your details."}`, "error");
+      if (submitBtn) {
+        submitBtn.classList.remove("btn-loading");
+        submitBtn.disabled = false;
+      }
     }
   } catch (e) {
     showToast("Error: Could not connect to the server.", "error");
+    if (submitBtn) {
+      submitBtn.classList.remove("btn-loading");
+      submitBtn.disabled = false;
+    }
   }
 }

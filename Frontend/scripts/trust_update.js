@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  // 2. Get the donation ID from the URL (e.g., Trust_update.html?id=123)
+  // 2. Get the donation ID from the URL
   const urlParameters = new URLSearchParams(window.location.search);
   const donationId = urlParameters.get("id");
 
@@ -15,13 +15,21 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fetch the details for this donation
     fetchDonationDetails(donationId);
     
-    // Set up the "Update Status" button
-    const updateButton = document.getElementById("updateStatusBtn");
-    if (updateButton) {
-      updateButton.onclick = function () {
-        handleStatusUpdate(donationId);
-      };
+    // Set up status button click handlers
+    const reachedBtn = document.getElementById("reachedBtn");
+    const pickedBtn = document.getElementById("pickedBtn");
+    const completedBtn = document.getElementById("completedBtn");
+
+    if (reachedBtn) {
+      reachedBtn.onclick = () => handleStatusUpdate(donationId, "reached", reachedBtn);
     }
+    if (pickedBtn) {
+      pickedBtn.onclick = () => handleStatusUpdate(donationId, "picked", pickedBtn);
+    }
+    if (completedBtn) {
+      completedBtn.onclick = () => handleStatusUpdate(donationId, "completed", completedBtn);
+    }
+
   } else {
     // If no ID is found, send the user back to the dashboard
     window.location.href = "Trust_dashboard.html";
@@ -53,26 +61,57 @@ async function fetchDonationDetails(id) {
       setText("updatePhone", donationItem.mobile_number);
       setText("updateAddress", donationItem.address + ", " + donationItem.city);
 
-      // Set the select box to the current status
-      const statusSelect = document.getElementById("statusSelect");
-      if (statusSelect) {
-        statusSelect.value = donationItem.status.toLowerCase();
-      }
+      // --- Enforce Sequential Status Logic ---
+      updateButtonStates(donationItem.status.toLowerCase());
     }
   } catch (error) {
-    alert("Error loading details. Please refresh and try again.");
+    console.error("Error loading details:", error);
+    showToast("Error loading details. Please refresh and try again.", "error");
   }
 }
 
-// This function sends the updated status and proof image to the server
-async function handleStatusUpdate(id) {
-  const statusSelect = document.getElementById("statusSelect");
-  const selectedStatus = statusSelect.value;
-  
+// Function to enable/disable buttons based on current status
+function updateButtonStates(currentStatus) {
+  const reachedBtn = document.getElementById("reachedBtn");
+  const pickedBtn = document.getElementById("pickedBtn");
+  const completedBtn = document.getElementById("completedBtn");
+
+  if (!reachedBtn || !pickedBtn || !completedBtn) return;
+
+  // Reset all
+  [reachedBtn, pickedBtn, completedBtn].forEach(btn => {
+    btn.disabled = true;
+    btn.classList.remove("active");
+  });
+
+  // Flow: Accepted -> Reached -> Picked -> Completed
+  if (currentStatus === "accepted") {
+    reachedBtn.disabled = false;
+  } else if (currentStatus === "reached") {
+    reachedBtn.classList.add("active");
+    pickedBtn.disabled = false;
+  } else if (currentStatus === "picked") {
+    reachedBtn.classList.add("active");
+    pickedBtn.classList.add("active");
+    completedBtn.disabled = false;
+  } else if (currentStatus === "completed") {
+    reachedBtn.classList.add("active");
+    pickedBtn.classList.add("active");
+    completedBtn.classList.add("active");
+  }
+}
+
+// This function sends the updated status to the server
+async function handleStatusUpdate(id, selectedStatus, buttonElement) {
   const updateData = {
     status: selectedStatus
   };
 
+  // Add loading state to button
+  if (buttonElement) {
+    buttonElement.classList.add("btn-loading");
+    buttonElement.disabled = true;
+  }
 
   try {
     // Send the PUT request to the server
@@ -83,21 +122,32 @@ async function handleStatusUpdate(id) {
     });
 
     if (response.ok === true) {
-      showToast("Success: Donation status updated.", "success");
+      showToast("Success: Status updated to " + selectedStatus, "success");
       
-      // If the donation is completed, go back to dashboard. Otherwise, stay on same page.
+      // Update UI after a short delay
       setTimeout(() => {
         if (selectedStatus === "completed") {
           window.location.href = "Trust_dashboard.html";
         } else {
-          window.location.reload();
+          // Instead of reload, just update button states for a smoother feel
+          buttonElement.classList.remove("btn-loading");
+          updateButtonStates(selectedStatus);
+          // Optional: window.location.reload(); 
         }
-      }, 2000);
+      }, 1500);
     } else {
       const errorData = await response.json();
       showToast("Failed to update status: " + (errorData.detail || "Server error"), "error");
+      if (buttonElement) {
+        buttonElement.classList.remove("btn-loading");
+        buttonElement.disabled = false;
+      }
     }
   } catch (error) {
     showToast("Error: Could not connect to the server.", "error");
+    if (buttonElement) {
+      buttonElement.classList.remove("btn-loading");
+      buttonElement.disabled = false;
+    }
   }
 }

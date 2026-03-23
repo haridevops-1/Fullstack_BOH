@@ -31,8 +31,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const refreshBtn = document.querySelector(".refresh-btn");
   if (refreshBtn) {
     refreshBtn.onclick = function () {
+      refreshBtn.classList.add("btn-loading");
       fetchTrustDashboardStats();
       loadRecentTrustDonations(false);
+      setTimeout(() => {
+        refreshBtn.classList.remove("btn-loading");
+      }, 800);
     };
   }
 
