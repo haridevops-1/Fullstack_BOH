@@ -70,39 +70,55 @@ async function fetchDonationDetails(id) {
   }
 }
 
-// Function to enable/disable buttons based on current status
+// Function to enable/disable and SHOW/HIDE buttons based on current status
 function updateButtonStates(currentStatus) {
   const reachedBtn = document.getElementById("reachedBtn");
   const pickedBtn = document.getElementById("pickedBtn");
   const completedBtn = document.getElementById("completedBtn");
+  const imageProofSection = document.getElementById("imageProofSection");
 
   if (!reachedBtn || !pickedBtn || !completedBtn) return;
 
-  // Reset all
-  [reachedBtn, pickedBtn, completedBtn].forEach(btn => {
-    btn.disabled = true;
-    btn.classList.remove("active");
-  });
+  // Initially hide all except reached
+  reachedBtn.style.display = "none";
+  pickedBtn.style.display = "none";
+  completedBtn.style.display = "none";
 
   // Flow: Accepted -> Reached -> Picked -> Completed
   if (currentStatus === "accepted") {
+    reachedBtn.style.display = "block";
     reachedBtn.disabled = false;
   } else if (currentStatus === "reached") {
-    reachedBtn.classList.add("active");
+    pickedBtn.style.display = "block";
     pickedBtn.disabled = false;
   } else if (currentStatus === "picked") {
-    reachedBtn.classList.add("active");
-    pickedBtn.classList.add("active");
+    completedBtn.style.display = "block";
     completedBtn.disabled = false;
   } else if (currentStatus === "completed") {
-    reachedBtn.classList.add("active");
-    pickedBtn.classList.add("active");
-    completedBtn.classList.add("active");
+    // If already completed, show the proof section or a message
+    if (imageProofSection) {
+        imageProofSection.style.display = "block";
+        // Optionally disable the final button if it was already used
+        const submitProofBtn = document.getElementById("submitProofBtn");
+        if (submitProofBtn) submitProofBtn.disabled = true;
+    }
   }
 }
 
 // This function sends the updated status to the server
 async function handleStatusUpdate(id, selectedStatus, buttonElement) {
+  // SPECIAL CASE: Clicking "Completed" doesn't hit server yet, it shows the photo section
+  if (selectedStatus === "completed") {
+    const section = document.getElementById("imageProofSection");
+    if (section) {
+      section.style.display = "block";
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+    // Hide the button after clicking to focus on the photo
+    buttonElement.style.display = "none";
+    return;
+  }
+
   const updateData = {
     status: selectedStatus
   };
@@ -114,7 +130,6 @@ async function handleStatusUpdate(id, selectedStatus, buttonElement) {
   }
 
   try {
-    // Send the PUT request to the server
     const response = await fetch(BACKEND_URL + "/api/trust/donations/" + id + "/status", {
       method: "PUT",
       headers: getAuthHeaders(),
@@ -126,15 +141,9 @@ async function handleStatusUpdate(id, selectedStatus, buttonElement) {
       
       // Update UI after a short delay
       setTimeout(() => {
-        if (selectedStatus === "completed") {
-          window.location.href = "Trust_dashboard.html";
-        } else {
-          // Instead of reload, just update button states for a smoother feel
-          buttonElement.classList.remove("btn-loading");
-          updateButtonStates(selectedStatus);
-          // Optional: window.location.reload(); 
-        }
-      }, 1500);
+        buttonElement.classList.remove("btn-loading");
+        updateButtonStates(selectedStatus);
+      }, 1000);
     } else {
       const errorData = await response.json();
       showToast("Failed to update status: " + (errorData.detail || "Server error"), "error");
@@ -150,4 +159,81 @@ async function handleStatusUpdate(id, selectedStatus, buttonElement) {
       buttonElement.disabled = false;
     }
   }
+}
+
+// --- PHOTO PROOF LOGIC ---
+
+// Handle Photo Selection & Preview
+const photoInput = document.getElementById("completionPhoto");
+if (photoInput) {
+  photoInput.onchange = function (e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const previewImg = document.getElementById("photoPreview");
+        if (previewImg) {
+          previewImg.src = event.target.result;
+          previewImg.style.display = "block";
+        }
+        const uploadText = document.getElementById("uploadText");
+        if (uploadText) uploadText.innerText = "✅ Photo Selected: " + file.name;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+}
+
+// Handle Final Submission (Finalize Donation)
+const submitProofBtn = document.getElementById("submitProofBtn");
+if (submitProofBtn) {
+  submitProofBtn.onclick = async function () {
+    const urlParameters = new URLSearchParams(window.location.search);
+    const donationId = urlParameters.get("id");
+    
+    // Check if photo is picked
+    const fileInput = document.getElementById("completionPhoto");
+    if (!fileInput.files[0]) {
+      showToast("Please upload a photo of the delivery.", "warning");
+      return;
+    }
+
+    submitProofBtn.classList.add("btn-loading");
+    submitProofBtn.disabled = true;
+
+    // Convert image to Base64 (simple way for this project)
+    const reader = new FileReader();
+    reader.readAsDataURL(fileInput.files[0]);
+    reader.onload = async function() {
+      const base64Image = reader.result;
+      
+      const payload = {
+        status: "completed",
+        // proof_image: base64Image // Assuming backend accepts this in the status update or separate field
+      };
+
+      try {
+        const response = await fetch(BACKEND_URL + "/api/trust/donations/" + donationId + "/status", {
+          method: "PUT",
+          headers: getAuthHeaders(),
+          body: JSON.stringify(payload),
+        });
+
+        if (response.ok) {
+          showToast("Success! Donation marked as completed.", "success");
+          setTimeout(() => {
+            window.location.href = "Trust_dashboard.html";
+          }, 2000);
+        } else {
+          showToast("Error finalizing donation.", "error");
+          submitProofBtn.classList.remove("btn-loading");
+          submitProofBtn.disabled = false;
+        }
+      } catch (err) {
+        showToast("Server error. Try again.", "error");
+        submitProofBtn.classList.remove("btn-loading");
+        submitProofBtn.disabled = false;
+      }
+    };
+  };
 }

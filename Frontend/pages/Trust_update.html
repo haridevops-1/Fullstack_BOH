@@ -48,8 +48,31 @@
         <label>Update Donation Status</label>
         <div class="status-buttons">
           <button id="reachedBtn" class="status-btn">Reached Location</button>
-          <button id="pickedBtn" class="status-btn">Food Picked Up</button>
-          <button id="completedBtn" class="status-btn">Donation Completed</button>
+          <button id="pickedBtn" class="status-btn" style="display: none;">Food Picked Up</button>
+          <button id="completedBtn" class="status-btn" style="display: none;">Donation Completed</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Image Proof Section (Hidden by default) -->
+    <div id="imageProofSection" class="container image-proof" style="display: none; margin-top: 25px;">
+      <div class="top-head">
+        <h3>Upload completion Photo</h3>
+        <p>Please upload a photo of the donation delivery to complete the process</p>
+      </div>
+      <div id="proofUploadSection" style="display: block;">
+        <div class="image-upload">
+          <label for="completionPhoto" class="upload-box" id="uploadBox">
+            <span id="uploadText">📷 Click to upload photo</span>
+            <input type="file" id="completionPhoto" accept="image/*" style="display: none;" />
+          </label>
+          <div class="preview" id="imagePreviewContainer">
+            <img id="photoPreview" src="" alt="Proof Preview" style="display: none; max-width: 100%; border-radius: 8px;" />
+          </div>
+        </div>
+        <div class="btn" style="margin-top: 20px; text-align: right;">
+          <button id="submitProofBtn" class="btn-2">Finalize Donation</button>
         </div>
       </div>
     </div>
