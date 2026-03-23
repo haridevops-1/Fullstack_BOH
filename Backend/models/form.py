@@ -25,3 +25,4 @@ class Donation(Base):
     # Extra fields for trust updates
     scheduled_time = Column(String, nullable=True)
     reject_reason = Column(String, nullable=True)
+    proof_image = Column(String, nullable=True)

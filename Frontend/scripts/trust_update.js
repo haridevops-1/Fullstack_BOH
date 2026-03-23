@@ -209,7 +209,7 @@ if (submitProofBtn) {
       
       const payload = {
         status: "completed",
-        // proof_image: base64Image // Assuming backend accepts this in the status update or separate field
+        proof_image: base64Image 
       };
 
       try {
