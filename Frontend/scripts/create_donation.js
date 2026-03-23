@@ -72,9 +72,6 @@ async function handleDonationSubmit(event) {
     scheduled_time: document.getElementById("pickupTime").value,
   };
 
-  const loadingOverlay = document.getElementById("loadingOverlay");
-  if (loadingOverlay) loadingOverlay.style.display = "flex";
-
   try {
     const res = await fetch(
       `${BACKEND_URL}/api/donor/new_donation?trust_id=${trustId}&donor_id=${donorId}`,
@@ -93,10 +90,8 @@ async function handleDonationSubmit(event) {
     } else {
       const err = await res.json();
       showToast(`Failed to send request: ${err.detail || "Please check your details."}`, "error");
-      if (loadingOverlay) loadingOverlay.style.display = "none";
     }
   } catch (e) {
     showToast("Error: Could not connect to the server.", "error");
-    if (loadingOverlay) loadingOverlay.style.display = "none";
   }
 }

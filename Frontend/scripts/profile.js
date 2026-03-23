@@ -85,9 +85,6 @@ function startEdit(btn) {
 }
 
 async function saveChanges(role) {
-  const loadingOverlay = document.getElementById("loadingOverlay");
-  if (loadingOverlay) loadingOverlay.style.display = "flex";
-  
   const userId = localStorage.getItem("userId");
   const inputs = document.querySelectorAll(".edit-input");
 
@@ -95,7 +92,6 @@ async function saveChanges(role) {
   for (let i = 0; i < inputs.length; i++) {
     if (inputs[i].value.trim() === "") {
       alert("Error: All fields are required. Please fill in all information.");
-      if (loadingOverlay) loadingOverlay.style.display = "none";
       return; // Stop here if any field is empty
     }
   }
@@ -136,10 +132,8 @@ async function saveChanges(role) {
     } else {
       const err = await res.json();
       showToast(`Failed to update profile: ${err.detail || "Server error"}`, "error");
-      if (loadingOverlay) loadingOverlay.style.display = "none";
     }
   } catch (e) {
     alert("Error: Could not connect to the server.");
-    if (loadingOverlay) loadingOverlay.style.display = "none";
   }
 }

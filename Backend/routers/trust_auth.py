@@ -32,7 +32,6 @@ def signup(trust_data: schemas.TrustCreate, db: Session = Depends(get_db)):
             pincode=trust_data.pincode,
             license_number=trust_data.license_number,
             trust_photo=upload_image(trust_data.trust_photo),
-            total_members=trust_data.total_members,
             is_verified=False
         )
 

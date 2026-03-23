@@ -16,4 +16,3 @@ class Trust(Base):
     is_verified = Column(Boolean, default=False)
     license_number = Column(String)
     trust_photo = Column(Text, nullable=True)
-    total_members = Column(String, nullable=True)

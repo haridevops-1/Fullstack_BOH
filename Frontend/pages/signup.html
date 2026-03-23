@@ -6,17 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>signup</title>
   <link rel="stylesheet" href="../styles/signup.css" />
-  <link rel="stylesheet" href="../styles/loading.css" />
   <!-- Cloudinary Integration -->
   <meta name="cloudinary-cloud-name" content="dqqjyumh8">
   <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
 </head>
 
 <body>
-  <div class="loading-overlay" id="loadingOverlay">
-    <div class="spinner-overlay"></div>
-    <div class="loading-text-overlay">Creating Account...</div>
-  </div>
   <div class="form-container">
     <div class="top-headings">
       <h3>Create Account</h3>
@@ -51,7 +46,7 @@
       </div>
 
       <!-- TRUST FIELDS -->
-      <div id="trustFields" class="form-grid hidden">
+      <div id="trustFields" class="form-grid" style="display: none;">
         <div>
           <label>Trust Name</label>
           <input type="text" id="trustName" placeholder="Enter trust name" />

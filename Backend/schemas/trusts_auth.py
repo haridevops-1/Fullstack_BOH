@@ -12,7 +12,6 @@ class TrustCreate(BaseModel):
     pincode: str
     license_number: str
     trust_photo: Optional[str] = None
-    total_members: Optional[str] = None
 
 class TrustRead(BaseModel):
     id: int
@@ -26,7 +25,6 @@ class TrustRead(BaseModel):
     is_verified: bool
     license_number: str
     trust_photo: Optional[str] = None
-    total_members: Optional[str] = None
     
     class Config:
         from_attributes = True

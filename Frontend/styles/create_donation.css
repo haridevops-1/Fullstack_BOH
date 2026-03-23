@@ -378,10 +378,3 @@ footer {
     transform: translateX(-50%);
   }
 }
-/* Redundant styles removed: moved to global loading.css */
-
-.additional-info-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 15px;
-}
