@@ -60,7 +60,7 @@ async function loadTrustList() {
           for (let i = 0; i < filteredTrusts.length; i++) {
             const trustItem = filteredTrusts[i];
             const card = document.createElement("div");
-            card.className = "trust-card";
+            card.className = "premium-card";
 
             // Use a default image if the trust doesn't have one
             const trustPhoto = trustItem.trust_photo || "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600&auto=format&fit=crop";

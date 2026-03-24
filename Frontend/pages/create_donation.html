@@ -1,143 +1,195 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Donation - BridgeOfHope</title>
+    <link rel="stylesheet" href="../styles/create_donation.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Donation - BridgeOfHope</title>
-  <link rel="stylesheet" href="../styles/create_donation.css" />
-</head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        <a href="./Donor_dashboard.html">
+          <h1>Bridge Of Hope</h1>
+        </a>
+      </div>
+      <!-- Nav-Bars -->
+      <div class="nav-bars">
+        <nav class="nav-links">
+          <a href="../pages/Donor_dashboard.html">Home</a>
+          <a href="../pages/Trust_lists.html">Find Trusts</a>
+          <a href="../pages/mydonations.html">My donations</a>
+          <a href="../pages/Donor_profile.html">Edit profile</a>
+          <a href="#" onclick="window.logout()">Log out</a>
+        </nav>
+      </div>
+    </header>
+    <!-- Main -->
+    <main>
+      <div class="head">
+        <h1>Create a Donation</h1>
+      </div>
 
-<body>
-  <!-- Header -->
-  <header>
-    <div class="logo">
-      <a href="./Donor_dashboard.html">
-        <h1>BridgeOfHope</h1>
-      </a>
-    </div>
-    <!-- Nav-Bars -->
-    <div class="nav-bars">
-      <nav class="nav-links">
-        <a href="../pages/Donor_dashboard.html">Home</a>
-        <a href="../pages/Trust_lists.html">Find Trusts</a>
-        <a href="../pages/mydonations.html">My donations</a>
-        <a href="../pages/Donor_profile.html">Edit profile</a>
-        <a href="#" onclick="window.logout()">Log out</a>
-      </nav>
-    </div>
-  </header>
-  <!-- Main -->
-  <main>
-    <div class="head">
-      <h1>Create a Donation</h1>
-    </div>
-
-    <form>
-      <div class="form-container">
-        <h3>Contact Person</h3>
-        <div class="top-field">
-          <div>
-            <label>Name</label>
-            <input type="text" id="contactName" name="Contact Name" placeholder="Your full name" required />
+      <form>
+        <div class="form-container">
+          <h3>Contact Person</h3>
+          <div class="top-field">
+            <div>
+              <label>Name</label>
+              <input
+                type="text"
+                id="contactName"
+                name="Contact Name"
+                placeholder="Your full name"
+                required
+              />
+            </div>
+            <div>
+              <label>Mobile Number</label>
+              <input
+                type="text"
+                id="mobileNumber"
+                name="Mobile Number"
+                placeholder="+91"
+                required
+              />
+            </div>
           </div>
-          <div>
-            <label>Mobile Number</label>
-            <input type="text" id="mobileNumber" name="Mobile Number" placeholder="+91" required />
+
+          <h3>Food Details</h3>
+          <div class="food-details">
+            <div>
+              <label>Food Type</label>
+              <input
+                type="text"
+                id="foodName"
+                placeholder="e.g. Sambar Rice, Bread"
+                required
+              />
+            </div>
+            <div>
+              <label>Veg / Non-veg</label>
+              <select id="category">
+                <option value="veg">Pure veg</option>
+                <option value="non-veg">Non-veg</option>
+                <option value="both">Both</option>
+              </select>
+            </div>
+            <div>
+              <label>Quantity (people)</label>
+              <input
+                type="number"
+                id="quantity"
+                placeholder="e.g. 50"
+                required
+              />
+            </div>
+          </div>
+
+          <h3>Pickup Location</h3>
+          <div class="address">
+            <div>
+              <label>Street Address</label>
+              <input
+                type="text"
+                id="address"
+                placeholder="House/Flat No, Street Name"
+                required
+              />
+            </div>
+            <div>
+              <label>Area / Landmark</label>
+              <input
+                type="text"
+                id="landmark"
+                placeholder="Nearby Landmark"
+                required
+              />
+            </div>
+            <div>
+              <label>City</label>
+              <input
+                type="text"
+                id="city"
+                placeholder="e.g. Chennai"
+                required
+              />
+            </div>
+            <div>
+              <label>Pincode</label>
+              <input type="text" id="pincode" placeholder="6000xx" required />
+            </div>
+          </div>
+
+          <h3>Additional Info</h3>
+          <div
+            class="additional-info"
+            style="display: grid; grid-template-columns: 1fr; gap: 15px"
+          >
+            <div>
+              <label>Preferred Pickup Time</label>
+              <input type="datetime-local" id="pickupTime" required />
+            </div>
+            <div>
+              <label>Notes</label>
+              <textarea
+                id="notes"
+                placeholder="Mention allergens, spice level, or packing instructions..."
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="submit-button">
+            <button
+              type="button"
+              class="btn-1"
+              onclick="window.location.href = 'Trust_lists.html'"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn-2">Donate Now</button>
           </div>
         </div>
-
-        <h3>Food Details</h3>
-        <div class="food-details">
-          <div>
-            <label>Food Type</label>
-            <input type="text" id="foodName" placeholder="e.g. Sambar Rice, Bread" required />
+      </form>
+    </main>
+    <!-- Footer -->
+    <footer>
+      <div class="footer-container">
+        <div class="footer-row">
+          <div class="footer-col">
+            <h3>Bridge Of Hope</h3>
+            <p>
+              Connecting surplus food with those who need it most. Bridging
+              Hearts, Filling Plates.
+            </p>
           </div>
-          <div>
-            <label>Veg / Non-veg</label>
-            <select id="category">
-              <option value="veg">Pure veg</option>
-              <option value="non-veg">Non-veg</option>
-              <option value="both">Both</option>
-            </select>
+          <div class="footer-col">
+            <h4>Navigation</h4>
+            <ul>
+              <li><a href="../pages/Donor_dashboard.html">Home</a></li>
+              <li><a href="../pages/Trust_lists.html">Find Trusts</a></li>
+              <li><a href="../pages/mydonations.html">My Donations</a></li>
+              <li><a href="../pages/Donor_profile.html">Edit Profile</a></li>
+            </ul>
           </div>
-          <div>
-            <label>Quantity (people)</label>
-            <input type="number" id="quantity" placeholder="e.g. 50" required />
-          </div>
-        </div>
-
-        <h3>Pickup Location</h3>
-        <div class="address">
-          <div>
-            <label>Street Address</label>
-            <input type="text" id="address" placeholder="House/Flat No, Street Name" required />
-          </div>
-          <div>
-            <label>Area / Landmark</label>
-            <input type="text" id="landmark" placeholder="Nearby Landmark" required />
-          </div>
-          <div>
-            <label>City</label>
-            <input type="text" id="city" placeholder="e.g. Chennai" required />
-          </div>
-          <div>
-            <label>Pincode</label>
-            <input type="text" id="pincode" placeholder="6000xx" required />
+          <div class="footer-col" id="contact">
+            <h4>Contact Us</h4>
+            <p>Email: bridgeofhope@gmail.com</p>
+            <p>Phone: +91 93609 23188</p>
+            <p>Location: Chennai, Tamil Nadu, India</p>
           </div>
         </div>
-
-        <h3>Additional Info</h3>
-        <div class="additional-info" style="display: grid; grid-template-columns: 1fr; gap: 15px;">
-          <div>
-            <label>Preferred Pickup Time</label>
-            <input type="datetime-local" id="pickupTime" required />
-          </div>
-          <div>
-            <label>Notes (optional)</label>
-            <textarea id="notes" placeholder="Mention allergens, spice level, or packing instructions..."></textarea>
-          </div>
-        </div>
-
-        <div class="submit-button">
-          <button type="button" class="btn-1" onclick="window.location.href='Trust_lists.html'">Cancel</button>
-          <button type="submit" class="btn-2">Donate Now</button>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2026 Bridge Of Hope | Developed by
+            <strong>Hariharan Ravi</strong>
+          </p>
         </div>
       </div>
-    </form>
-  </main>
-  <!-- Footer -->
-  <footer>
-    <div class="footer-container">
-      <div class="footer-row">
-        <div class="footer-col">
-          <h3>Bridge Of Hope</h3>
-          <p>Connecting surplus food with those who need it most. Bridging Hearts, Filling Plates.</p>
-        </div>
-        <div class="footer-col">
-          <h4>Navigation</h4>
-          <ul>
-            <li><a href="../pages/Donor_dashboard.html">Home</a></li>
-            <li><a href="../pages/Trust_lists.html">Find Trusts</a></li>
-            <li><a href="../pages/mydonations.html">My Donations</a></li>
-            <li><a href="../pages/Donor_profile.html">Edit Profile</a></li>
-          </ul>
-        </div>
-        <div class="footer-col" id="contact">
-          <h4>Contact Us</h4>
-          <p>Email: bridgeofhope@gmail.com</p>
-          <p>Phone: +91 93609 23188</p>
-          <p>Location: Chennai, Tamil Nadu, India</p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 Bridge Of Hope | Developed by <strong>Hariharan Ravi</strong></p>
-      </div>
-    </div>
-  </footer>
-  <script type="module" src="../scripts/auth.js"></script>
-  <script type="module" src="../scripts/create_donation.js"></script>
-</body>
-
+    </footer>
+    <script type="module" src="../scripts/auth.js"></script>
+    <script type="module" src="../scripts/create_donation.js"></script>
+  </body>
 </html>
-
