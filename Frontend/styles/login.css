@@ -4,10 +4,6 @@ html {
   scroll-behavior: smooth;
 }
 
-
-
-
-
 * {
   font-family: "Poppins", sans-serif !important;
   margin: 0;
@@ -60,11 +56,10 @@ header {
   text-decoration: none;
   color: #ffffff;
   font-weight: 500;
-
 }
 
 .nav-links a::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: 0;
@@ -81,8 +76,6 @@ header {
 .nav-links a:hover {
   color: #ffcc00;
 }
-
-
 
 * {
   font-family: "Poppins", sans-serif !important;
@@ -161,7 +154,6 @@ input {
   font-size: 16px;
   font-family: inherit;
   background-color: #f8fafc;
-
 }
 
 input:focus {
@@ -293,7 +285,7 @@ footer {
 }
 
 .footer-col h4::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: -10px;
@@ -340,11 +332,6 @@ footer {
   font-size: 16px;
 }
 
-
-
-
-
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -356,13 +343,6 @@ footer {
     transform: translateY(0);
   }
 }
-
-
-
-
-
-
-
 
 /* --- NEW BEGINNER TIPS STYLES --- */
 
@@ -404,7 +384,6 @@ footer {
   color: #b91c1c;
   border: 2px solid #ef4444;
 }
-
 
 /* Password Input with Eye Icon */
 .password-box {
@@ -496,6 +475,26 @@ footer {
   }
 }
 /* Loading state for ANY button */
-.btn-loading { position: relative !important; color: transparent !important; pointer-events: none !important; }
-.btn-loading::after { content: ''; position: absolute; width: 18px; height: 18px; top: 50%; left: 50%; margin: -9px 0 0 -9px; border: 2px solid rgba(255, 255, 255, 0.3); border-top-color: #fff; border-radius: 50%; animation: btn-spin 0.6s linear infinite; }
-@keyframes btn-spin { to { transform: rotate(360deg); } }
+.btn-loading {
+  position: relative !important;
+  color: transparent !important;
+  pointer-events: none !important;
+}
+.btn-loading::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  top: 50%;
+  left: 50%;
+  margin: -9px 0 0 -9px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: btn-spin 0.6s linear infinite;
+}
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -41,7 +41,7 @@ const getBase64 = (file) => {
 
 window.handleSignup = async (event) => {
   event.preventDefault();
-  
+
   // 1. Get UI elements
   const messageBox = document.getElementById("messageBox");
   const signupForm = event.target;
@@ -72,7 +72,8 @@ window.handleSignup = async (event) => {
     return;
   }
   if (mobile === "" || mobile.length < 10) {
-    messageBox.innerText = "Error: Please enter a valid 10-digit mobile number.";
+    messageBox.innerText =
+      "Error: Please enter a valid 10-digit mobile number.";
     messageBox.className = "form-message error";
     return;
   }

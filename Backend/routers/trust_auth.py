@@ -8,18 +8,27 @@ from auth_jwt import create_access_token
 
 router = APIRouter(prefix="/api/trust", tags=["Trust Auth"])
 
+
 @router.post("/signup", response_model=schemas.TrustRead)
 def signup(trust_data: schemas.TrustCreate, db: Session = Depends(get_db)):
-    print(f"LOG: New trust signup attempt: {trust_data.trust_name} ({trust_data.email_id})")
+    print(
+        f"LOG: New trust signup attempt: {trust_data.trust_name} ({trust_data.email_id})"
+    )
 
     try:
-        existing_trust = db.query(models.Trust).filter(
-            models.Trust.email_id == trust_data.email_id
-        ).first()
+        existing_trust = (
+            db.query(models.Trust)
+            .filter(models.Trust.email_id == trust_data.email_id)
+            .first()
+        )
 
         if existing_trust:
-            print(f"LOG: Trust signup REJECTED - Email {trust_data.email_id} already exists.")
-            raise HTTPException(status_code=400, detail="Trust email already registered")
+            print(
+                f"LOG: Trust signup REJECTED - Email {trust_data.email_id} already exists."
+            )
+            raise HTTPException(
+                status_code=400, detail="Trust email already registered"
+            )
 
         new_trust = models.Trust(
             trust_name=trust_data.trust_name,
@@ -32,7 +41,7 @@ def signup(trust_data: schemas.TrustCreate, db: Session = Depends(get_db)):
             pincode=trust_data.pincode,
             license_number=trust_data.license_number,
             trust_photo=upload_image(trust_data.trust_photo),
-            is_verified=False
+            is_verified=False,
         )
 
         db.add(new_trust)
@@ -45,14 +54,17 @@ def signup(trust_data: schemas.TrustCreate, db: Session = Depends(get_db)):
         print(f"CRITICAL: Error during trust signup: {e}")
         raise HTTPException(status_code=500, detail=f"Signup Error: {str(e)}")
 
+
 @router.post("/login")
 def login(login_data: schemas.TrustLogin, db: Session = Depends(get_db)):
     print(f"LOG: Trust login attempt for: {login_data.email_id}")
 
     try:
-        trust = db.query(models.Trust).filter(
-            models.Trust.email_id == login_data.email_id
-        ).first()
+        trust = (
+            db.query(models.Trust)
+            .filter(models.Trust.email_id == login_data.email_id)
+            .first()
+        )
 
         if not trust:
             print(f"LOG: Trust login FAILED - {login_data.email_id} not found.")
@@ -65,18 +77,21 @@ def login(login_data: schemas.TrustLogin, db: Session = Depends(get_db)):
 
         if not trust.is_verified:
             print(f"LOG: Trust login FAILED - {login_data.email_id} IS NOT VERIFIED.")
-            raise HTTPException(status_code=403, detail="Your trust account is pending admin approval and cannot login yet.")
+            raise HTTPException(
+                status_code=403,
+                detail="Your trust account is pending admin approval and cannot login yet.",
+            )
 
         print(f"LOG: Trust login SUCCESS for {login_data.email_id}")
         access_token = create_access_token(data={"sub": str(trust.id), "role": "trust"})
-        
+
         return {
             "message": "Login successful",
             "access_token": access_token,
             "token_type": "bearer",
             "id": trust.id,
             "role": "trust",
-            "name": trust.trust_name
+            "name": trust.trust_name,
         }
     except HTTPException:
         raise

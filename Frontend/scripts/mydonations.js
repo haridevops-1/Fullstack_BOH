@@ -20,7 +20,8 @@ async function loadDonationHistory() {
     pageTitle.innerText = "All My Donations";
   } else {
     // Capitalize the first letter (e.g., 'pending' -> 'Pending')
-    const capitalizedTitle = filterStatus.charAt(0).toUpperCase() + filterStatus.slice(1);
+    const capitalizedTitle =
+      filterStatus.charAt(0).toUpperCase() + filterStatus.slice(1);
     pageTitle.innerText = capitalizedTitle + " Donations";
   }
 
@@ -42,7 +43,10 @@ async function loadDonationHistory() {
   if (isRejectedPage === true) {
     columnCount = 8;
   }
-  tableBody.innerHTML = '<tr><td colspan="' + columnCount + '" style="text-align:center;padding:20px;">Searching for records...</td></tr>';
+  tableBody.innerHTML =
+    '<tr><td colspan="' +
+    columnCount +
+    '" style="text-align:center;padding:20px;">Searching for records...</td></tr>';
 
   try {
     // Fetch all donations for this donor
@@ -50,12 +54,12 @@ async function loadDonationHistory() {
       BACKEND_URL + "/api/donor/donations?donor_id=" + donorId,
       {
         headers: getAuthHeaders(),
-      }
+      },
     );
 
     if (response.ok === true) {
       const allDonations = await response.json();
-      
+
       // Clear the loading message
       tableBody.innerHTML = "";
       let visibleDonationsCount = 0;
@@ -64,7 +68,7 @@ async function loadDonationHistory() {
       for (let i = 0; i < allDonations.length; i++) {
         const item = allDonations[i];
         const status = item.status.toLowerCase();
-        
+
         let shouldShowItem = false;
 
         // Filtering logic
@@ -73,7 +77,11 @@ async function loadDonationHistory() {
           shouldShowItem = true;
         } else if (filterStatus === "accepted") {
           // 'Accepted' filter also shows 'reached' and 'picked' statuses
-          if (status === "accepted" || status === "reached" || status === "picked") {
+          if (
+            status === "accepted" ||
+            status === "reached" ||
+            status === "picked"
+          ) {
             shouldShowItem = true;
           }
         } else if (status === filterStatus.toLowerCase()) {
@@ -97,16 +105,38 @@ async function loadDonationHistory() {
           }
 
           // Build the row HTML
-          let rowHTML = 
-            '<td>' + (item.trust_name || "Anonymous Trust") + '</td>' +
-            '<td>' + item.food_name + '</td>' +
-            '<td><span class="category-badge ' + categoryClass + '">' + (item.category || "veg") + '</span></td>' +
-            '<td>' + item.approx_quantity + '</td>' +
-            '<td>' + item.address + ', ' + item.city + '</td>' +
-            '<td><span class="status ' + status + '">' + item.status + '</span></td>' +
-            '<td style="font-size: 0.9em; max-width: 150px; color: #ef4444; font-weight: 500;">' + (item.reject_reason || '<span style="color: #94a3b8;">N/A</span>') + '</td>' +
-            '<td>' + formattedDate + '</td>';
-            
+          let rowHTML =
+            "<td>" +
+            (item.trust_name || "Anonymous Trust") +
+            "</td>" +
+            "<td>" +
+            item.food_name +
+            "</td>" +
+            '<td><span class="category-badge ' +
+            categoryClass +
+            '">' +
+            (item.category || "veg") +
+            "</span></td>" +
+            "<td>" +
+            item.approx_quantity +
+            "</td>" +
+            "<td>" +
+            item.address +
+            ", " +
+            item.city +
+            "</td>" +
+            '<td><span class="status ' +
+            status +
+            '">' +
+            item.status +
+            "</span></td>" +
+            '<td style="font-size: 0.9em; max-width: 150px; color: #ef4444; font-weight: 500;">' +
+            (item.reject_reason || '<span style="color: #94a3b8;">N/A</span>') +
+            "</td>" +
+            "<td>" +
+            formattedDate +
+            "</td>";
+
           // Add the "Track" button only if it's not the rejected page
           if (isRejectedPage === false) {
             rowHTML += '<td><button class="track-btn">Track</button></td>';
@@ -129,12 +159,21 @@ async function loadDonationHistory() {
 
       // If no donations match the filter
       if (visibleDonationsCount === 0) {
-        tableBody.innerHTML = '<tr><td colspan="' + columnCount + '" style="text-align:center;padding:40px;color:#94a3b8;">No matching donations found.</td></tr>';
+        tableBody.innerHTML =
+          '<tr><td colspan="' +
+          columnCount +
+          '" style="text-align:center;padding:40px;color:#94a3b8;">No matching donations found.</td></tr>';
       }
     } else {
-      tableBody.innerHTML = '<tr><td colspan="' + columnCount + '" style="text-align:center;padding:20px;color:red;">Could not load your records.</td></tr>';
+      tableBody.innerHTML =
+        '<tr><td colspan="' +
+        columnCount +
+        '" style="text-align:center;padding:20px;color:red;">Could not load your records.</td></tr>';
     }
   } catch (error) {
-    tableBody.innerHTML = '<tr><td colspan="' + columnCount + '" style="text-align:center;padding:20px;color:red;">Check your connection.</td></tr>';
+    tableBody.innerHTML =
+      '<tr><td colspan="' +
+      columnCount +
+      '" style="text-align:center;padding:20px;color:red;">Check your connection.</td></tr>';
   }
 }

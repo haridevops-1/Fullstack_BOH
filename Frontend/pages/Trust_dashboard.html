@@ -1,187 +1,215 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trust Dashboard - BridgeOfHope</title>
+    <link rel="stylesheet" href="../styles/Trust_dashboard.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trust Dashboard - BridgeOfHope</title>
-  <link rel="stylesheet" href="../styles/Trust_dashboard.css" />
-</head>
-
-<body>
-  <!-- Header -->
-  <header>
-    <div class="logo">
-      <a href="../pages/Trust_dashboard.html">
-        <h1>Bridge Of Hope</h1>
-      </a>
-    </div>
-    <!-- Nav-Links -->
-    <nav class="nav-links">
-      <a href="../pages/Trust_dashboard.html">Home</a>
-      <a href="../pages/Trust_profile.html">Edit profile</a>
-      <a href="#" onclick="window.logout()">Log out</a>
-    </nav>
-  </header>
-  <!-- Main -->
-  <main>
-    <div class="container">
-      <!-- Welcome Section -->
-      <div class="welcome-section">
-        <h3 id="welcomeHeading">Welcome, User</h3>
-        <p>Manage food donation requests and help those in need.</p>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        <a href="../pages/Trust_dashboard.html">
+          <h1>Bridge Of Hope</h1>
+        </a>
       </div>
-
-
-      <!-- Onboarding Section -->
-      <div class="onboarding-card">
-        <div class="onboarding-header">
-          <h4>Welcome to BridgeOfHope!</h4>
+      <!-- Nav-Links -->
+      <nav class="nav-links">
+        <a href="../pages/Trust_dashboard.html">Home</a>
+        <a href="../pages/Trust_profile.html">Edit profile</a>
+        <a href="../index.html" onclick="window.logout()">Log out</a>
+      </nav>
+    </header>
+    <!-- Main -->
+    <main>
+      <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+          <h3 id="welcomeHeading">Welcome, User</h3>
+          <p>Manage food donation requests and help those in need.</p>
         </div>
-        <p class="onboarding-subtitle">To get started with your mission:</p>
-        <div class="steps-grid">
-          <div class="step-item">
-            <span class="step-number">1</span>
-            <p>Complete your profile</p>
-          </div>
-          <div class="step-item">
-            <span class="step-number">2</span>
-            <p>Set your pickup location</p>
-          </div>
-          <div class="step-item">
-            <span class="step-number">3</span>
-            <p>Start accepting food donations</p>
-          </div>
-        </div>
-        <!-- <a href="../pages/Trust_profile.html" class="onboarding-btn">Complete Profile</a> -->
-      </div>
 
-      <!-- Stats Section -->
-      <div class="main-field">
-        <!-- Incoming Card -->
-        <div class="field-card primary">
-          <div class="card-top">
-            <div class="card-title-block">
-              <div class="stat-info">
-                <h3>INCOMING REQUESTS</h3>
-                <p class="pending"></p>
-              </div>
+        <!-- Onboarding Section -->
+        <div class="onboarding-card">
+          <div class="onboarding-header">
+            <h4>Welcome to BridgeOfHope!</h4>
+          </div>
+          <p class="onboarding-subtitle">To get started with your mission:</p>
+          <div class="steps-grid">
+            <div class="step-item">
+              <span class="step-number">1</span>
+              <p>Complete your profile</p>
             </div>
-            <button onclick="window.location.href='../pages/Trust_Donation_details.html'"
-              class="view-link btn-incoming">View Donations</button>
-          </div>
-          <p class="card-footer-text">No donation requests yet. Don't worry, you'll see them here soon!</p>
-        </div>
-
-        <!-- Accepted Card -->
-        <div class="field-card success">
-          <div class="card-top">
-            <div class="card-title-block">
-
-              <div class="stat-info">
-                <h3>ACCEPTED DONATIONS</h3>
-                <p class="accept"></p>
-              </div>
+            <div class="step-item">
+              <span class="step-number">2</span>
+              <p>Set your pickup location</p>
             </div>
-            <button onclick="window.location.href='../pages/Trust_Accepted_details.html'"
-              class="view-link btn-accepted">View Accepted</button>
+            <div class="step-item">
+              <span class="step-number">3</span>
+              <p>Start accepting food donations</p>
+            </div>
+          </div>
+          <!-- <a href="../pages/Trust_profile.html" class="onboarding-btn">Complete Profile</a> -->
+        </div>
+
+        <!-- Stats Section -->
+        <div class="main-field">
+          <!-- Incoming Card -->
+          <div class="field-card primary">
+            <div class="card-top">
+              <div class="card-title-block">
+                <div class="stat-info">
+                  <h3>INCOMING REQUESTS</h3>
+                  <p class="pending"></p>
+                </div>
+              </div>
+              <button
+                onclick="
+                  window.location.href = '../pages/Trust_Donation_details.html'
+                "
+                class="view-link btn-incoming"
+              >
+                View Donations
+              </button>
+            </div>
+            <p class="card-footer-text">
+              No donation requests yet. Don't worry, you'll see them here soon!
+            </p>
+          </div>
+
+          <!-- Accepted Card -->
+          <div class="field-card success">
+            <div class="card-top">
+              <div class="card-title-block">
+                <div class="stat-info">
+                  <h3>ACCEPTED DONATIONS</h3>
+                  <p class="accept"></p>
+                </div>
+              </div>
+              <button
+                onclick="
+                  window.location.href = '../pages/Trust_Accepted_details.html'
+                "
+                class="view-link btn-accepted"
+              >
+                View Accepted
+              </button>
+            </div>
+          </div>
+
+          <!-- Rejected Card -->
+          <div class="field-card danger">
+            <div class="card-top">
+              <div class="card-title-block">
+                <div class="stat-info">
+                  <h3>REJECTED DONATIONS</h3>
+                  <p class="reject"></p>
+                </div>
+              </div>
+              <button
+                onclick="
+                  window.location.href = '../pages/Trust_Rejected_details.html'
+                "
+                class="view-link btn-rejected"
+              >
+                View Rejected
+              </button>
+            </div>
+          </div>
+
+          <!-- Completed Card -->
+          <div class="field-card info">
+            <div class="card-top">
+              <div class="card-title-block">
+                <div class="stat-info">
+                  <h3>COMPLETED DONATIONS</h3>
+                  <p class="completed-count"></p>
+                </div>
+              </div>
+              <button
+                onclick="
+                  window.location.href = '../pages/Trust_Completed_details.html'
+                "
+                class="view-link btn-completed"
+              >
+                View Completed
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Rejected Card -->
-        <div class="field-card danger">
-          <div class="card-top">
-            <div class="card-title-block">
-              <div class="stat-info">
-                <h3>REJECTED DONATIONS</h3>
-                <p class="reject"></p>
-              </div>
-            </div>
-            <button onclick="window.location.href='../pages/Trust_Rejected_details.html'"
-              class="view-link btn-rejected">View Rejected</button>
+        <!-- Recent Activity / Table -->
+        <section class="recent-requests">
+          <div class="table-header">
+            <h3>Recent Requests</h3>
+            <button class="refresh-btn">🔄 Refresh</button>
           </div>
-        </div>
 
-        <!-- Completed Card -->
-        <div class="field-card info">
-          <div class="card-top">
-            <div class="card-title-block">
-              <div class="stat-info">
-                <h3>COMPLETED DONATIONS</h3>
-                <p class="completed-count"></p>
-              </div>
-            </div>
-            <button onclick="window.location.href='../pages/Trust_Completed_details.html'"
-              class="view-link btn-completed">View Completed</button>
-          </div>
-        </div>
+          <table class="request-table">
+            <thead>
+              <tr>
+                <th>Donor Name</th>
+                <th>Food Type</th>
+                <th>Veg/Non-veg</th>
+                <th>Qty</th>
+                <th>Location</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Empty State for Table -->
+              <tr>
+                <td colspan="6" class="empty-table-state">
+                  <p>
+                    No donations found yet. Be the first to accept a donation
+                    today! 🔔
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
       </div>
 
-
-
-      <!-- Recent Activity / Table -->
-      <section class="recent-requests">
-        <div class="table-header">
-          <h3>Recent Requests</h3>
-          <button class="refresh-btn">🔄 Refresh</button>
+      <!-- Toast Notification Container -->
+      <div id="toast-container" class="toast-container"></div>
+    </main>
+    <!-- Footer -->
+    <footer>
+      <div class="footer-container">
+        <div class="footer-row">
+          <div class="footer-col">
+            <h3>Bridge Of Hope</h3>
+            <p>
+              Connecting surplus food with those who need it most. Bridging
+              Hearts, Filling Plates.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Navigation</h4>
+            <ul>
+              <li><a href="../pages/Trust_dashboard.html">Home</a></li>
+              <li><a href="../pages/Trust_profile.html">Edit Profile</a></li>
+            </ul>
+          </div>
+          <div class="footer-col" id="contact">
+            <h4>Contact Us</h4>
+            <p>Email: bridgeofhope@gmail.com</p>
+            <p>Phone: +91 93609 23188</p>
+            <p>Location: Chennai, Tamil Nadu, India</p>
+          </div>
         </div>
-
-        <table class="request-table">
-          <thead>
-            <tr>
-              <th>Donor Name</th>
-              <th>Food Type</th>
-              <th>Veg/Non-veg</th>
-              <th>Qty</th>
-              <th>Location</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Empty State for Table -->
-            <tr>
-              <td colspan="6" class="empty-table-state">
-                <p>No donations found yet. Be the first to accept a donation today! 🔔</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-    </div>
-
-    <!-- Toast Notification Container -->
-    <div id="toast-container" class="toast-container"></div>
-  </main>
-  <!-- Footer -->
-  <footer>
-    <div class="footer-container">
-      <div class="footer-row">
-        <div class="footer-col">
-          <h3>Bridge Of Hope</h3>
-          <p>Connecting surplus food with those who need it most. Bridging Hearts, Filling Plates.</p>
-        </div>
-        <div class="footer-col">
-          <h4>Navigation</h4>
-          <ul>
-            <li><a href="../pages/Trust_dashboard.html">Home</a></li>
-            <li><a href="../pages/Trust_profile.html">Edit Profile</a></li>
-          </ul>
-        </div>
-        <div class="footer-col" id="contact">
-          <h4>Contact Us</h4>
-          <p>Email: bridgeofhope@gmail.com</p>
-          <p>Phone: +91 93609 23188</p>
-          <p>Location: Chennai, Tamil Nadu, India</p>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2026 Bridge Of Hope | Developed by
+            <strong>Hariharan Ravi</strong>
+          </p>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 Bridge Of Hope | Developed by <strong>Hariharan Ravi</strong></p>
-      </div>
-    </div>
-  </footer>
-  <script type="module" src="../scripts/auth.js"></script>
-  <script type="module" src="../scripts/trust_dashboard.js"></script>
-</body>
-
+    </footer>
+    <script type="module" src="../scripts/auth.js"></script>
+    <script type="module" src="../scripts/trust_dashboard.js"></script>
+  </body>
 </html>
-

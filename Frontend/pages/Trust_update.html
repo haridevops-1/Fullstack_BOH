@@ -1,112 +1,146 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update Donation - BridgeOfHope</title>
+    <link rel="stylesheet" href="../styles/Trust_update.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Update Donation - BridgeOfHope</title>
-  <link rel="stylesheet" href="../styles/Trust_update.css" />
-</head>
-
-<body>
-  <!-- Header -->
-  <header>
-    <div class="logo">
-      <a href="../pages/Trust_dashboard.html">
-        <h1>Bridge Of Hope</h1>
-      </a>
-    </div>
-    <div class="nav-bars">
-      <nav class="nav-links">
-        <a href="../pages/Trust_dashboard.html">Home</a>
-        <a href="../pages/Trust_profile.html">Edit profile</a>
-        <a href="#" onclick="window.logout()">Log out</a>
-      </nav>
-    </div>
-  </header>
-  <!-- Main -->
-  <main>
-    <div class="container">
-      <div class="top-head">
-        <h3>Update Donation</h3>
-        <p>Review the donation details and update its status</p>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        <a href="../pages/Trust_dashboard.html">
+          <h1>Bridge Of Hope</h1>
+        </a>
       </div>
-      <!-- Main-Field -->
-      <div class="main-field">
-        <p><strong>Food Item:</strong> <span id="updateFood">Loading...</span></p>
-        <p><strong>Quantity:</strong> <span id="updateQty">Loading...</span></p>
-        <p><strong>Donor Name:</strong> <span id="updateDonor">Loading...</span></p>
-        <p><strong>Contact:</strong> <span id="updatePhone">Loading...</span></p>
-        <p><strong>Pickup Address:</strong> <span id="updateAddress">Loading...</span></p>
+      <div class="nav-bars">
+        <nav class="nav-links">
+          <a href="../pages/Trust_dashboard.html">Home</a>
+          <a href="../pages/Trust_profile.html">Edit profile</a>
+          <a href="#" onclick="window.logout()">Log out</a>
+        </nav>
       </div>
-    </div>
-
-
-    <!-- Status Update Section -->
-    <div class="container-2">
-      <div class="status-update">
-        <label>Update Donation Status</label>
-        <div class="status-buttons">
-          <button id="reachedBtn" class="status-btn">Reached Location</button>
-          <button id="pickedBtn" class="status-btn" style="display: none;">Food Picked Up</button>
-          <button id="completedBtn" class="status-btn" style="display: none;">Donation Completed</button>
+    </header>
+    <!-- Main -->
+    <main>
+      <div class="container">
+        <div class="top-head">
+          <h3>Update Donation</h3>
+          <p>Review the donation details and update its status</p>
+        </div>
+        <!-- Main-Field -->
+        <div class="main-field">
+          <p>
+            <strong>Food Item:</strong> <span id="updateFood">Loading...</span>
+          </p>
+          <p>
+            <strong>Quantity:</strong> <span id="updateQty">Loading...</span>
+          </p>
+          <p>
+            <strong>Donor Name:</strong>
+            <span id="updateDonor">Loading...</span>
+          </p>
+          <p>
+            <strong>Contact:</strong> <span id="updatePhone">Loading...</span>
+          </p>
+          <p>
+            <strong>Pickup Address:</strong>
+            <span id="updateAddress">Loading...</span>
+          </p>
         </div>
       </div>
-    </div>
 
-
-    <!-- Image Proof Section (Hidden by default) -->
-    <div id="imageProofSection" class="container image-proof" style="display: none; margin-top: 25px;">
-      <div class="top-head">
-        <h3>Upload completion Photo</h3>
-        <p>Please upload a photo of the donation delivery to complete the process</p>
-      </div>
-      <div id="proofUploadSection" style="display: block;">
-        <div class="image-upload">
-          <label for="completionPhoto" class="upload-box" id="uploadBox">
-            <span id="uploadText">📷 Click to upload photo</span>
-            <input type="file" id="completionPhoto" accept="image/*" style="display: none;" />
-          </label>
-          <div class="preview" id="imagePreviewContainer">
-            <img id="photoPreview" src="" alt="Proof Preview" style="display: none; max-width: 100%; border-radius: 8px;" />
+      <!-- Status Update Section -->
+      <div class="container-2">
+        <div class="status-update">
+          <label>Update Donation Status</label>
+          <div class="status-buttons">
+            <button id="reachedBtn" class="status-btn">Reached Location</button>
+            <button id="pickedBtn" class="status-btn" style="display: none">
+              Food Picked Up
+            </button>
+            <button id="completedBtn" class="status-btn" style="display: none">
+              Donation Completed
+            </button>
           </div>
         </div>
-        <div class="btn" style="margin-top: 20px; text-align: right;">
-          <button id="submitProofBtn" class="btn-2">Finalize Donation</button>
-        </div>
       </div>
-    </div>
-  </main>
-  <!-- Footer -->
-  <footer>
-    <div class="footer-container">
-      <div class="footer-row">
-        <div class="footer-col">
-          <h3>Bridge Of Hope</h3>
-          <p>Connecting surplus food with those who need it most. Bridging Hearts, Filling Plates.</p>
-        </div>
-        <div class="footer-col">
-          <h4>Navigation</h4>
-          <ul>
-            <li><a href="../pages/Trust_dashboard.html">Home</a></li>
-            <li><a href="../pages/Trust_profile.html">Edit Profile</a></li>
-          </ul>
-        </div>
-        <div class="footer-col" id="contact">
-          <h4>Contact Us</h4>
-          <p>Email: bridgeofhope@gmail.com</p>
-          <p>Phone: +91 93609 23188</p>
-          <p>Location: Chennai, Tamil Nadu, India</p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 Bridge Of Hope | Developed by <strong>Hariharan Ravi</strong></p>
-      </div>
-    </div>
-  </footer>
-  <script type="module" src="../scripts/auth.js"></script>
-  <script type="module" src="../scripts/trust_update.js"></script>
-</body>
 
+      <!-- Image Proof Section (Hidden by default) -->
+      <div
+        id="imageProofSection"
+        class="container image-proof"
+        style="display: none; margin-top: 25px"
+      >
+        <div class="top-head">
+          <h3>Upload completion Photo</h3>
+          <p>
+            Please upload a photo of the donation delivery to complete the
+            process
+          </p>
+        </div>
+        <div id="proofUploadSection" style="display: block">
+          <div class="image-upload">
+            <label for="completionPhoto" class="upload-box" id="uploadBox">
+              <span id="uploadText">📷 Click to upload photo</span>
+              <input
+                type="file"
+                id="completionPhoto"
+                accept="image/*"
+                style="display: none"
+              />
+            </label>
+            <div class="preview" id="imagePreviewContainer">
+              <img
+                id="photoPreview"
+                src=""
+                alt="Proof Preview"
+                style="display: none; max-width: 100%; border-radius: 8px"
+              />
+            </div>
+          </div>
+          <div class="btn" style="margin-top: 20px; text-align: right">
+            <button id="submitProofBtn" class="btn-2">Finalize Donation</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- Footer -->
+    <footer>
+      <div class="footer-container">
+        <div class="footer-row">
+          <div class="footer-col">
+            <h3>Bridge Of Hope</h3>
+            <p>
+              Connecting surplus food with those who need it most. Bridging
+              Hearts, Filling Plates.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Navigation</h4>
+            <ul>
+              <li><a href="../pages/Trust_dashboard.html">Home</a></li>
+              <li><a href="../pages/Trust_profile.html">Edit Profile</a></li>
+            </ul>
+          </div>
+          <div class="footer-col" id="contact">
+            <h4>Contact Us</h4>
+            <p>Email: bridgeofhope@gmail.com</p>
+            <p>Phone: +91 93609 23188</p>
+            <p>Location: Chennai, Tamil Nadu, India</p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2026 Bridge Of Hope | Developed by
+            <strong>Hariharan Ravi</strong>
+          </p>
+        </div>
+      </div>
+    </footer>
+    <script type="module" src="../scripts/auth.js"></script>
+    <script type="module" src="../scripts/trust_update.js"></script>
+  </body>
 </html>
-

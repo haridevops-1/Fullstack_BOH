@@ -1,133 +1,134 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Donation Tracking - BridgeOfHope</title>
+    <link rel="stylesheet" href="../styles/Donation-tracking.css" />
+    <!-- Cloudinary Integration -->
+    <meta name="cloudinary-cloud-name" content="dqqjyumh8" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Donation Tracking - BridgeOfHope</title>
-  <link rel="stylesheet" href="../styles/Donation-tracking.css" />
-  <!-- Cloudinary Integration -->
-  <meta name="cloudinary-cloud-name" content="dqqjyumh8">
-</head>
-
-<body>
-  <!-- Header -->
-  <header>
-    <div class="logo">
-      <a href="./Donor_dashboard.html">
-        <h1>Bridge Of Hope</h1>
-      </a>
-    </div>
-    <!-- Nav-Bars -->
-    <div class="nav-bars">
-      <nav class="nav-links">
-        <a href="../pages/Donor_dashboard.html">Home</a>
-        <a href="../pages/Trust_lists.html">Find Trusts</a>
-        <a href="../pages/mydonations.html">My donations</a>
-        <a href="../pages/Donor_profile.html">Edit profile</a>
-        <a href="#" onclick="window.logout()">Log out</a>
-      </nav>
-    </div>
-  </header>
-  <!-- Container -->
-  <div class="container">
-    <div class="page-header">
-      <h2>Donation Tracking</h2>
-      <p>Track the live status of your food donation</p>
-    </div>
-    <!-- Food- Details -->
-    <div class="card-wrapper">
-      <div class="donation-card">
-        <div class="donation-info">
-          <div class="info-box" id="trackFood">
-            <span>Food Type</span>
-            Loading...
-          </div>
-          <div class="info-box" id="trackQty">
-            <span>Quantity</span>
-            Loading...
-          </div>
-          <div class="info-box" id="trackAddress">
-            <span>Pickup Address</span>
-            Loading...
-          </div>
-          <div class="info-box" id="trackTrust">
-            <span>Assigned Trust</span>
-            Loading...
-          </div>
-        </div>
-
-        <!-- Status- Tracker -->
-        <div class="status-tracker">
-          <h3>Donation Status</h3>
-
-          <div class="timeline">
-            <div class="step">
-              <div class="circle">1</div>
-              <p>Requested</p>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        <a href="./Donor_dashboard.html">
+          <h1>Bridge Of Hope</h1>
+        </a>
+      </div>
+      <!-- Nav-Bars -->
+      <div class="nav-bars">
+        <nav class="nav-links">
+          <a href="../pages/Donor_dashboard.html">Home</a>
+          <a href="../pages/Trust_lists.html">Find Trusts</a>
+          <a href="../pages/mydonations.html">My donations</a>
+          <a href="../pages/Donor_profile.html">Edit profile</a>
+          <a href="#" onclick="window.logout()">Log out</a>
+        </nav>
+      </div>
+    </header>
+    <!-- Container -->
+    <div class="container">
+      <div class="page-header">
+        <h2>Donation Tracking</h2>
+        <p>Track the live status of your food donation</p>
+      </div>
+      <!-- Food- Details -->
+      <div class="card-wrapper">
+        <div class="donation-card">
+          <div class="donation-info">
+            <div class="info-box" id="trackFood">
+              <span>Food Type</span>
+              Loading...
             </div>
-
-            <div class="step">
-              <div class="circle">2</div>
-              <p>Accepted</p>
+            <div class="info-box" id="trackQty">
+              <span>Quantity</span>
+              Loading...
             </div>
-
-            <div class="step">
-              <div class="circle">3</div>
-              <p>Reached</p>
+            <div class="info-box" id="trackAddress">
+              <span>Pickup Address</span>
+              Loading...
             </div>
-
-            <div class="step">
-              <div class="circle">4</div>
-              <p>Picked Up</p>
-            </div>
-
-            <div class="step">
-              <div class="circle">5</div>
-              <p>Completed</p>
+            <div class="info-box" id="trackTrust">
+              <span>Assigned Trust</span>
+              Loading...
             </div>
           </div>
-        </div>
 
+          <!-- Status- Tracker -->
+          <div class="status-tracker">
+            <h3>Donation Status</h3>
 
-        <div class="status-message">
-          Fetching tracking details...
+            <div class="timeline">
+              <div class="step">
+                <div class="circle">1</div>
+                <p>Requested</p>
+              </div>
+
+              <div class="step">
+                <div class="circle">2</div>
+                <p>Accepted</p>
+              </div>
+
+              <div class="step">
+                <div class="circle">3</div>
+                <p>Reached</p>
+              </div>
+
+              <div class="step">
+                <div class="circle">4</div>
+                <p>Picked Up</p>
+              </div>
+
+              <div class="step">
+                <div class="circle">5</div>
+                <p>Completed</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="status-message">Fetching tracking details...</div>
         </div>
       </div>
     </div>
-  </div>
-  <!-- Footer -->
-  <footer>
-    <div class="footer-container">
-      <div class="footer-row">
-        <div class="footer-col">
-          <h3>Bridge Of Hope</h3>
-          <p>Connecting surplus food with those who need it most. Bridging Hearts, Filling Plates.</p>
+    <!-- Footer -->
+    <footer>
+      <div class="footer-container">
+        <div class="footer-row">
+          <div class="footer-col">
+            <h3>Bridge Of Hope</h3>
+            <p>
+              Connecting surplus food with those who need it most. Bridging
+              Hearts, Filling Plates.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Navigation</h4>
+            <ul>
+              <li><a href="../pages/Donor_dashboard.html">Home</a></li>
+              <li><a href="../pages/Trust_lists.html">Find Trusts</a></li>
+              <li><a href="../pages/mydonations.html">My Donations</a></li>
+              <li><a href="../pages/Donor_profile.html">Edit Profile</a></li>
+            </ul>
+          </div>
+          <div class="footer-col" id="contact">
+            <h4>Contact Us</h4>
+            <p>Email: bridgeofhope@gmail.com</p>
+            <p>Phone: +91 93609 23188</p>
+            <p>Location: Chennai, Tamil Nadu, India</p>
+          </div>
         </div>
-        <div class="footer-col">
-          <h4>Navigation</h4>
-          <ul>
-            <li><a href="../pages/Donor_dashboard.html">Home</a></li>
-            <li><a href="../pages/Trust_lists.html">Find Trusts</a></li>
-            <li><a href="../pages/mydonations.html">My Donations</a></li>
-            <li><a href="../pages/Donor_profile.html">Edit Profile</a></li>
-          </ul>
-        </div>
-        <div class="footer-col" id="contact">
-          <h4>Contact Us</h4>
-          <p>Email: bridgeofhope@gmail.com</p>
-          <p>Phone: +91 93609 23188</p>
-          <p>Location: Chennai, Tamil Nadu, India</p>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2026 Bridge Of Hope | Developed by
+            <strong>Hariharan Ravi</strong>
+          </p>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 Bridge Of Hope | Developed by <strong>Hariharan Ravi</strong></p>
-      </div>
-    </div>
-  </footer>
-  <div id="toast-container" class="toast-container"></div>
-  <script type="module" src="../scripts/auth.js"></script>
-  <script type="module" src="../scripts/donation_tracking.js"></script>
-</body>
-
+    </footer>
+    <div id="toast-container" class="toast-container"></div>
+    <script type="module" src="../scripts/auth.js"></script>
+    <script type="module" src="../scripts/donation_tracking.js"></script>
+  </body>
 </html>

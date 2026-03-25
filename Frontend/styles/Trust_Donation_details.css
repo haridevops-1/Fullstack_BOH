@@ -4,10 +4,6 @@ html {
   scroll-behavior: smooth;
 }
 
-
-
-
-
 * {
   font-family: "Poppins", sans-serif !important;
   margin: 0;
@@ -63,7 +59,7 @@ header {
 }
 
 .nav-links a::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: 0;
@@ -80,8 +76,6 @@ header {
 .nav-links a:hover {
   color: #ffcc00;
 }
-
-
 
 * {
   font-family: "Poppins", sans-serif !important;
@@ -138,7 +132,7 @@ header {
 }
 
 .nav-links a::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: 0;
@@ -262,7 +256,9 @@ header {
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid #eaecf0;
   color: #1a1a1a;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 /* card hover removed */
@@ -349,8 +345,6 @@ header {
   background: #0d3055;
   transform: translateY(-2px);
 }
-
-
 
 .field-1 p {
   font-size: 16px;
@@ -440,7 +434,7 @@ footer {
 }
 
 .footer-col h4::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: -10px;
@@ -487,11 +481,6 @@ footer {
   font-size: 16px;
 }
 
-
-
-
-
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -503,15 +492,6 @@ footer {
     transform: translateY(0);
   }
 }
-
-
-
-
-
-
-
-
-
 
 /* --- Status Badges --- */
 .status {
@@ -563,7 +543,6 @@ footer {
   /* Green Text */
   border-color: #22c55e;
 }
-
 
 .status.rejected {
   background: #fee2e2;

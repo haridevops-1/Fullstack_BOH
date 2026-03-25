@@ -3,6 +3,7 @@ from sqlalchemy.sql import func
 import datetime
 from database import Base
 
+
 class Donation(Base):
     __tablename__ = "food_form"
 
@@ -20,8 +21,10 @@ class Donation(Base):
     pincode = Column(String)
     notes = Column(Text, nullable=True)
     status = Column(String, default="pending")
-    created_at = Column(DateTime(timezone=True), default=func.now(), server_default=func.now())
-    
+    created_at = Column(
+        DateTime(timezone=True), default=func.now(), server_default=func.now()
+    )
+
     # Extra fields for trust updates
     scheduled_time = Column(String, nullable=True)
     reject_reason = Column(String, nullable=True)

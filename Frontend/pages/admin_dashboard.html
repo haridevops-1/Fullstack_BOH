@@ -1,106 +1,114 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - BridgeOfHope</title>
+    <link rel="stylesheet" href="../styles/admin_dashboard.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard - BridgeOfHope</title>
-  <link rel="stylesheet" href="../styles/admin_dashboard.css" />
-</head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="admin_dashboard.html">
+          <h1>Bridge Of Hope</h1>
+        </a>
+      </div>
+      <nav class="nav-links">
+        <a href="admin_dashboard.html">Dashboard</a>
+        <a href="#">Trusts List</a>
+        <a href="#">Donors List</a>
+        <a href="#" onclick="window.logout()">Log out</a>
+      </nav>
+    </header>
 
-<body>
-  <header>
-    <div class="logo">
-      <a href="admin_dashboard.html">
-        <h1>Bridge Of Hope</h1>
-      </a>
-    </div>
-    <nav class="nav-links">
-      <a href="admin_dashboard.html">Dashboard</a>
-      <a href="#">Trusts List</a>
-      <a href="#">Donors List</a>
-      <a href="#" onclick="window.logout()">Log out</a>
-    </nav>
-  </header>
+    <main>
+      <div class="container">
+        <div class="top-headings">
+          <div class="greeting-box">
+            <h3 id="welcomeHeading">
+              Welcome to the BridgeOfHope Control Panel 🌟
+            </h3>
+            <p>
+              Hello, Admin! Here you can safely verify new Trust registrations
+              to support our community.
+            </p>
+          </div>
+        </div>
 
-  <main>
-    <div class="container">
+        <div class="main-field">
+          <div class="field-1">
+            <h3>Pending Verification</h3>
+            <p id="pendingCount">0</p>
+          </div>
+          <div class="field-2">
+            <h3>Verified Trusts</h3>
+            <p id="verifiedCount">0</p>
+          </div>
+          <div class="field-3">
+            <h3>Total Donors</h3>
+            <p id="donorCount">0</p>
+          </div>
+        </div>
 
-      <div class="top-headings">
-        <div class="greeting-box">
-          <h3 id="welcomeHeading">Welcome to the BridgeOfHope Control Panel 🌟</h3>
-          <p>Hello, Admin! Here you can safely verify new Trust registrations to support our community.</p>
+        <section class="verification-section">
+          <h3>New Trust Registrations</h3>
+          <p class="section-subtitle">
+            Review trust details below before taking action.
+          </p>
+
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Trust Name</th>
+                <th>License Number</th>
+                <th>City/Location</th>
+                <th>Document</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Trust rows will be loaded dynamically -->
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-container">
+        <div class="footer-row">
+          <div class="footer-col">
+            <h3>Bridge Of Hope</h3>
+            <p>
+              Connecting surplus food with those who need it most. Bridging
+              Hearts, Filling Plates.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Navigation</h4>
+            <ul>
+              <li><a href="admin_dashboard.html">Dashboard</a></li>
+              <li><a href="../pages/about.html">About Us</a></li>
+              <li><a href="../pages/Login.html">Login</a></li>
+            </ul>
+          </div>
+          <div class="footer-col" id="contact">
+            <h4>Contact Us</h4>
+            <p>Email: bridgeofhope@gmail.com</p>
+            <p>Phone: +91 93609 23188</p>
+            <p>Location: Chennai, Tamil Nadu, India</p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2026 Bridge Of Hope | Developed by
+            <strong>Hariharan Ravi</strong>
+          </p>
         </div>
       </div>
-
-      <div class="main-field">
-        <div class="field-1">
-          <h3>Pending Verification</h3>
-          <p id="pendingCount">0</p>
-        </div>
-        <div class="field-2">
-          <h3>Verified Trusts</h3>
-          <p id="verifiedCount">0</p>
-        </div>
-        <div class="field-3">
-          <h3>Total Donors</h3>
-          <p id="donorCount">0</p>
-        </div>
-      </div>
-
-      <section class="verification-section">
-        <h3>New Trust Registrations</h3>
-        <p class="section-subtitle">Review trust details below before taking action.</p>
-
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Trust Name</th>
-              <th>License Number</th>
-              <th>City/Location</th>
-              <th>Document</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Trust rows will be loaded dynamically -->
-          </tbody>
-        </table>
-      </section>
-
-    </div>
-  </main>
-
-  <footer>
-    <div class="footer-container">
-      <div class="footer-row">
-        <div class="footer-col">
-          <h3>Bridge Of Hope</h3>
-          <p>Connecting surplus food with those who need it most. Bridging Hearts, Filling Plates.</p>
-        </div>
-        <div class="footer-col">
-          <h4>Navigation</h4>
-          <ul>
-            <li><a href="admin_dashboard.html">Dashboard</a></li>
-            <li><a href="../pages/about.html">About Us</a></li>
-            <li><a href="../pages/Login.html">Login</a></li>
-          </ul>
-        </div>
-        <div class="footer-col" id="contact">
-          <h4>Contact Us</h4>
-          <p>Email: bridgeofhope@gmail.com</p>
-          <p>Phone: +91 93609 23188</p>
-          <p>Location: Chennai, Tamil Nadu, India</p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 Bridge Of Hope | Developed by <strong>Hariharan Ravi</strong></p>
-      </div>
-    </div>
-  </footer>
-  <script type="module" src="../scripts/admin_dashboard.js"></script>
-</body>
-
+    </footer>
+    <script type="module" src="../scripts/admin_dashboard.js"></script>
+  </body>
 </html>
-

@@ -89,7 +89,7 @@ def rejected_details(
 
 @router.put("/donations/{id}/status")
 def update_status(
-    id: int,    
+    id: int,
     status_data: schemas.StatusUpdate,
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user),

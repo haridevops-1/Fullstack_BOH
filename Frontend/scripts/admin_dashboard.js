@@ -47,9 +47,10 @@ async function getAdminSummary() {
 // This function fetches and displays the trusts waiting for approval
 async function loadPendingTrusts() {
   const tableBody = document.querySelector("tbody");
-  
+
   // Show a loading message while we wait
-  tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Loading pending trusts...</td></tr>';
+  tableBody.innerHTML =
+    '<tr><td colspan="6" style="text-align:center;">Loading pending trusts...</td></tr>';
 
   try {
     const response = await fetch(BACKEND_URL + "/api/admin/pending_trusts", {
@@ -64,7 +65,8 @@ async function loadPendingTrusts() {
 
       // If there are no trusts to show
       if (trusts.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No pending registrations found.</td></tr>';
+        tableBody.innerHTML =
+          '<tr><td colspan="6" style="text-align:center;">No pending registrations found.</td></tr>';
       } else {
         // Loop through each trust and create a table row
         for (let i = 0; i < trusts.length; i++) {
@@ -72,30 +74,45 @@ async function loadPendingTrusts() {
           const row = document.createElement("tr");
 
           // Build the row content
-          row.innerHTML = 
-            '<td>' + t.trust_name + '</td>' +
-            '<td>' + t.license_number + '</td>' +
-            '<td>' + t.city + '</td>' +
-            '<td><button class="view-btn" onclick="window.viewTrustPhoto(\'' + t.trust_photo + '\')">View Photo</button></td>' +
+          row.innerHTML =
+            "<td>" +
+            t.trust_name +
+            "</td>" +
+            "<td>" +
+            t.license_number +
+            "</td>" +
+            "<td>" +
+            t.city +
+            "</td>" +
+            '<td><button class="view-btn" onclick="window.viewTrustPhoto(\'' +
+            t.trust_photo +
+            "')\">View Photo</button></td>" +
             '<td><span class="status-pending">PENDING</span></td>' +
             '<td class="action-cell">' +
-              '<button class="approve-btn" onclick="window.respondToTrust(' + t.id + ', \'approve\')">Approve</button>' +
-              '<button class="reject-btn" onclick="window.respondToTrust(' + t.id + ', \'reject\')">Reject</button>' +
-            '</td>';
+            '<button class="approve-btn" onclick="window.respondToTrust(' +
+            t.id +
+            ", 'approve')\">Approve</button>" +
+            '<button class="reject-btn" onclick="window.respondToTrust(' +
+            t.id +
+            ", 'reject')\">Reject</button>" +
+            "</td>";
 
           tableBody.appendChild(row);
         }
       }
     }
   } catch (error) {
-    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;">Error loading data.</td></tr>';
+    tableBody.innerHTML =
+      '<tr><td colspan="6" style="text-align:center;color:red;">Error loading data.</td></tr>';
   }
 }
 
 // This function handles Approve or Reject clicks
 window.respondToTrust = async function (id, action) {
   // Ask for confirmation
-  const userConfirmed = confirm("Are you sure you want to " + action + " this trust?");
+  const userConfirmed = confirm(
+    "Are you sure you want to " + action + " this trust?",
+  );
   if (userConfirmed === false) {
     return;
   }
@@ -107,7 +124,7 @@ window.respondToTrust = async function (id, action) {
       {
         method: "PUT",
         headers: getAuthHeaders(),
-      }
+      },
     );
 
     if (response.ok === true) {
@@ -125,7 +142,7 @@ window.viewTrustPhoto = function (photo) {
     showToast("No photo available for this trust.", "warning");
     return;
   }
-  
+
   const newWindow = window.open("");
   newWindow.document.write('<img src="' + photo + '" style="max-width:100%;">');
 };

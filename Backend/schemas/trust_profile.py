@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
+
 class TrustProfileRead(BaseModel):
     id: int
     trust_name: str
@@ -13,9 +14,10 @@ class TrustProfileRead(BaseModel):
     is_verified: bool
     license_number: str
     trust_photo: Optional[str] = None
-    
+
     class Config:
         from_attributes = True
+
 
 class TrustProfileUpdate(BaseModel):
     trust_name: Optional[str] = None

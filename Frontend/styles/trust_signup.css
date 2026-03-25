@@ -99,7 +99,6 @@ select {
   font-size: 16px;
   font-family: inherit;
   background-color: #f8fafc;
-
 }
 
 /* Focus Effect */
@@ -194,7 +193,7 @@ footer {
 }
 
 .footer-col h4::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: -10px;
@@ -240,11 +239,6 @@ footer {
   color: #ffffff;
   font-size: 16px;
 }
-
-
-
-
-
 
 @keyframes fadeIn {
   from {
@@ -323,7 +317,6 @@ footer {
     transform: rotate(360deg);
   }
 }
-
 
 /* Password Input with Eye Icon */
 .password-box {

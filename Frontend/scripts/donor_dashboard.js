@@ -239,4 +239,3 @@ function showStatusNotification(message, status) {
     }, 500);
   }, 6000);
 }
-

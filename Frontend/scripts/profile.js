@@ -99,21 +99,21 @@ async function saveChanges(role) {
   const info =
     role === "donor"
       ? {
-        Firstname: inputs[0].value.trim(),
-        Lastname: inputs[1].value.trim(),
-        email: inputs[2].value.trim(),
-        mobile_number: inputs[3].value.trim(),
-        city: inputs[4].value.trim(),
-        Pincode: inputs[5].value.trim(),
-      }
+          Firstname: inputs[0].value.trim(),
+          Lastname: inputs[1].value.trim(),
+          email: inputs[2].value.trim(),
+          mobile_number: inputs[3].value.trim(),
+          city: inputs[4].value.trim(),
+          Pincode: inputs[5].value.trim(),
+        }
       : {
-        trust_name: inputs[0].value.trim(),
-        email_id: inputs[1].value.trim(),
-        mobile_number: inputs[2].value.trim(),
-        trust_address: inputs[3].value.trim(),
-        city: inputs[4].value.trim(),
-        pincode: inputs[5].value.trim(),
-      };
+          trust_name: inputs[0].value.trim(),
+          email_id: inputs[1].value.trim(),
+          mobile_number: inputs[2].value.trim(),
+          trust_address: inputs[3].value.trim(),
+          city: inputs[4].value.trim(),
+          pincode: inputs[5].value.trim(),
+        };
 
   const url =
     role === "donor"
@@ -131,7 +131,10 @@ async function saveChanges(role) {
       setTimeout(() => location.reload(), 2000);
     } else {
       const err = await res.json();
-      showToast(`Failed to update profile: ${err.detail || "Server error"}`, "error");
+      showToast(
+        `Failed to update profile: ${err.detail || "Server error"}`,
+        "error",
+      );
     }
   } catch (e) {
     alert("Error: Could not connect to the server.");

@@ -9,16 +9,17 @@ from auth_jwt import create_access_token
 # Router for Donor Login and Signup
 router = APIRouter(prefix="/api/donor", tags=["Donor Auth"])
 
+
 # Function to handle NEW donor registration
 @router.post("/signup", response_model=schemas.UserRead)
 def signup(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
     print(f"LOG: New donor signup attempt for: {user_data.email}")
-    
+
     try:
         # Check if the email is already in our database
-        existing_user = db.query(models.User).filter(
-            models.User.email == user_data.email
-        ).first()
+        existing_user = (
+            db.query(models.User).filter(models.User.email == user_data.email).first()
+        )
 
         if existing_user:
             raise HTTPException(status_code=400, detail="Email already registered")
@@ -32,7 +33,7 @@ def signup(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
             city=user_data.city,
             Pincode=user_data.Pincode,
             password=hash_password(user_data.password),
-            photo=upload_image(user_data.photo)
+            photo=upload_image(user_data.photo),
         )
 
         # Add to database and save
@@ -45,6 +46,7 @@ def signup(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
         print(f"CRITICAL: Error during signup: {e}")
         raise HTTPException(status_code=500, detail=f"Signup Error: {str(e)}")
 
+
 # Function to handle donor LOGIN
 @router.post("/login")
 def login(login_data: schemas.UserLogin, db: Session = Depends(get_db)):
@@ -52,9 +54,9 @@ def login(login_data: schemas.UserLogin, db: Session = Depends(get_db)):
 
     try:
         # Find the user by their email
-        user = db.query(models.User).filter(
-            models.User.email == login_data.email
-        ).first()
+        user = (
+            db.query(models.User).filter(models.User.email == login_data.email).first()
+        )
 
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
@@ -66,7 +68,7 @@ def login(login_data: schemas.UserLogin, db: Session = Depends(get_db)):
 
         # If everything is correct, send back the user details and a token
         access_token = create_access_token(data={"sub": str(user.id), "role": "donor"})
-        
+
         return {
             "message": "Login successful",
             "access_token": access_token,
@@ -74,7 +76,7 @@ def login(login_data: schemas.UserLogin, db: Session = Depends(get_db)):
             "id": user.id,
             "role": "donor",
             "name": user.Firstname,
-            "city": user.city
+            "city": user.city,
         }
     except HTTPException:
         raise

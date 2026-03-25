@@ -21,7 +21,8 @@ async function loadTrustList() {
   }
 
   // Show a "Finding" message while we wait for the server
-  container.innerHTML = '<div style="text-align:center;padding:40px;width:100%;grid-column:1/-1;">Finding trusts in your area...</div>';
+  container.innerHTML =
+    '<div style="text-align:center;padding:40px;width:100%;grid-column:1/-1;">Finding trusts in your area...</div>';
 
   // Get the city from local storage to show in the heading
   const userCity = localStorage.getItem("userCity") || "your area";
@@ -44,17 +45,21 @@ async function loadTrustList() {
 
       // If no trusts found
       if (trustsArray.length === 0) {
-        container.innerHTML = '<div style="text-align:center;color:grey;width:100%;grid-column:1/-1;padding:60px;">No trusts found.</div>';
+        container.innerHTML =
+          '<div style="text-align:center;color:grey;width:100%;grid-column:1/-1;padding:60px;">No trusts found.</div>';
       } else {
         // FILTERING LOGIC: Only show trusts that match the donor's city
         // Note: We do a case-insensitive check to be safe
-        const filteredTrusts = trustsArray.filter(t => {
+        const filteredTrusts = trustsArray.filter((t) => {
           if (!userCity || userCity === "your area") return true;
           return t.city.toLowerCase().trim() === userCity.toLowerCase().trim();
         });
 
         if (filteredTrusts.length === 0) {
-          container.innerHTML = '<div style="text-align:center;color:grey;width:100%;grid-column:1/-1;padding:60px;">No trusts found in ' + userCity + '.</div>';
+          container.innerHTML =
+            '<div style="text-align:center;color:grey;width:100%;grid-column:1/-1;padding:60px;">No trusts found in ' +
+            userCity +
+            ".</div>";
         } else {
           // Loop through each FILTERED trust and create a card
           for (let i = 0; i < filteredTrusts.length; i++) {
@@ -63,35 +68,53 @@ async function loadTrustList() {
             card.className = "premium-card";
 
             // Use a default image if the trust doesn't have one
-            const trustPhoto = trustItem.trust_photo || "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600&auto=format&fit=crop";
+            const trustPhoto =
+              trustItem.trust_photo ||
+              "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600&auto=format&fit=crop";
 
             // CLEAN CITY NAME: Handle typos like 'cxHENNAI'
             let rawCity = trustItem.city || "Not specified";
             let cleanCity = rawCity.replace(/^cx/i, "").trim();
             // Capitalize first letter
-            cleanCity = cleanCity.charAt(0).toUpperCase() + cleanCity.slice(1).toLowerCase();
+            cleanCity =
+              cleanCity.charAt(0).toUpperCase() +
+              cleanCity.slice(1).toLowerCase();
 
             // Build the card HTML
             card.innerHTML =
               '<div class="image-wrapper">' +
-              '<img src="' + trustPhoto + '">' +
+              '<img src="' +
+              trustPhoto +
+              '">' +
               '<div class="verified-badge">✓ Verified</div>' +
-              '</div>' +
+              "</div>" +
               '<div class="details">' +
-              '<div class="trust-name">' + (trustItem.trust_name || "Verified Trust") + '</div>' +
+              '<div class="trust-name">' +
+              (trustItem.trust_name || "Verified Trust") +
+              "</div>" +
               '<div class="info-group">' +
-              '<div class="info-item"><span class="label">Mobile</span><span class="value">' + (trustItem.mobile_number || "Contact Admin") + '</span></div>' +
-              '<div class="info-item"><span class="label">Address</span><span class="value">' + (trustItem.trust_address || "Not specified") + '</span></div>' +
-              '<div class="info-item"><span class="label">City</span><span class="value">' + cleanCity + '</span></div>' +
-              '</div>' +
+              '<div class="info-item"><span class="label">Mobile</span><span class="value">' +
+              (trustItem.mobile_number || "Contact Admin") +
+              "</span></div>" +
+              '<div class="info-item"><span class="label">Address</span><span class="value">' +
+              (trustItem.trust_address || "Not specified") +
+              "</span></div>" +
+              '<div class="info-item"><span class="label">City</span><span class="value">' +
+              cleanCity +
+              "</span></div>" +
+              "</div>" +
               '<button class="donate-btn-large">Donate Now</button>' +
-              '</div>';
+              "</div>";
 
             // Set up the "Donate Now" button click event
             const donateBtn = card.querySelector("button");
             donateBtn.onclick = function () {
               const safeTrustName = encodeURIComponent(trustItem.trust_name);
-              window.location.href = "create_donation.html?trustId=" + trustItem.id + "&trustName=" + safeTrustName;
+              window.location.href =
+                "create_donation.html?trustId=" +
+                trustItem.id +
+                "&trustName=" +
+                safeTrustName;
             };
 
             container.appendChild(card);
@@ -100,6 +123,7 @@ async function loadTrustList() {
       }
     }
   } catch (error) {
-    container.innerHTML = '<div style="text-align:center;color:red;width:100%;grid-column:1/-1;padding:40px;">Connection error. Please check your internet.</div>';
+    container.innerHTML =
+      '<div style="text-align:center;color:red;width:100%;grid-column:1/-1;padding:40px;">Connection error. Please check your internet.</div>';
   }
 }

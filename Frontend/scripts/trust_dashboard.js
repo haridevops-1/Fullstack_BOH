@@ -56,7 +56,7 @@ async function fetchTrustDashboardStats() {
       BACKEND_URL + "/api/trust/donations_details?trust_id=" + trustId,
       {
         headers: getAuthHeaders(),
-      }
+      },
     );
 
     if (response.ok === true) {
@@ -74,7 +74,11 @@ async function fetchTrustDashboardStats() {
 
         if (status === "pending") {
           pendingCount++;
-        } else if (status === "accepted" || status === "reached" || status === "picked") {
+        } else if (
+          status === "accepted" ||
+          status === "reached" ||
+          status === "picked"
+        ) {
           acceptedCount++;
         } else if (status === "rejected") {
           rejectedCount++;
@@ -118,7 +122,8 @@ async function loadRecentTrustDonations(isInitial) {
 
   // Show loading message on the first load
   if (isInitial === true) {
-    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Looking for active requests...</td></tr>';
+    tableBody.innerHTML =
+      '<tr><td colspan="6" style="text-align:center;">Looking for active requests...</td></tr>';
   }
 
   try {
@@ -126,7 +131,7 @@ async function loadRecentTrustDonations(isInitial) {
       BACKEND_URL + "/api/trust/donations_details?trust_id=" + trustId,
       {
         headers: getAuthHeaders(),
-      }
+      },
     );
 
     if (response.ok === true) {
@@ -142,7 +147,9 @@ async function loadRecentTrustDonations(isInitial) {
         if (status === "pending" && seenDonationIds.has(id) === false) {
           // Only show notification if the page has already finished its initial load
           if (isInitial === false && isFirstPageLoad === false) {
-            showNotificationToast("New Incoming Donation: " + (item.food_name || "Food Request"));
+            showNotificationToast(
+              "New Incoming Donation: " + (item.food_name || "Food Request"),
+            );
           }
           seenDonationIds.add(id);
         } else if (seenDonationIds.has(id) === false) {
@@ -190,12 +197,29 @@ async function loadRecentTrustDonations(isInitial) {
 
           // Build the row HTML
           row.innerHTML =
-            '<td>' + (item.name || "Anonymous donor") + badgeHTML + '</td>' +
-            '<td>' + item.food_name + '</td>' +
-            '<td><span class="category-badge ' + categoryClass + '">' + (item.category || "veg") + '</span></td>' +
-            '<td>' + item.approx_quantity + '</td>' +
-            '<td>' + item.city + '</td>' +
-            '<td><span class="status ' + status + '">' + item.status + '</span></td>';
+            "<td>" +
+            (item.name || "Anonymous donor") +
+            badgeHTML +
+            "</td>" +
+            "<td>" +
+            item.food_name +
+            "</td>" +
+            '<td><span class="category-badge ' +
+            categoryClass +
+            '">' +
+            (item.category || "veg") +
+            "</span></td>" +
+            "<td>" +
+            item.approx_quantity +
+            "</td>" +
+            "<td>" +
+            item.city +
+            "</td>" +
+            '<td><span class="status ' +
+            status +
+            '">' +
+            item.status +
+            "</span></td>";
 
           tableBody.appendChild(row);
           countShown++;
@@ -204,11 +228,13 @@ async function loadRecentTrustDonations(isInitial) {
 
       // If there are no active donations
       if (countShown === 0) {
-        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;">No active donation requests found.</td></tr>';
+        tableBody.innerHTML =
+          '<tr><td colspan="6" style="text-align:center;padding:40px;">No active donation requests found.</td></tr>';
       }
     }
   } catch (error) {
-    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Connection error. Please try again.</td></tr>';
+    tableBody.innerHTML =
+      '<tr><td colspan="6" style="text-align:center;color:red;padding:20px;">Connection error. Please try again.</td></tr>';
   }
 }
 
@@ -219,7 +245,10 @@ function showNotificationToast(message) {
 
   const toast = document.createElement("div");
   toast.className = "toast incoming";
-  toast.innerHTML = '<span class="toast-icon">🛎️</span><span class="toast-message">' + message + '</span>';
+  toast.innerHTML =
+    '<span class="toast-icon">🛎️</span><span class="toast-message">' +
+    message +
+    "</span>";
   container.appendChild(toast);
 
   // Automatically hide after 5 seconds
@@ -230,4 +259,3 @@ function showNotificationToast(message) {
     }, 500);
   }, 5000);
 }
-

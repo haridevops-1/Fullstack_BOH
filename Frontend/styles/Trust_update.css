@@ -59,7 +59,7 @@ header {
 }
 
 .nav-links a::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: 0;
@@ -262,7 +262,9 @@ button.secondary.btn-loading::after {
 }
 
 @keyframes btn-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* --- GLOBAL FOOTER --- */
@@ -304,7 +306,7 @@ footer {
 }
 
 .footer-col h4::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: -10px;
@@ -420,8 +422,44 @@ footer {
 }
 
 /* Image Proof Section Styles */
-.image-proof { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #eaecf0; }
-.image-upload { display: flex; align-items: flex-start; gap: 30px; }
-.upload-box { height: 150px; width: 100%; max-width: 400px; border: 2px dashed #0f3966; border-radius: 12px; display: flex; align-items: center; justify-content: center; background-color: #f8fafc; color: #0f3966; font-size: 16px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; text-align: center; padding: 20px; }
-.upload-box:hover { background-color: #f0fdf4; border-color: #10b981; }
-.preview img { height: 200px; width: auto; border-radius: 8px; border: 1px solid #e2e8f0; object-fit: cover; }
+.image-proof {
+  background: #fff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid #eaecf0;
+}
+.image-upload {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+}
+.upload-box {
+  height: 150px;
+  width: 100%;
+  max-width: 400px;
+  border: 2px dashed #0f3966;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8fafc;
+  color: #0f3966;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  padding: 20px;
+}
+.upload-box:hover {
+  background-color: #f0fdf4;
+  border-color: #10b981;
+}
+.preview img {
+  height: 200px;
+  width: auto;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  object-fit: cover;
+}

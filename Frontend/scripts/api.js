@@ -2,8 +2,10 @@
 const PROD_URL = "https://bridge-of-hope-backend-r53q.vercel.app";
 const LOCAL_URL = "http://localhost:8000";
 
-export const BACKEND_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") 
-    ? LOCAL_URL 
+export const BACKEND_URL =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1"
+    ? LOCAL_URL
     : PROD_URL;
 export const CLOUDINARY_CLOUD_NAME = "dqqjyumh8";
 export const CLOUDINARY_API_KEY = "156294232916679";

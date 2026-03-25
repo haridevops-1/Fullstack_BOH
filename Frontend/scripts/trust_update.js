@@ -14,28 +14,29 @@ document.addEventListener("DOMContentLoaded", function () {
   if (donationId) {
     // Fetch the details for this donation
     fetchDonationDetails(donationId);
-    
+
     // Set up status button click handlers
     const reachedBtn = document.getElementById("reachedBtn");
     const pickedBtn = document.getElementById("pickedBtn");
     const completedBtn = document.getElementById("completedBtn");
 
     if (reachedBtn) {
-      reachedBtn.onclick = () => handleStatusUpdate(donationId, "reached", reachedBtn);
+      reachedBtn.onclick = () =>
+        handleStatusUpdate(donationId, "reached", reachedBtn);
     }
     if (pickedBtn) {
-      pickedBtn.onclick = () => handleStatusUpdate(donationId, "picked", pickedBtn);
+      pickedBtn.onclick = () =>
+        handleStatusUpdate(donationId, "picked", pickedBtn);
     }
     if (completedBtn) {
-      completedBtn.onclick = () => handleStatusUpdate(donationId, "completed", completedBtn);
+      completedBtn.onclick = () =>
+        handleStatusUpdate(donationId, "completed", completedBtn);
     }
-
   } else {
     // If no ID is found, send the user back to the dashboard
     window.location.href = "Trust_dashboard.html";
   }
 });
-
 
 // This function fetches donation details and puts them in the HTML
 async function fetchDonationDetails(id) {
@@ -97,10 +98,10 @@ function updateButtonStates(currentStatus) {
   } else if (currentStatus === "completed") {
     // If already completed, show the proof section or a message
     if (imageProofSection) {
-        imageProofSection.style.display = "block";
-        // Optionally disable the final button if it was already used
-        const submitProofBtn = document.getElementById("submitProofBtn");
-        if (submitProofBtn) submitProofBtn.disabled = true;
+      imageProofSection.style.display = "block";
+      // Optionally disable the final button if it was already used
+      const submitProofBtn = document.getElementById("submitProofBtn");
+      if (submitProofBtn) submitProofBtn.disabled = true;
     }
   }
 }
@@ -112,7 +113,7 @@ async function handleStatusUpdate(id, selectedStatus, buttonElement) {
     const section = document.getElementById("imageProofSection");
     if (section) {
       section.style.display = "block";
-      section.scrollIntoView({ behavior: 'smooth' });
+      section.scrollIntoView({ behavior: "smooth" });
     }
     // Hide the button after clicking to focus on the photo
     buttonElement.style.display = "none";
@@ -120,7 +121,7 @@ async function handleStatusUpdate(id, selectedStatus, buttonElement) {
   }
 
   const updateData = {
-    status: selectedStatus
+    status: selectedStatus,
   };
 
   // Add loading state to button
@@ -130,15 +131,18 @@ async function handleStatusUpdate(id, selectedStatus, buttonElement) {
   }
 
   try {
-    const response = await fetch(BACKEND_URL + "/api/trust/donations/" + id + "/status", {
-      method: "PUT",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(updateData),
-    });
+    const response = await fetch(
+      BACKEND_URL + "/api/trust/donations/" + id + "/status",
+      {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(updateData),
+      },
+    );
 
     if (response.ok === true) {
       showToast("Success: Status updated to " + selectedStatus, "success");
-      
+
       // Update UI after a short delay
       setTimeout(() => {
         buttonElement.classList.remove("btn-loading");
@@ -146,7 +150,10 @@ async function handleStatusUpdate(id, selectedStatus, buttonElement) {
       }, 1000);
     } else {
       const errorData = await response.json();
-      showToast("Failed to update status: " + (errorData.detail || "Server error"), "error");
+      showToast(
+        "Failed to update status: " + (errorData.detail || "Server error"),
+        "error",
+      );
       if (buttonElement) {
         buttonElement.classList.remove("btn-loading");
         buttonElement.disabled = false;
@@ -177,7 +184,8 @@ if (photoInput) {
           previewImg.style.display = "block";
         }
         const uploadText = document.getElementById("uploadText");
-        if (uploadText) uploadText.innerText = "✅ Photo Selected: " + file.name;
+        if (uploadText)
+          uploadText.innerText = "✅ Photo Selected: " + file.name;
       };
       reader.readAsDataURL(file);
     }
@@ -190,7 +198,7 @@ if (submitProofBtn) {
   submitProofBtn.onclick = async function () {
     const urlParameters = new URLSearchParams(window.location.search);
     const donationId = urlParameters.get("id");
-    
+
     // Check if photo is picked
     const fileInput = document.getElementById("completionPhoto");
     if (!fileInput.files[0]) {
@@ -204,20 +212,23 @@ if (submitProofBtn) {
     // Convert image to Base64 (simple way for this project)
     const reader = new FileReader();
     reader.readAsDataURL(fileInput.files[0]);
-    reader.onload = async function() {
+    reader.onload = async function () {
       const base64Image = reader.result;
-      
+
       const payload = {
         status: "completed",
         // proof_image: base64Image // Assuming backend accepts this in the status update or separate field
       };
 
       try {
-        const response = await fetch(BACKEND_URL + "/api/trust/donations/" + donationId + "/status", {
-          method: "PUT",
-          headers: getAuthHeaders(),
-          body: JSON.stringify(payload),
-        });
+        const response = await fetch(
+          BACKEND_URL + "/api/trust/donations/" + donationId + "/status",
+          {
+            method: "PUT",
+            headers: getAuthHeaders(),
+            body: JSON.stringify(payload),
+          },
+        );
 
         if (response.ok) {
           showToast("Success! Donation marked as completed.", "success");

@@ -90,7 +90,8 @@ header {
   height: 600px;
   margin: 30px;
   border-radius: 30px;
-  background: url("../assets/front-view-box-being-prepared-with-food-donation.jpg") center/cover no-repeat;
+  background: url("../assets/front-view-box-being-prepared-with-food-donation.jpg")
+    center/cover no-repeat;
   display: flex;
   align-items: center;
   padding-left: 100px;
@@ -100,9 +101,11 @@ header {
 .overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right,
-      rgba(0, 0, 0, 0.85),
-      rgba(0, 0, 0, 0.1));
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.1)
+  );
   border-radius: 30px;
 }
 

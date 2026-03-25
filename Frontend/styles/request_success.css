@@ -4,10 +4,6 @@ html {
   scroll-behavior: smooth;
 }
 
-
-
-
-
 * {
   font-family: "Poppins", sans-serif !important;
   margin: 0;
@@ -63,7 +59,7 @@ header {
 }
 
 .nav-links a::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: 0;
@@ -82,7 +78,6 @@ header {
 }
 
 /* IMPORT FONTS */
-
 
 /* RESET & BASE STYLES */
 * {
@@ -143,7 +138,7 @@ header {
 }
 
 .nav-links a::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: 0;
@@ -346,7 +341,7 @@ footer {
 }
 
 .footer-col h4::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: -10px;
@@ -392,11 +387,6 @@ footer {
   color: #ffffff;
   font-size: 16px;
 }
-
-
-
-
-
 
 @keyframes fadeIn {
   from {

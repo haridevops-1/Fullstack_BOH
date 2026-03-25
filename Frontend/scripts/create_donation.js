@@ -13,13 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function handleDonationSubmit(event) {
   event.preventDefault();
-  
+
   const params = new URLSearchParams(window.location.search);
   const trustId = params.get("trustId");
   const donorId = localStorage.getItem("userId");
 
   if (!trustId) {
-    alert("Error: No trust selected. Please select a trust from the list first.");
+    alert(
+      "Error: No trust selected. Please select a trust from the list first.",
+    );
     return;
   }
 
@@ -87,15 +89,21 @@ async function handleDonationSubmit(event) {
         body: JSON.stringify(data),
       },
     );
- 
+
     if (res.ok) {
-      showToast("Success: Your donation request has been submitted.", "success");
+      showToast(
+        "Success: Your donation request has been submitted.",
+        "success",
+      );
       setTimeout(() => {
         window.location.href = "Donor_dashboard.html";
       }, 2000);
     } else {
       const err = await res.json();
-      showToast(`Failed to send request: ${err.detail || "Please check your details."}`, "error");
+      showToast(
+        `Failed to send request: ${err.detail || "Please check your details."}`,
+        "error",
+      );
       if (submitBtn) {
         submitBtn.classList.remove("btn-loading");
         submitBtn.disabled = false;

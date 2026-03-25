@@ -37,7 +37,7 @@ async function fetchDonationDetails(id, isFirstLoad) {
 
     if (response.ok === true) {
       const donationItem = await response.json();
-      
+
       // Update the information shown on the page
       updateTrackingUI(donationItem);
 
@@ -46,23 +46,23 @@ async function fetchDonationDetails(id, isFirstLoad) {
       // Show a notification if the status has changed since the last time we checked
       if (isFirstLoad === false && lastDonationStatus !== null) {
         if (lastDonationStatus !== currentStatus) {
-            let changeMessage = "";
-            if (currentStatus === "accepted") {
-                changeMessage = "Trust accepted your donation!";
-            } else if (currentStatus === "reached") {
-                changeMessage = "Vehicle reached your location!";
-            } else if (currentStatus === "picked") {
-                changeMessage = "Food picked up successfully!";
-            } else if (currentStatus === "completed") {
-                changeMessage = "Donation process complete!";
-            } else {
-                changeMessage = "Status updated: " + donationItem.status;
-            }
+          let changeMessage = "";
+          if (currentStatus === "accepted") {
+            changeMessage = "Trust accepted your donation!";
+          } else if (currentStatus === "reached") {
+            changeMessage = "Vehicle reached your location!";
+          } else if (currentStatus === "picked") {
+            changeMessage = "Food picked up successfully!";
+          } else if (currentStatus === "completed") {
+            changeMessage = "Donation process complete!";
+          } else {
+            changeMessage = "Status updated: " + donationItem.status;
+          }
 
-            showToast(changeMessage, currentStatus);
+          showToast(changeMessage, currentStatus);
         }
       }
-      
+
       // Remember the status for the next check
       lastDonationStatus = currentStatus;
     }
@@ -71,7 +71,6 @@ async function fetchDonationDetails(id, isFirstLoad) {
   }
 }
 
-
 // This function updates all the text and labels on the tracking page
 function updateTrackingUI(item) {
   // 1. Update the visual progress steps (dots/lines)
@@ -79,43 +78,45 @@ function updateTrackingUI(item) {
 
   // 2. Set the text for various labels
   const foodTypeEl = document.getElementById("trackFood");
-  if (foodTypeEl) foodTypeEl.innerHTML = "<span>Food Type</span>" + item.food_name;
+  if (foodTypeEl)
+    foodTypeEl.innerHTML = "<span>Food Type</span>" + item.food_name;
 
   const qtyEl = document.getElementById("trackQty");
   if (qtyEl) qtyEl.innerHTML = "<span>Quantity</span>" + item.approx_quantity;
 
   const addressEl = document.getElementById("trackAddress");
-  if (addressEl) addressEl.innerHTML = "<span>Pickup Address</span>" + item.address;
+  if (addressEl)
+    addressEl.innerHTML = "<span>Pickup Address</span>" + item.address;
 
   const trustEl = document.getElementById("trackTrust");
-  if (trustEl) trustEl.innerHTML = "<span>Assigned Trust</span>" + (item.trust_name || "Looking...");
-
+  if (trustEl)
+    trustEl.innerHTML =
+      "<span>Assigned Trust</span>" + (item.trust_name || "Looking...");
 
   // 4. Update the main status heading message
   const statusMsgEl = document.querySelector(".status-message");
   if (statusMsgEl) {
     const s = item.status.toLowerCase();
     let displayMsg = "Status: " + item.status;
-    
+
     if (s === "pending") displayMsg = "Waiting for trust...";
     else if (s === "accepted") displayMsg = "Trust accepted!";
     else if (s === "reached") displayMsg = "At your location!";
     else if (s === "picked") displayMsg = "Food picked up!";
     else if (s === "completed") displayMsg = "Success!";
-    
+
     statusMsgEl.innerText = displayMsg;
     statusMsgEl.className = "status-message " + s;
   }
-
 }
 
 // This function highlights the "steps" (Pending -> Accepted -> Reached -> Picked -> Completed)
 function updateProgressSteps(status) {
   const statusOrder = ["pending", "accepted", "reached", "picked", "completed"];
   const currentLevel = statusOrder.indexOf(status.toLowerCase());
-  
+
   const allStepElements = document.querySelectorAll(".step");
-  
+
   for (let i = 0; i < allStepElements.length; i++) {
     const step = allStepElements[i];
     // If the step index is less than or equal to our current status level, make it active

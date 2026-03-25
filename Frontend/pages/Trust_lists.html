@@ -1,78 +1,81 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find Trusts - BridgeOfHope</title>
+    <link rel="stylesheet" href="../styles/Trust_lists.css" />
+    <!-- Cloudinary Integration -->
+    <meta name="cloudinary-cloud-name" content="dqqjyumh8" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Find Trusts - BridgeOfHope</title>
-  <link rel="stylesheet" href="../styles/Trust_lists.css" />
-  <!-- Cloudinary Integration -->
-  <meta name="cloudinary-cloud-name" content="dqqjyumh8">
-</head>
-
-<body>
-  <!-- Header -->
-  <header>
-    <div class="logo">
-      <a href="./Donor_dashboard.html">
-        <h1>Bridge Of Hope</h1>
-      </a>
-    </div>
-    <div class="nav-bars">
-      <nav class="nav-links">
-        <a href="../pages/Donor_dashboard.html">Home</a>
-        <a href="../pages/Trust_lists.html">Find Trusts</a>
-        <a href="../pages/mydonations.html">My donations</a>
-        <a href="../pages/Donor_profile.html">Edit profile</a>
-        <a href="#" onclick="window.logout()">Log out</a>
-      </nav>
-    </div>
-  </header>
-  <!-- Main -->
-  <main>
-    <div class="container">
-      <div class="main-headings">
-        <h2>Find Trusts in Chennai</h2>
-        <p>Select a nearby Trust to send your donation request.</p>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        <a href="./Donor_dashboard.html">
+          <h1>Bridge Of Hope</h1>
+        </a>
       </div>
-
-      <div class="all-container">
-        <!-- Trusts will be loaded here dynamically by JavaScript -->
+      <div class="nav-bars">
+        <nav class="nav-links">
+          <a href="../pages/Donor_dashboard.html">Home</a>
+          <a href="../pages/Trust_lists.html">Find Trusts</a>
+          <a href="../pages/mydonations.html">My donations</a>
+          <a href="../pages/Donor_profile.html">Edit profile</a>
+          <a href="#" onclick="window.logout()">Log out</a>
+        </nav>
       </div>
-    </div>
-  </main>
-  <!-- Footer -->
-  <footer>
-    <div class="footer-container">
-      <div class="footer-row">
-        <div class="footer-col">
-          <h3>Bridge Of Hope</h3>
-          <p>Connecting surplus food with those who need it most. Bridging Hearts, Filling Plates.</p>
+    </header>
+    <!-- Main -->
+    <main>
+      <div class="container">
+        <div class="main-headings">
+          <h2>Find Trusts in Chennai</h2>
+          <p>Select a nearby Trust to send your donation request.</p>
         </div>
-        <div class="footer-col">
-          <h4>Navigation</h4>
-          <ul>
-            <li><a href="Donor_dashboard.html">Home</a></li>
-            <li><a href="Trust_lists.html">Find Trusts</a></li>
-            <li><a href="mydonations.html">My Donations</a></li>
-            <li><a href="Donor_profile.html">Edit Profile</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Contact Us</h4>
-          <p>Email: bridgeofhope@gmail.com</p>
-          <p>Phone: +91 93609 23188</p>
-          <p>Location: Chennai, Tamil Nadu, India</p>
+
+        <div class="all-container">
+          <!-- Trusts will be loaded here dynamically by JavaScript -->
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 Bridge Of Hope | Developed by <strong>Hariharan Ravi</strong></p>
+    </main>
+    <!-- Footer -->
+    <footer>
+      <div class="footer-container">
+        <div class="footer-row">
+          <div class="footer-col">
+            <h3>Bridge Of Hope</h3>
+            <p>
+              Connecting surplus food with those who need it most. Bridging
+              Hearts, Filling Plates.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Navigation</h4>
+            <ul>
+              <li><a href="Donor_dashboard.html">Home</a></li>
+              <li><a href="Trust_lists.html">Find Trusts</a></li>
+              <li><a href="mydonations.html">My Donations</a></li>
+              <li><a href="Donor_profile.html">Edit Profile</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Contact Us</h4>
+            <p>Email: bridgeofhope@gmail.com</p>
+            <p>Phone: +91 93609 23188</p>
+            <p>Location: Chennai, Tamil Nadu, India</p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2026 Bridge Of Hope | Developed by
+            <strong>Hariharan Ravi</strong>
+          </p>
+        </div>
       </div>
-    </div>
-  </footer>
-  <script type="module" src="../scripts/auth.js"></script>
-  <script type="module" src="../scripts/trust_lists.js"></script>
-</body>
-
+    </footer>
+    <script type="module" src="../scripts/auth.js"></script>
+    <script type="module" src="../scripts/trust_lists.js"></script>
+  </body>
 </html>
-

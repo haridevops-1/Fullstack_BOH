@@ -46,11 +46,14 @@ async function getDonationInfo(id) {
       updateText("detAddress", donationItem.address);
       updateText("detCity", donationItem.city);
       updateText("detPincode", donationItem.pincode || "N/A");
-      
+
       // Formatting the time for display
       if (donationItem.scheduled_time) {
         const d = new Date(donationItem.scheduled_time);
-        updateText("detTime", d.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) + " (1-hour window)");
+        updateText(
+          "detTime",
+          d.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }),
+        );
       } else {
         updateText("detTime", "Not specified");
       }
@@ -59,7 +62,12 @@ async function getDonationInfo(id) {
       const category = (donationItem.category || "veg").toLowerCase();
       const categoryElement = document.getElementById("detCategory");
       if (categoryElement) {
-        categoryElement.innerHTML = '<span class="category-badge ' + category + '">' + category + '</span>';
+        categoryElement.innerHTML =
+          '<span class="category-badge ' +
+          category +
+          '">' +
+          category +
+          "</span>";
       }
 
       // Set up the Accept and Reject buttons
@@ -75,7 +83,7 @@ async function getDonationInfo(id) {
         rejectButton.onclick = function () {
           const rejectionSection = document.getElementById("rejectionSection");
           const reasonBox = document.getElementById("rejectReason");
-          
+
           if (rejectionSection.style.display === "none") {
             // First click: show the reason box
             rejectionSection.style.display = "block";
@@ -116,11 +124,14 @@ async function updateDonationDecision(id, selectedStatus, reason = null) {
     const payload = { status: selectedStatus };
     if (reason) payload.reject_reason = reason;
 
-    const response = await fetch(BACKEND_URL + "/api/trust/donations/" + id + "/status", {
-      method: "PUT",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(payload),
-    });
+    const response = await fetch(
+      BACKEND_URL + "/api/trust/donations/" + id + "/status",
+      {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+      },
+    );
 
     if (response.ok === true) {
       showToast("Success: Your decision has been saved.", "success");
@@ -130,14 +141,29 @@ async function updateDonationDecision(id, selectedStatus, reason = null) {
       }, 2000);
     } else {
       const errorData = await response.json();
-      showToast("Failed to save decision: " + (errorData.detail || "Server error"), "error");
-      if (acceptBtn) { acceptBtn.classList.remove("btn-loading"); acceptBtn.disabled = false; }
-      if (rejectBtn) { rejectBtn.classList.remove("btn-loading"); rejectBtn.disabled = false; }
+      showToast(
+        "Failed to save decision: " + (errorData.detail || "Server error"),
+        "error",
+      );
+      if (acceptBtn) {
+        acceptBtn.classList.remove("btn-loading");
+        acceptBtn.disabled = false;
+      }
+      if (rejectBtn) {
+        rejectBtn.classList.remove("btn-loading");
+        rejectBtn.disabled = false;
+      }
     }
   } catch (error) {
     showToast("Error: Could not connect to the server.", "error");
-    if (acceptBtn) { acceptBtn.classList.remove("btn-loading"); acceptBtn.disabled = false; }
-    if (rejectBtn) { rejectBtn.classList.remove("btn-loading"); rejectBtn.disabled = false; }
+    if (acceptBtn) {
+      acceptBtn.classList.remove("btn-loading");
+      acceptBtn.disabled = false;
+    }
+    if (rejectBtn) {
+      rejectBtn.classList.remove("btn-loading");
+      rejectBtn.disabled = false;
+    }
   }
 }
-""
+("");
