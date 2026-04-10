@@ -12,7 +12,7 @@ class AdminLogin(BaseModel):
 
 
 @router.post("/login")
-def login(login_data: AdminLogin):
+def login(login_data: AdminLogin):  
     print(f"LOG: Admin login attempt for: {login_data.email}")
 
     # We use hardcoded credentials for the Super Admin

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from dependencies import get_db
 import models, schemas
-from cloudinary_utils import upload_image
+
 from security_utils import hash_password, verify_password
 from auth_jwt import create_access_token
 
@@ -40,7 +40,7 @@ def signup(trust_data: schemas.TrustCreate, db: Session = Depends(get_db)):
             city=trust_data.city,
             pincode=trust_data.pincode,
             license_number=trust_data.license_number,
-            trust_photo=upload_image(trust_data.trust_photo),
+            trust_photo=trust_data.trust_photo,
             is_verified=False,
         )
 

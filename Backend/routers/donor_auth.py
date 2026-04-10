@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from dependencies import get_db
 import models, schemas
-from cloudinary_utils import upload_image
+
 from security_utils import hash_password, verify_password
 from auth_jwt import create_access_token
 
@@ -33,7 +33,7 @@ def signup(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
             city=user_data.city,
             Pincode=user_data.Pincode,
             password=hash_password(user_data.password),
-            photo=upload_image(user_data.photo),
+            photo=user_data.photo,
         )
 
         # Add to database and save

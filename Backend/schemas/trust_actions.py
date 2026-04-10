@@ -44,3 +44,4 @@ class DonationRead(BaseModel):
 class StatusUpdate(BaseModel):
     status: str
     reject_reason: Optional[str] = None
+    completion_image: Optional[str] = None

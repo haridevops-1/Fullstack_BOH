@@ -104,5 +104,8 @@ def update_status(
     if status_data.reject_reason is not None:
         donation.reject_reason = status_data.reject_reason
 
+    if status_data.completion_image is not None:
+        donation.completion_image = status_data.completion_image
+
     db.commit()
     return {"message": "Donation details updated successfully"}
